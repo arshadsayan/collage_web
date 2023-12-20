@@ -1,1 +1,1 @@
-#timetable generator
+This is the readme file for the HTML and CSS
