@@ -60,13 +60,7 @@ body {
     margin-bottom: 5px;
     border-radius: 20px;
   }
-  
-  input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-  }
-  
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -81,7 +75,7 @@ body {
 
   /* existing styles remain the same */
 
-input[type="text"] {
+input[type="text"], #selectInpt {
   width: 100%; /* Adjusted width to accommodate padding and borders */
   padding: 8px;
   font-size: 16px;
@@ -106,7 +100,7 @@ th input, td input {
 
 /* existing styles remain the same */
 
-#department-name, #semester{
+#department-name, #semester, #selectInpt{
   height: 50px;
   background-color: #F7FAFF;
   border: 1px solid #C8CBD7;
@@ -115,4 +109,8 @@ th input, td input {
 
 th{
   font-weight: 400;
+}
+
+#import-cont{
+  display: none;
 }
