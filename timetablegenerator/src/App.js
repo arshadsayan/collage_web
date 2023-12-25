@@ -1,10 +1,11 @@
-import logo from './logo.svg';
+
 import './App.css';
+import SubjectChoice from './Pages/SubjectChoice';
 
 function App() {
   return (
     <>
-      <h1>Hello World! This is new branch</h1>
+      <SubjectChoice />
     </>
   );
 }
