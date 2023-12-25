@@ -1,9 +1,10 @@
 import React from "react";
+import './SubjectChoice.css';
 
 const SubjectChoice = () => {
   return (
     <div className="container">
-      <h1>Subject Choice</h1>
+      <h1 className="heading">Subject Choice</h1>
       <table className="course-table">
         <thead>
           <tr>

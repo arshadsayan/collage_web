@@ -1,0 +1,17 @@
+*{
+    font-family: "Poppins", Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+.container{
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.heading {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+}
