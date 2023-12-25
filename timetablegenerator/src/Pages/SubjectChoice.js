@@ -1,5 +1,5 @@
 import React from "react";
-import './SubjectChoice.css';
+import "./SubjectChoice.css";
 
 const SubjectChoice = () => {
   return (
@@ -14,46 +14,47 @@ const SubjectChoice = () => {
           </tr>
         </thead>
         <tbody>
-          <td>
-            <input
-              type="text"
-              name="CourseName"
-              placeholder="Course Name"
-              value={""}
-              onChange={(e) => ""}
-            />
-          </td>
-          <td>
-            <input
-              type="text"
-              name="WorkExperience"
-              placeholder="Work Experience"
-              value={""}
-              onChange={(e) => ""}
-            />
-          </td>
-          <td>
-            <input
-              type="radio"
-              name="ExpPS"
-              placeholder="Course Name"
-              value={""}
-              onChange={(e) => ""}
-            />
-            <input
-              type="radio"
-              name="ExpPS"
-              placeholder="Course Name"
-              value={""}
-              onChange={(e) => ""}
-            />
-          </td>
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="CourseName"
+                placeholder="Course Name"
+                value={""}
+                onChange={(e) => ""}
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="WorkExperience"
+                placeholder="Work Experience"
+                value={""}
+                onChange={(e) => ""}
+              />
+            </td>
+            <td>
+              <input
+                type="radio"
+                name="ExpPS"
+                placeholder="Course Name"
+                value={""}
+                onChange={(e) => ""}
+              />
+              <input
+                type="radio"
+                name="ExpPS"
+                placeholder="Course Name"
+                value={""}
+                onChange={(e) => ""}
+              />
+            </td>
+          </tr>
         </tbody>
       </table>
-      <div>
-        <button
-        type="submit">
-          + ASSIGN FACULTY 
+      <div className="btnDiv">
+        <button onClick={() => {}} type="submit">
+          + ASSIGN FACULTY
         </button>
       </div>
     </div>
