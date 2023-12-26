@@ -4,7 +4,7 @@ import "./SubjectChoice.css";
 const SubjectChoice = () => {
   return (
     <div className="container">
-      <h1 className="heading">Subject Choice</h1>
+      <h1 className="pageHeading">Subject Choice</h1>
       <div className="tableDiv">
         <table className="course-table">
           <thead>
