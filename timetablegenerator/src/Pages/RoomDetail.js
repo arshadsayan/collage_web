@@ -3,6 +3,7 @@ import './RoomDetail.css'
 // import './SubjectChoice.css'
 
 const RoomDetail = () => {
+    
   return (
     <div className="container">
       <h1 className="pageHeading">Room Details</h1>

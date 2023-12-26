@@ -1,14 +1,18 @@
 
 import './App.css';
-import RoomDetail from './Pages/RoomDetail';
-// import SubjectChoice from './Pages/SubjectChoice';
+// import RoomDetail from './Pages/RoomDetail';
+import SubjectChoice from './Pages/SubjectChoice';
+
+
 
 function App() {
   return (
     <>
-      <RoomDetail />
+      <SubjectChoice />
     </>
   );
 }
 
 export default App;
+
+
