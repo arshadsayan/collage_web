@@ -59,8 +59,6 @@ table{
 
 button{
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
     font-family: inherit;
     border-style: none;
     border-radius: 20px;
@@ -79,5 +77,6 @@ button{
 }
 
 .btnDiv{
+    margin: 10px;
     padding: 5%;
 }

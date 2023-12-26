@@ -7,7 +7,7 @@ const RoomDetail = () => {
     <div className="container">
       <h1 className="pageHeading">Room Details</h1>
       <form>
-        <div>
+        <div className="formComponent">
           <label htmlFor="roomNumber">Room Number: </label>
           <input
             type="text"
@@ -17,7 +17,7 @@ const RoomDetail = () => {
             onChange={(e) => ""}
           />
         </div>
-        <div>
+        <div className="formComponent">
           <label htmlFor="floor">Floor: </label>
           <input
             type="text"
@@ -27,7 +27,7 @@ const RoomDetail = () => {
             onChange={(e) => ""}
           />
         </div>
-        <div>
+        <div className="formComponent">
           <label htmlFor="departmentName">Department Name: </label>
           <input
             type="text"
@@ -37,7 +37,7 @@ const RoomDetail = () => {
             onChange={(e) => ""}
           />
         </div>
-        <div>
+        <div className="formComponent">
           <label htmlFor="capacity">Capacity: </label>
           <input
             type="text"
@@ -47,7 +47,7 @@ const RoomDetail = () => {
             onChange={(e) => ""}
           />
         </div>
-        <div>
+        <div className="btnDiv">
           <button type="submit" onClick={() => {}}>+ ADD ROOM</button>
         </div>
       </form>
