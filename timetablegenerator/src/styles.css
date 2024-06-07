@@ -73,6 +73,26 @@ body {
     border: 1px solid #C8CBD7;
   }
 
+  .side-by-side {
+    display: flex;
+    gap: 20px; /* Adjust the gap as needed */
+  }
+  
+  /* Make sure the input fields take equal space */
+  .side-by-side .input-field {
+    flex: 1;
+  }
+
+  .dropdown-field {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    height: 50px;
+    background-color: #F7FAFF;
+    border: 1px solid #C8CBD7;
+    border-radius: 12px;
+  }
   /* existing styles remain the same */
 
 input[type="text"], #selectInpt {

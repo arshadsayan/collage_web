@@ -26,12 +26,13 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1 className="center page-heading">Department</h1>
-      <div className="buttons">
+      <h1 className="center page-heading">Personal Details</h1>
+      <Adddept />
+      {/* <div className="buttons">
         <button id="add-department" onClick={deptAdder}>+ ADD DEPARTMENT</button>
         <button id="import-btn" onClick={importAdder}>+ IMPORT</button>
-      </div>
-      {(dept === true) ? <Adddept /> : (impr === true) ? <Importdept /> : null}
+      </div> */}
+      {/* {(dept === true) ? <Adddept /> : (impr === true) ? <Importdept /> : null} */}
     </div>
   );
 }
