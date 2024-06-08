@@ -120,8 +120,46 @@ export default function Adddept() {
           <input type="text" id="semester" placeholder="Enter semester" />
         </div>
       </div>
-    </div>
-    <label id="course-details">Course Details: </label>
+      <br></br>
+
+      <h1 className="center page-heading">Academic Details</h1>
+
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">HSC maths marks:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">HSC physics marks:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">HSC chemistry marks:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">HSC PCM percentage:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+      <div className="input-field">
+        <label for="department-name">HSC vocational subject name:</label>
+        <input type="text" id="department-name" placeholder="Enter department name" />
+      </div>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">HSC vocational subject marks:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">HSC vocational subject percentage:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>        
+
+      <label id="course-details">Course Details: </label>
     <table className="course-table">
       <thead>
         <tr>
@@ -152,10 +190,58 @@ export default function Adddept() {
         </tr>
       </tbody>
     </table>
+      <br></br>
+      {/* CET DETAILS */}
+      <h1 className="center page-heading">CET Details</h1>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">CET application ID:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">CET roll number:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">CET maths percentage:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">CET physics percentage:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">CET chemistry percentage:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">CET Percentile:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+
+
+      <h1 className="center page-heading">JEE Details</h1>
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">JEE application number:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">JEE percentile:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+      </div>
+    </div>
+    
     <br></br>
-    <h1 className="center page-heading">CET Details</h1>
+    
     <div className="center">
-      <button className="add-course">+ SUBMIT DATA</button>
+      <button className="add-course"><b>+ SUBMIT DATA</b></button>
     </div>
     </form>
     </div>

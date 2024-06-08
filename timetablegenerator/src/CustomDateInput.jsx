@@ -7,7 +7,7 @@ const CustomDateInput = forwardRef(({ value, onClick }, ref) => (
     onClick={onClick}
     ref={ref}
     className="datepicker-input"
-    placeholder="DD/MM/YYYY" // Optional: to show a placeholder
+    placeholder="DD/MM/YYYY" 
   />
 ));
 
