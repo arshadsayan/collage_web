@@ -1,6 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react';
+import Datepicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import CustomDateInput from './CustomDateInput';
 
-export default function adddept() {
+export default function Adddept() {
+  const [selectedDate, setDate] = useState(null);
   return (
     <div>
     <form id = "add-dept-cont">
@@ -13,9 +17,19 @@ export default function adddept() {
         <label for="semester">Email:</label>
         <input type="text" id="semester" placeholder="Enter semester" />
       </div>
-      <div className="input-field">
-        <label for="semester">Mobile Number:</label>
-        <input type="text" id="semester" placeholder="Enter semester" />
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label for="semester">Mobile number:</label>
+          <input type="text" id="semester" placeholder="Enter semester" />
+        </div>
+        <div className="input-field">
+          <label for="semester">Date of birth:</label>
+          <Datepicker 
+            selected={selectedDate} 
+            onChange={date => setDate(date)} 
+            customInput={<CustomDateInput />}
+          />
+        </div>
       </div>
       <div className="input-field">
         <label for="semester">Father's Name:</label>

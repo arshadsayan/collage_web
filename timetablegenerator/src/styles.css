@@ -82,6 +82,10 @@ body {
   .side-by-side .input-field {
     flex: 1;
   }
+  .input-fields.side-by-side .input-field {
+    flex: 1;
+  }
+  
 
   .dropdown-field {
     width: 100%;
@@ -95,11 +99,24 @@ body {
   }
   /* existing styles remain the same */
 
-input[type="text"], #selectInpt {
+input[type="text"], #selectInpt, .datepicker-input {
   width: 100%; /* Adjusted width to accommodate padding and borders */
   padding: 8px;
   font-size: 16px;
-  box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+  box-sizing: border-box;
+  height: 50px;
+  background-color: #F7FAFF;
+  border: 1px solid #C8CBD7;
+  border-radius: 12px; /* Includes padding and border in the element's total width and height */
+}
+
+.input-fields.side-by-side {
+  display: flex;
+  gap: 20px; /* Adjust the gap as needed */
+}
+
+.side-by-side .input-field {
+  flex: 1; /* Ensure input fields take equal space */
 }
 
 th, td {

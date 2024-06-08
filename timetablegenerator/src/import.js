@@ -1,4 +1,5 @@
 import jQuery from 'jquery';
+
 (function($) {
     var CheckboxDropdown = function(el) {
       var _this = this;

@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import './styles.css'
 import './styles-import.css'
 import Adddept from './adddept';
-import Importdept from './importdept';
-import './import';
+// import Importdept from './importdept';
+// import './import';
 
 // var departmentButton = false;
 // var importButton = false;
