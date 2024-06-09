@@ -1,12 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import "./App.css";
+import Sidenav from './Sidenav';
 
 function App() {
-  return (
-    <>
-      <h1>Hello World</h1>
-    </>
-  );
+  return <>
+  <Sidenav />
+  </>
 }
 
-export default App;
+export default App
