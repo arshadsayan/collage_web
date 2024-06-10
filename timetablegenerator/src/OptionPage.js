@@ -23,16 +23,18 @@ function OptionPage() {
         <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Poppins' }} >
           Choose Your Round
         </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 4 }}>
         <Button variant="contained" color="primary" onClick={handleCapRoundClick} sx={{ mt: 2,fontFamily: 'Poppins',bgcolor: 'orange',
-            '&:hover': {bgcolor: 'darkblue',},  
+           borderRadius: '20px', '&:hover': {bgcolor: 'darkblue',},  
          }} >
           CAP Round
         </Button>
         <Button variant="contained" color="primary" onClick={handleSpotRoundClick} sx={{ mt: 2,fontFamily: 'Poppins',bgcolor: 'orange',
-            '&:hover': {bgcolor: 'darkblue',},
+           borderRadius: '20px', '&:hover': {bgcolor: 'darkblue',},
          }}>
           Spot Round
         </Button>
+        </Box>
       </Box>
     </Container>
   );
