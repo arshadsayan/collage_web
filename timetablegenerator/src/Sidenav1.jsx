@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Backdrop } from '@mui/material';
+import './styles.css';
 
 const drawerWidth = 240;
 
@@ -63,7 +64,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function Sidenav() {
+export default function Sidenav1() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -78,7 +79,7 @@ export default function Sidenav() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{ bgcolor: 'darkblue' }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -89,7 +90,7 @@ export default function Sidenav() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ fontFamily: 'Poppins' }}>
             Admission Portal
           </Typography>
         </Toolbar>
@@ -120,7 +121,7 @@ export default function Sidenav() {
                 <ListItemIcon>
                   <InboxIcon /> 
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={text} sx={{ fontFamily: 'Poppins' }} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -134,7 +135,7 @@ export default function Sidenav() {
       <Main open={open}>
         <DrawerHeader />
         <Typography paragraph>
-          Main Content
+          
         </Typography>
       </Main>
     </Box>
