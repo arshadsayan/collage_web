@@ -10,18 +10,18 @@ import Adddept from './adddept';
 
 export default function App() {
 
-  const [dept, setDept] = useState(false);
-  const [impr, setImpr] = useState(false);
+  // const [dept, setDept] = useState(false);
+  // const [impr, setImpr] = useState(false);
 
-  function deptAdder() {
-    setDept(true);
-    setImpr(false);
-  }
+  // function deptAdder() {
+  //   setDept(true);
+  //   setImpr(false);
+  // }
   
-  function importAdder() {
-    setImpr(true);
-    setDept(false);
-  }
+  // function importAdder() {
+  //   setImpr(true);
+  //   setDept(false);
+  // }
   
 
   return (
