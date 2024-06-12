@@ -11,54 +11,54 @@ export default function App() {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     personalDetails: {
-    fullName: '',
-    email: '',
-    mobileNumber: '',
-    fathersName: '',
-    fathersmobileNumber: '',
-    fathersOccupation: '',
-    mothersName: '',
-    mothersOccupation: '',
-    mothersmobileNumber: '',
-    annualIncome: '',
-    sex: '',
-    corrAddr: '',
-    perAddr: '',
-    area: '',
-    category: '',
-    nationality: '',
-    religion: '',
-    domicile: '',
-    mothersTongue: '',
-    dateofBirth: ''
+      fullName: '',
+      email: '',
+      mobileNumber: '',
+      fathersName: '',
+      fathersmobileNumber: '',
+      fathersOccupation: '',
+      mothersName: '',
+      mothersOccupation: '',
+      mothersmobileNumber: '',
+      annualIncome: '',
+      sex: '',
+      corrAddr: '',
+      perAddr: '',
+      area: '',
+      category: '',
+      nationality: '',
+      religion: '',
+      domicile: '',
+      mothersTongue: '',
+      dateofBirth: ''
     },
     academicDetails: {
-    hscmathsMarks: '',
-    hscphysicsMarks: '',
-    hscchemistryMarks: '',
-    hscpcmPercentage: '',
-    hscvocationalSub: '',
-    hscvocationalsubjectMarks: '',
-    hscvovationalsubjectPer: '',
-    sscBoard: '',
-    sscyearofPass: '',
-    ssctotalMarks: '',
-    sscmarksObtained: '',
-    sscPercentage: '',
-    hscBoard: '',
-    hscyearofPass: '',
-    hsctotalMarks: '',
-    hscmarksObtained: '',
-    hscPercentage: '',
+      hscmathsMarks: '',
+      hscphysicsMarks: '',
+      hscchemistryMarks: '',
+      hscpcmPercentage: '',
+      hscvocationalSub: '',
+      hscvocationalsubjectMarks: '',
+      hscvovationalsubjectPer: '',
+      sscBoard: '',
+      sscyearofPass: '',
+      ssctotalMarks: '',
+      sscmarksObtained: '',
+      sscPercentage: '',
+      hscBoard: '',
+      hscyearofPass: '',
+      hsctotalMarks: '',
+      hscmarksObtained: '',
+      hscPercentage: ''
     },
     cetDetails: {
-    cetappId: '',
-    cetrollNo: '',
-    cetmathsPer: '',
-    cetphysicsPer: '',
-    cetchemistryPer: '',
-    jeeappNum: '',
-    jeePer: '',
+      cetappId: '',
+      cetrollNo: '',
+      cetmathsPer: '',
+      cetphysicsPer: '',
+      cetchemistryPer: '',
+      jeeappNum: '',
+      jeePer: ''
     },
     documentUpload: {}
   });
@@ -95,6 +95,32 @@ export default function App() {
     return refs[currentSection].current.validate();
   };
 
+  const handleSubmit = async () => {
+    if (!validateCurrentSection()) return;
+
+    try {
+      const response = await fetch('http://your-backend-url/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        // Handle successful submission
+        alert('Form submitted successfully');
+      } else {
+        // Handle server errors
+        const errorData = await response.json();
+        setError(errorData.message || 'Submission failed');
+      }
+    } catch (error) {
+      // Handle network errors
+      setError('Network error: ' + error.message);
+    }
+  };
+
   return (
     <div className="container">
       {sections[currentSection]}
@@ -102,7 +128,7 @@ export default function App() {
       <div className="buttons">
         <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
         <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-        {currentSection === sections.length - 1 && <button className="add-course"><b>+ SUBMIT DATA</b></button>}
+        {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
       </div>
     </div>
   );
