@@ -1,41 +1,57 @@
-import React, { useState } from 'react'
-import './styles.css'
-import './styles-import.css'
-import Adddept from './adddept';
-// import Importdept from './importdept';
-// import './import';
-
-// var departmentButton = false;
-// var importButton = false;
+import React, { useState, useRef } from 'react';
+import './styles.css';
+import './styles-import.css';
+import PersonalDetails from './PersonalDetails';
+import AcademicDetails from './AcademicDetails';
+import CETDetails from './CETDetails';
+import DocumentUpload from './DocumentUpload';
 
 export default function App() {
+  const [currentSection, setCurrentSection] = useState(0);
+  const [error, setError] = useState('');
 
-  // const [dept, setDept] = useState(false);
-  // const [impr, setImpr] = useState(false);
+  const personalDetailsRef = useRef();
+  const academicDetailsRef = useRef();
+  const cetDetailsRef = useRef();
+  const jeeDetailsRef = useRef();
+  const documentUploadRef = useRef();
 
-  // function deptAdder() {
-  //   setDept(true);
-  //   setImpr(false);
-  // }
-  
-  // function importAdder() {
-  //   setImpr(true);
-  //   setDept(false);
-  // }
-  
+  const sections = [
+    <PersonalDetails ref={personalDetailsRef} setError={setError} />,
+    <AcademicDetails ref={academicDetailsRef} setError={setError} />,
+    <CETDetails ref={cetDetailsRef} setError={setError} />,
+    <DocumentUpload ref={documentUploadRef} setError={setError} />
+  ];
+
+  const nextSection = () => {
+    if (!validateCurrentSection()) return;
+    if (currentSection < sections.length - 1) {
+      setCurrentSection(currentSection + 1);
+      setError('');
+    }
+  };
+
+  const prevSection = () => {
+    if (currentSection > 0) {
+      setCurrentSection(currentSection - 1);
+      setError('');
+    }
+  };
+
+  const validateCurrentSection = () => {
+    const refs = [personalDetailsRef, academicDetailsRef, cetDetailsRef, documentUploadRef];
+    return refs[currentSection].current.validate();
+  };
 
   return (
     <div className="container">
-      <h1 className="center page-heading">Personal Details</h1>
-      <Adddept />
-      {/* <div className="buttons">
-        <button id="add-department" onClick={deptAdder}>+ ADD DEPARTMENT</button>
-        <button id="import-btn" onClick={importAdder}>+ IMPORT</button>
-      </div> */}
-      {/* {(dept === true) ? <Adddept /> : (impr === true) ? <Importdept /> : null} */}
+      {sections[currentSection]}
+      {error && <p className="error">{error}</p>}
+      <div className="buttons">
+        <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
+        {currentSection === sections.length - 1 && <button className="add-course"><b>+ SUBMIT DATA</b></button>}
+      </div>
     </div>
   );
 }
-
-
-
