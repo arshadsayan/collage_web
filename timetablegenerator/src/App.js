@@ -9,18 +9,70 @@ import DocumentUpload from './DocumentUpload';
 export default function App() {
   const [currentSection, setCurrentSection] = useState(0);
   const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    personalDetails: {
+    fullName: '',
+    email: '',
+    mobileNumber: '',
+    fathersName: '',
+    fathersmobileNumber: '',
+    fathersOccupation: '',
+    mothersName: '',
+    mothersOccupation: '',
+    mothersmobileNumber: '',
+    annualIncome: '',
+    sex: '',
+    corrAddr: '',
+    perAddr: '',
+    area: '',
+    category: '',
+    nationality: '',
+    religion: '',
+    domicile: '',
+    mothersTongue: '',
+    dateofBirth: ''
+    },
+    academicDetails: {
+    hscmathsMarks: '',
+    hscphysicsMarks: '',
+    hscchemistryMarks: '',
+    hscpcmPercentage: '',
+    hscvocationalSub: '',
+    hscvocationalsubjectMarks: '',
+    hscvovationalsubjectPer: '',
+    sscBoard: '',
+    sscyearofPass: '',
+    ssctotalMarks: '',
+    sscmarksObtained: '',
+    sscPercentage: '',
+    hscBoard: '',
+    hscyearofPass: '',
+    hsctotalMarks: '',
+    hscmarksObtained: '',
+    hscPercentage: '',
+    },
+    cetDetails: {
+    cetappId: '',
+    cetrollNo: '',
+    cetmathsPer: '',
+    cetphysicsPer: '',
+    cetchemistryPer: '',
+    jeeappNum: '',
+    jeePer: '',
+    },
+    documentUpload: {}
+  });
 
   const personalDetailsRef = useRef();
   const academicDetailsRef = useRef();
   const cetDetailsRef = useRef();
-  const jeeDetailsRef = useRef();
   const documentUploadRef = useRef();
 
   const sections = [
-    <PersonalDetails ref={personalDetailsRef} setError={setError} />,
-    <AcademicDetails ref={academicDetailsRef} setError={setError} />,
-    <CETDetails ref={cetDetailsRef} setError={setError} />,
-    <DocumentUpload ref={documentUploadRef} setError={setError} />
+    <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
   ];
 
   const nextSection = () => {
