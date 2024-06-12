@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './styles.css'
 import './styles-import.css'
-import Adddept from './adddept';
+
 import Admin  from './components/Admin';
 import DocVerification from './components/DocVerification';
 import Activatation from './components/Activatation';
+import Navbar from './components/Navbar';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // import Importdept from './importdept';
 // import './import';
@@ -43,12 +44,18 @@ export default function App() {
     <>
       
       <Router>
-        <Routes>
-          <Route path="/" component={Admin} />
-          <Route path="/documentverification" component={DocVerification} />
-          <Route path="/activate" component={Activatation} />
-        </Routes>
+        <div>
+          <Navbar/>
+          <Routes>
+            <Route path="/" element={<Admin />} />
+            <Route path="/documentverification" element={<DocVerification/>} />
+            <Route path="/activate" element={<Activatation/>}  />
+          
+          </Routes>
+        </div>
+        
       </Router>
+        
     </>
       
     
