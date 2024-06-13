@@ -23,7 +23,7 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
         cetphysicsPer,
         cetchemistryPer,
         jeeappNum,
-        jeePer  } = formData;
+        jeePer  } = formData.cetDetails;
     if (!cetappId ||
         !cetrollNo ||
         !cetmathsPer ||

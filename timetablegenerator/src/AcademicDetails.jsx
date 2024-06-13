@@ -43,7 +43,7 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         hscyearofPass,
         hsctotalMarks,
         hscmarksObtained,
-        hscPercentage } = formData;
+        hscPercentage } = formData.academicDetails;
     if (!hscmathsMarks ||
         !hscphysicsMarks ||
         !hscchemistryMarks ||

@@ -32,6 +32,11 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
     setFormData((prevFormData) => ({ ...prevFormData, personalDetails: { ...prevFormData.personalDetails, [id]: value } }));
   };
 
+  const handleDateChange = (date) => {
+    setDate(date);
+    setFormData((prevFormData) => ({...prevFormData, personalDetails: {...prevFormData.personalDetails, dateofBirth: date } }));
+  };
+
   const validate = () => {
     const { 
         fullName,
@@ -52,7 +57,8 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         nationality,
         religion,
         domicile,
-        mothersTongue } = formData.personalDetails;
+        mothersTongue,
+        dateofBirth } = formData.personalDetails;
 
     if (!fullName || !email || !mobileNumber || !fathersName || !fathersmobileNumber ||
         !fathersOccupation ||
@@ -68,7 +74,8 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         !nationality ||
         !religion ||
         !domicile ||
-        !mothersTongue) {
+        !mothersTongue ||
+        !dateofBirth) {
       alert('Please fill out all fields.');
       return false;
     }
@@ -102,7 +109,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
             <label htmlFor="dateofBirth">Date of birth(dd/mm/yyyy):</label>
             <Datepicker
               selected={selectedDate}
-              onChange={date => setDate(date)}
+              onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
             />
           </div>
