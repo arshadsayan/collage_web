@@ -28,10 +28,11 @@ db.connect(err => {
   console.log('Connected to MySQL database');
 });
 
-app.post('http://localhost:3001/api/submit', (req, res) => {
+app.post('/api/submit', (req, res) => {
   const { personalDetails, academicDetails, cetDetails } = req.body;
 
   const data = {
+    id:1,
     fullname: personalDetails.fullName,
     email: personalDetails.email,
     mobile_number: personalDetails.mobileNumber,
@@ -82,7 +83,7 @@ app.post('http://localhost:3001/api/submit', (req, res) => {
   db.query(query, data, (err, result) => {
     if (err) {
       console.error('Error inserting data:', err);
-      return res.status(500).json({ nmessage: 'Error inserting data' }); // Send JSON response on error
+      return res.status(500).json({ message: 'Error inserting data' }); // Send JSON response on error
     }
 
     res.status(200).json({ message: 'Data inserted successfully' }); // Send JSON response on success
