@@ -72,7 +72,7 @@ export default function App() {
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
+    // <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
   ];
 
   const nextSection = () => {
@@ -96,10 +96,8 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    if (!validateCurrentSection()) return;
-
     try {
-      const response = await fetch('http://your-backend-url/api/submit', {
+      const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,16 +105,14 @@ export default function App() {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        // Handle successful submission
-        alert('Form submitted successfully');
-      } else {
-        // Handle server errors
-        const errorData = await response.json();
-        setError(errorData.message || 'Submission failed');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      setCurrentSection(0); // Reset to first section
     } catch (error) {
-      // Handle network errors
       setError('Network error: ' + error.message);
     }
   };
