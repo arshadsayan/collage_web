@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '123456',
+  password: 'MySQL123',
   database: 'reg_portal' // Your database name
 });
 
