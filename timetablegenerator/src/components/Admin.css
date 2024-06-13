@@ -10,14 +10,15 @@
     border-color: black;
     border-width: 2px; */
     margin: 15px 20px;
+    
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-  }
-  
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  height: 100%;
+}
 .table th, .table td {
     border: 1px solid #ddd;
     padding: 8px;
@@ -32,4 +33,35 @@
   color: #F9F9F9;
   background-color: #E28C41;
   border: 1px solid #E28C41;
+}
+
+.table td {
+  border: 1px solid #ddd;
+  padding: 35px 12px;
+}
+.AdmissionSelect{
+  display: inline-block;
+  background-color:  #002566;
+  border-color:  #002566;
+  color:#F9F9F9 ;
+  width:250px;
+}
+
+.AdmissionSelect:hover{
+  background-color:  #0c46aa;
+  border-color:  #0c46aa;
+  color:#F9F9F9 ;
+}
+
+
+
+.admissionSelectButton{
+  display: inline-block;
+  width: 40%;
+  height: 60%;
+  margin: 10px ;
+}
+
+.dropdown{
+  background-color: #f2f2f2;
 }

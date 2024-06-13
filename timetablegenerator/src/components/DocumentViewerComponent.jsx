@@ -14,7 +14,8 @@ const DocumentViewerComponent = () => {
 
   return (
     <div>
-      <button className="btn btn-secondary" styles="width: 90px; height: 45px; margin: auto; padding: auto;" onClick={() => setShowDocViewer(true)}>Preview</button>
+      <button className="btn btn-secondary" styles=" display: inline-block; width: 40%;
+height: 60%;" onClick={() => setShowDocViewer(true)}>Preview</button>
       {showDocViewer && <DocViewer documents={documents}pluginRenderers={DocViewerRenderers} />}
     </div>
   );

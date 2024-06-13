@@ -6,6 +6,7 @@ import Admin  from './components/Admin';
 import DocVerification from './components/DocVerification';
 import Activatation from './components/Activatation';
 import Navbar from './components/Navbar';
+import ReceiptGeneration from './components/ReceiptGeneration';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // import Importdept from './importdept';
 // import './import';
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/" element={<Admin />} />
             <Route path="/documentverification" element={<DocVerification/>} />
             <Route path="/activate" element={<Activatation/>}  />
+            <Route path="/receitGeneration" element={<ReceiptGeneration/>}  />
           
           </Routes>
         </div>
