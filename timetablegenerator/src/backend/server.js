@@ -19,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'MySQL123',
+  password: 'admin',
   database: 'reg_portal'
 });
 
@@ -79,7 +79,7 @@ app.post('/api/verify-otp', (req, res) => {
   if (otps[email] && otps[email].otp == otp) {
     // OTP is correct, store user in database
     const { password, uniqueKey } = otps[email];
-    const query = 'INSERT INTO user_registeration (email, password, unique_key) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO user_registration (email, password, id) VALUES (?, ?, ?)';
     db.query(query, [email, password, uniqueKey], (err, result) => {
       if (err) {
         console.error('Error inserting data:', err);
