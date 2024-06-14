@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
 
 const app = express();
@@ -19,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'admin',
+  password: 'MySQL123',
   database: 'reg_portal'
 });
 
@@ -36,7 +36,7 @@ const otps = {};
 
 // Create reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: 'gmail',
   auth: {
     user: 'asiesgst@gmail.com',
     pass: 'ilnb jboi ekcf lyfp'
@@ -58,7 +58,7 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
   // Send OTP via email
   const mailOptions = {
     from: 'asiesgst@gmail.com',
-    to: 'parthdalvi164@gmail.com',
+    to: email,
     subject: 'Your OTP Code',
     text: `Your OTP code is ${otp}`,
   };
