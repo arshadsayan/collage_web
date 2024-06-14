@@ -2,9 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const nodemailer = require('nodemailer');
 
 const app = express();
-const port = 3001; // or any other port you prefer
+const port = 3001;
 
 // Enable CORS for all routes
 app.use(cors());
@@ -12,12 +13,14 @@ app.use(cors());
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 // MySQL connection setup
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'MySQL123',
-  database: 'reg_portal' // Your database name
+  password: 'admin',
+  database: 'reg_portal'
 });
 
 db.connect(err => {
@@ -28,11 +31,92 @@ db.connect(err => {
   console.log('Connected to MySQL database');
 });
 
+// Temporary storage for OTPs (consider using a more robust solution in production)
+const otps = {};
+
+// Create reusable transporter object using the default SMTP transport
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'asiesgst@gmail.com',
+    pass: 'ilnb jboi ekcf lyfp'
+  },
+});
+
+app.post('/api/generate-key-and-send-otp', (req, res) => {
+  const { email, password } = req.body;
+
+  // Generate unique key
+  const uniqueKey = 'unique-key-' + Date.now();
+
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000);
+
+  // Store user details temporarily with the OTP
+  otps[email] = { password, otp, uniqueKey };
+
+  // Send OTP via email
+  const mailOptions = {
+    from: 'asiesgst@gmail.com',
+    to: 'parthdalvi164@gmail.com',
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).json({ message: 'Error sending OTP' });
+    }
+
+    res.status(200).json({ message: 'OTP sent successfully', key: uniqueKey });
+  });
+});
+
+app.post('/api/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+
+  // Verify OTP
+  if (otps[email] && otps[email].otp == otp) {
+    // OTP is correct, store user in database
+    const { password, uniqueKey } = otps[email];
+    const query = 'INSERT INTO user_registeration (email, password, unique_key) VALUES (?, ?, ?)';
+    db.query(query, [email, password, uniqueKey], (err, result) => {
+      if (err) {
+        console.error('Error inserting data:', err);
+        return res.status(500).json({ message: 'Error inserting data' });
+      }
+      // OTP is correct, remove it from the temporary store
+      delete otps[email];
+      res.status(200).json({ success: true });
+    });
+  } else {
+    res.status(400).json({ success: false, message: 'Invalid OTP' });
+  }
+});
+
+app.post('/api/signin', (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if the user exists and the password matches
+  const query = 'SELECT id FROM user_registration WHERE email = ? AND password = ?';
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      console.error('Error querying data:', err);
+      return res.status(500).json({ message: 'Error querying data' });
+    }
+
+    if (results.length > 0) {
+      res.status(200).json({ success: true, userData: { email, uniqueKey: results[0].unique_key } });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid email or password' });
+    }
+  });
+});
+
 app.post('/api/submit', (req, res) => {
   const { personalDetails, academicDetails, cetDetails } = req.body;
 
   const data = {
-    id:1,
     fullname: personalDetails.fullName,
     email: personalDetails.email,
     mobile_number: personalDetails.mobileNumber,
@@ -83,10 +167,10 @@ app.post('/api/submit', (req, res) => {
   db.query(query, data, (err, result) => {
     if (err) {
       console.error('Error inserting data:', err);
-      return res.status(500).json({ message: 'Error inserting data' }); // Send JSON response on error
+      return res.status(500).json({ message: 'Error inserting data' });
     }
 
-    res.status(200).json({ message: 'Data inserted successfully' }); // Send JSON response on success
+    res.status(200).json({ message: 'Data inserted successfully' });
   });
 });
 

@@ -5,9 +5,11 @@ import PersonalDetails from './PersonalDetails';
 import AcademicDetails from './AcademicDetails';
 import CETDetails from './CETDetails';
 import DocumentUpload from './DocumentUpload';
+import SignupPage from './SignupPage';
+import SignInPage from './SignInPage';
 
 export default function App() {
-  const [currentSection, setCurrentSection] = useState(0);
+  const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     personalDetails: {
@@ -117,15 +119,50 @@ export default function App() {
     }
   };
 
+  const handleSignIn = (userData) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      personalDetails: {
+        ...prevFormData.personalDetails,
+        email: userData.email,
+        uniqueKey: userData.uniqueKey
+      }
+    }));
+    setCurrentSection(0); // Proceed to the first section of the form
+  };
+
+  const goToSignup = () => {
+    setCurrentSection(-1); // Navigate to the signup page
+  };
+
+  const handleSignupComplete = (email) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      personalDetails: {
+        ...prevFormData.personalDetails,
+        email: email
+      }
+    }));
+    setCurrentSection(-2); // Navigate back to the sign-in page after signup
+  };
+
   return (
     <div className="container">
-      {sections[currentSection]}
-      {error && <p className="error">{error}</p>}
-      <div className="buttons">
-        <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
-        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-        {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
-      </div>
+      {currentSection === -2 ? (
+        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
+      ) : currentSection === -1 ? (
+        <SignupPage onSignupComplete={handleSignupComplete} />
+      ) : (
+        <>
+          {sections[currentSection]}
+          {error && <p className="error">{error}</p>}
+          <div className="buttons">
+            <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+            <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
+            {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

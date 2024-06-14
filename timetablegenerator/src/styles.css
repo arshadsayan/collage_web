@@ -99,7 +99,7 @@ body {
   }
   /* existing styles remain the same */
 
-input[type="text"], #selectInpt, .datepicker-input {
+input[type="text"],input[type="password"],input[type="email"], #selectInpt, .datepicker-input {
   width: 100%; /* Adjusted width to accommodate padding and borders */
   padding: 8px;
   font-size: 16px;
