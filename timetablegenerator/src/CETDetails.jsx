@@ -1,40 +1,62 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 
 const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
-  // const [formData, setFormData] = useState({
-  //   cetappId: '',
-  //   cetrollNo: '',
-  //   cetmathsPer: '',
-  //   cetphysicsPer: '',
-  //   cetchemistryPer: '',
-  //   jeeappNum: '',
-  //   jeePer: '',
-  // });
-
+//change1
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevFormData) => ({ ...prevFormData, cetDetails: { ...prevFormData.cetDetails, [id]: value } }));
+    let newValue = value;
+
+    // Validate based on input id
+    switch (id) {
+      case 'cetappId':
+      case 'cetrollNo':
+      case 'jeeappNum':
+        // Allow only integers
+        newValue = value.replace(/\D/g, '');
+        break;
+      case 'cetmathsPer':
+      case 'cetphysicsPer':
+      case 'cetchemistryPer':
+      case 'cetPer':
+      case 'jeePer':
+        // Allow only floats with 2 digits after decimal
+        newValue = value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except dot
+        const match = /^(\d*\.?\d{0,2})/.exec(newValue);
+        if (match) {
+          newValue = match[1];
+        }
+        
+        break;
+      default:
+        break;
+    }
+
+    // Update formData state
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      cetDetails: {
+        ...prevFormData.cetDetails,
+        [id]: newValue
+      }
+    }));
   };
 
   const validate = () => {
-    const { cetappId,
-        cetrollNo,
-        cetmathsPer,
-        cetphysicsPer,
-        cetchemistryPer,
-        jeeappNum,
-        jeePer  } = formData.cetDetails;
-    if (!cetappId ||
-        !cetrollNo ||
-        !cetmathsPer ||
-        !cetphysicsPer ||
-        !cetchemistryPer ||
-        !jeeappNum ||
-        !jeePer) {
+    const { cetappId, cetrollNo, cetmathsPer, cetphysicsPer, cetchemistryPer, cetPer, jeeappNum, jeePer } = formData.cetDetails;
+
+    if (!cetappId || !cetrollNo || !cetmathsPer || !cetphysicsPer || !cetchemistryPer || !cetPer || !jeeappNum || !jeePer) {
       setError('Please fill out all fields.');
-      alert('Please fill out all fields.')
       return false;
     }
+
+    const percentages = [cetmathsPer, cetphysicsPer, cetchemistryPer, cetPer, jeePer];
+    for (const percentage of percentages) {
+      if (isNaN(parseFloat(percentage)) || parseFloat(percentage) < 0 || parseFloat(percentage) > 100) {
+        setError(<span style={{ color: 'red' }}>'Percentages and percentiles must be between 0 and 100.'</span>);
+        return false;
+      }
+    }
+
     setError('');
     return true;
   };
@@ -42,7 +64,7 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validate
   }));
-
+//till here chnge1
   return (
     <div>
       <h1 className="center page-heading">CET Details</h1>

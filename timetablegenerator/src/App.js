@@ -5,6 +5,7 @@ import PersonalDetails from './PersonalDetails';
 import AcademicDetails from './AcademicDetails';
 import CETDetails from './CETDetails';
 import DocumentUpload from './DocumentUpload';
+import TransactionDetails from './TransactionDetails';
 import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
 
@@ -62,19 +63,28 @@ export default function App() {
       jeeappNum: '',
       jeePer: ''
     },
-    documentUpload: {}
+    documentUpload: {},
+    transactionDetails: {
+      date: '',
+      amount: '2000',
+      transactionId: '',
+      file: null,
+      transactionAgainst: ''
+    }
   });
 
   const personalDetailsRef = useRef();
   const academicDetailsRef = useRef();
   const cetDetailsRef = useRef();
   const documentUploadRef = useRef();
+  const transactionDetailsRef = useRef();
 
   const sections = [
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    // <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
+    <TransactionDetails ref={transactionDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
   ];
 
   const nextSection = () => {
@@ -93,8 +103,11 @@ export default function App() {
   };
 
   const validateCurrentSection = () => {
-    const refs = [personalDetailsRef, academicDetailsRef, cetDetailsRef, documentUploadRef];
-    return refs[currentSection].current.validate();
+    if (currentSection >= 0 && currentSection < sections.length) {
+      const refs = [personalDetailsRef, academicDetailsRef, cetDetailsRef, transactionDetailsRef, documentUploadRef];
+      return refs[currentSection].current.validate();
+    }
+    return true; // Skip validation for sign-in and sign-up sections
   };
 
   const handleSubmit = async () => {
