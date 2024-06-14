@@ -7,6 +7,7 @@ import CETDetails from './CETDetails';
 import DocumentUpload from './DocumentUpload';
 import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
+import Layout from './Layout'; 
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -147,22 +148,24 @@ export default function App() {
   };
 
   return (
-    <div className="container">
-      {currentSection === -2 ? (
-        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
-      ) : currentSection === -1 ? (
-        <SignupPage onSignupComplete={handleSignupComplete} />
-      ) : (
-        <>
-          {sections[currentSection]}
-          {error && <p className="error">{error}</p>}
-          <div className="buttons">
-            <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
-            <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-            {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
-          </div>
-        </>
-      )}
-    </div>
+    <Layout>
+      <div className="container">
+        {currentSection === -2 ? (
+          <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
+        ) : currentSection === -1 ? (
+          <SignupPage onSignupComplete={handleSignupComplete} />
+        ) : (
+          <>
+            {sections[currentSection]}
+            {error && <p className="error">{error}</p>}
+            <div className="buttons">
+              <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+              <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
+              {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
+            </div>
+          </>
+        )}
+      </div>
+      </Layout>
   );
 }
