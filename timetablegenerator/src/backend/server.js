@@ -36,11 +36,11 @@ const otps = {};
 
 // Create reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: 'gmail',
   auth: {
     user: 'asiesgst@gmail.com',
     pass: 'ilnb jboi ekcf lyfp'
-  },
+  }
 });
 
 app.post('/api/generate-key-and-send-otp', (req, res) => {
@@ -50,7 +50,7 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
   const uniqueKey = 'unique-key-' + Date.now();
 
   // Generate 6-digit OTP
-  const otp = Math.floor(100000 + Math.random() * 900000);
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   // Store user details temporarily with the OTP
   otps[email] = { password, otp, uniqueKey };
@@ -58,14 +58,14 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
   // Send OTP via email
   const mailOptions = {
     from: 'asiesgst@gmail.com',
-    to: 'parthdalvi164@gmail.com',
+    to: email,
     subject: 'Your OTP Code',
     text: `Your OTP code is ${otp}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return res.status(500).json({ message: 'Error sending OTP' });
+      return res.status(500).json({ message: 'Error sending OTP' + info });
     }
 
     res.status(200).json({ message: 'OTP sent successfully', key: uniqueKey });
