@@ -1,0 +1,21 @@
+/* src/Layout.css */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0%;
+ 
+}
+
+.header, .footer {
+  margin-bottom: 20px; /* Space between header/footer and content */
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  margin-top: 150px; /* Space between header and content */
+  margin-bottom: 150px; /* Space between content and footer */
+  background-color: transparent;
+}

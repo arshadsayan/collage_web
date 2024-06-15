@@ -5,6 +5,8 @@
   justify-content: center;
   padding: 20px;
   background-color: #f0f0f0;
+  margin-top: -4%;
+  background-color: transparent;
 }
 
 .header-left {
@@ -21,5 +23,3 @@
   max-width: 50%; /* Ensure the logo fits within its container */
   height: auto;
 }
-
-  
