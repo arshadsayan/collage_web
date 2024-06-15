@@ -35,7 +35,7 @@ export default function SignInPage({ onSignIn, goToSignup }) {
   return (
     <div className="container">
       <form onSubmit={handleSignIn}>
-      <h1 className="center page-heading">SIES Graduate School of Technology</h1>
+      
       <h1 className="center page-heading">Sign-In</h1>
         <div className='input-field'>
           <label>Email:</label>

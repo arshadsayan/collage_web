@@ -8,6 +8,7 @@ import DocumentUpload from './DocumentUpload';
 import TransactionDetails from './TransactionDetails';
 import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
+import Layout from './Layout';
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -111,21 +112,30 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
+    const formDataToSend = new FormData();
+    // Append personal, academic, and cet details as JSON string
+    formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
+    formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
+    formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
+  
+    // Append files
+    Object.keys(formData.documentUpload).forEach(key => {
+    formDataToSend.append(key, formData.documentUpload[key]);
+    });
     try {
       const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+      
       const result = await response.json();
-      alert(result.message); // Show success message
+      result.message = 'Successfully Submitted Form'
+      alert("Form submitted successfully");
+      console.log(result) // Show success message
       setCurrentSection(0); // Reset to first section
     } catch (error) {
       setError('Network error: ' + error.message);
@@ -160,6 +170,7 @@ export default function App() {
   };
 
   return (
+    <Layout>
     <div className="container">
       {currentSection === -2 ? (
         <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
@@ -177,5 +188,6 @@ export default function App() {
         </>
       )}
     </div>
+    </Layout>
   );
 }

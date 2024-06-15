@@ -3,6 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const port = 3001;
@@ -113,8 +116,53 @@ app.post('/api/signin', (req, res) => {
   });
 });
 
-app.post('/api/submit', (req, res) => {
-  const { personalDetails, academicDetails, cetDetails } = req.body;
+// let data = {};
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const personalDetails = JSON.parse(req.body.personalDetails);
+    const dirname = personalDetails.email.toString();
+    console.log(dirname);
+    console.log(typeof(dirname))
+    
+    const uploadPath =  dirname;
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    // const fileString = this.filename;
+    // console.log(file.fieldname.toString());
+    // console.log(fileString); 
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${file.fieldname.toString()}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${file.fieldname.toString()}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${file.fieldname.toString()}.png`);
+    }
+
+    
+  }
+});
+
+const upload = multer({ storage: storage });
+app.post('/api/submit', upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'marksheet10', maxCount: 1 },
+  { name: 'leavingCertificate12', maxCount: 1 },
+  { name: 'marksheet12', maxCount: 1 },
+  { name: 'cetMarksheet', maxCount: 1 },
+  { name: 'jeeMarksheet', maxCount: 1 },
+  { name: 'signature', maxCount: 1 }
+]), (req, res) => {
+  const personalDetails = JSON.parse(req.body.personalDetails);
+  const academicDetails = JSON.parse(req.body.academicDetails);
+  const cetDetails = JSON.parse(req.body.cetDetails);
   
   // Retrieve the user's id from the user_registration table using the email
   const getUserQuery = 'SELECT id FROM user_registration WHERE email = ?';
@@ -165,13 +213,20 @@ app.post('/api/submit', (req, res) => {
         '12th_total_marks': academicDetails.hsctotalMarks,
         '12th_marks_obtained': academicDetails.hscmarksObtained,
         '12th_percentage': academicDetails.hscPercentage,
-        cet_application_id: cetDetails.cetappId,
+        cet_application_id: cetDetails.cetappId,  
         cet_roll_number: cetDetails.cetrollNo,
         cet_maths_percentile: cetDetails.cetmathsPer,
         cet_physics_percentile: cetDetails.cetphysicsPer,
         cet_chemistry_percentile: cetDetails.cetchemistryPer,
         jee_application_number: cetDetails.jeeappNum,
-        jee_percentile: cetDetails.jeePer
+        jee_percentile: cetDetails.jeePer,
+        photo: req.files['photo'] ? req.files['photo'][0].path : null,
+        marksheet10: req.files['marksheet10'] ? req.files['marksheet10'][0].path : null,
+        leavingCertificate12: req.files['leavingCertificate12'] ? req.files['leavingCertificate12'][0].path : null,
+        marksheet12: req.files['marksheet12'] ? req.files['marksheet12'][0].path : null,
+        cetMarksheet: req.files['cetMarksheet'] ? req.files['cetMarksheet'][0].path : null,
+        jeeMarksheet: req.files['jeeMarksheet'] ? req.files['jeeMarksheet'][0].path : null,
+        signature: req.files['signature'] ? req.files['signature'][0].path : null
       };
 
       const query = 'INSERT INTO user_details SET ?';

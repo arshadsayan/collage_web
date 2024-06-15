@@ -1,0 +1,26 @@
+/* Header.css */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+  }
+  
+  .header-left {
+    width: 33.33%; /* 1/3rd of the header */
+    text-align: center;
+  }
+  
+  .header-right {
+    width: 66.67%; /* 2/3rd of the header */
+    text-align: left;
+  }
+  
+  .logo {
+    max-width: 50%; /* Ensure the logo fits within its container */
+    height: auto;
+  }
+  
+    
