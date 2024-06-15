@@ -35,16 +35,32 @@ let data = {};
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const personalDetails = JSON.parse(req.body.personalDetails);
-    const dirname = personalDetails.email;
+    const dirname = personalDetails.email.toString();
+    console.log(dirname);
+    console.log(typeof(dirname))
     
-    const uploadPath = path.join(__dirname, dirname);
+    const uploadPath =  dirname;
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    // const fileString = this.filename;
+    // console.log(file.fieldname.toString());
+    // console.log(fileString); 
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${file.fieldname.toString()}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${file.fieldname.toString()}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${file.fieldname.toString()}.png`);
+    }
+
+    
   }
 });
 
