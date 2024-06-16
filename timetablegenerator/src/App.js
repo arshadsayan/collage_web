@@ -26,11 +26,13 @@ export default function App() {
     perAddr: '',
     area: '',
     category: '',
-    nationality: '',
+    nationality: 'Indian',
     religion: '',
     domicile: '',
     mothersTongue: '',
-    dateofBirth: ''
+    dateofBirth: '',
+    bloodGroup: '',
+    state: 'Maharashtra'
     },
     academicDetails: {
     hscmathsMarks: '',
