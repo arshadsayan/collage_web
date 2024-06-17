@@ -22,6 +22,52 @@ function RejectedTransaction() {
 
             </tr>
           </thead>
+          <tbody>
+          <tr >
+                        <th scope="row">1</th>
+                        <td>KJSKAJ121</td>
+                        <td>123A3008</td>
+                        <td>2024-25</td>
+                        <td>150000</td>
+                        <td>FE</td>
+                        <td>172JSDKA12</td>
+                        
+                        <td>
+                          
+                          <button
+                            type="button"
+                            onClick={()=>{console.log('Preview clicked')}}
+                            className="btn verify-btn"
+                          >
+                            Preview
+                          </button>
+                        </td>
+                        <td >
+                          <div className="row verify-col">
+                            <div className="col">
+                            <button
+                            type="button"
+                            onClick={()=>{console.log('Preview clicked')}}
+                            className="btn verify-btn"
+                          >
+                            Preview
+                          </button>
+                            </div>
+                            <div className="col">
+                            <button
+                            type="button"
+                            onClick={()=>{console.log('Preview clicked')}}
+                            className="btn verify-btn"
+                          >
+                            Preview
+                          </button>
+                            </div>
+                          </div>
+                        
+                          
+                        </td>
+                      </tr>
+          </tbody>
        
             
         </table>

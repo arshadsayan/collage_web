@@ -15,6 +15,10 @@ app.use(cors());
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
 
+
+//setting up file server
+app.use('/files', express.static(path.join(__dirname, 'public')));
+
 // MySQL connection setup
 // const db = mysql.createConnection({
 //   host: 'localhost',
@@ -39,7 +43,7 @@ const storage = multer.diskStorage({
     console.log(dirname);
     console.log(typeof(dirname))
     
-    const uploadPath =  dirname;
+    const uploadPath = `public/${dirname}`;
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
@@ -131,7 +135,7 @@ app.post('/api/submit', upload.fields([
     signature: req.files['signature'] ? req.files['signature'][0].path : null
   };
 
-  const query = 'INSERT INTO user_details SET ?';
+  // const query = 'INSERT INTO user_details SET ?';
   console.log(data)
   return res.render(data);
 

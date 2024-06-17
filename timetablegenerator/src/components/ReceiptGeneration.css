@@ -1,5 +1,4 @@
-.row{
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
+
+.verify-col{
+    width: max-content;
 }

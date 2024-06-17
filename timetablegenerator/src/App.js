@@ -1,34 +1,31 @@
+import "./styles.css";
+import "./styles-import.css";
 
-import './styles.css'
-import './styles-import.css'
+import Admin from "./components/Admin";
+import DocVerification from "./components/DocVerification";
 
-import Admin  from './components/Admin';
-import DocVerification from './components/DocVerification';
+import Navbar from "./components/Navbar";
+import CertificateList from "./components/CertificateList";
+import SelectedCertificates from "./components/SelectedCertificates";
+import RejectedTransaction from "./components/RejectedTransaction";
+import ApplicantsList from "./components/ApplicantsList";
+import SelectedCertificate from "./components/SelectedCertificates";
 
-import Navbar from './components/Navbar';
-import CertificateList from './components/CertificateList'
-import SelectedCertificates from './components/SelectedCertificates';
-import RejectedTransaction from './components/RejectedTransaction';
-import ApplicantsList from './components/ApplicantsList';
-import SelectedCertificate from './components/SelectedCertificates'
-
-
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import Importdept from './importdept';
 // import './import';
 
 // var departmentButton = false;
 // var importButton = false;
-import React, { useState, useRef } from 'react';
-import './styles.css';
-import './styles-import.css';
-import PersonalDetails from './PersonalDetails';
-import AcademicDetails from './AcademicDetails';
-import CETDetails from './CETDetails';
-import DocumentUpload from './DocumentUpload';
+import React, { useState, useRef } from "react";
+import "./styles.css";
+import "./styles-import.css";
+import PersonalDetails from "./PersonalDetails";
+import AcademicDetails from "./AcademicDetails";
+import CETDetails from "./CETDetails";
+import DocumentUpload from "./DocumentUpload";
 
 export default function App() {
-
   // const [dept, setDept] = useState(false);
   // const [impr, setImpr] = useState(false);
 
@@ -36,66 +33,66 @@ export default function App() {
   //   setDept(true);
   //   setImpr(false);
   // }
-  
+
   // function importAdder() {
   //   setImpr(true);
   //   setDept(false);
   // }
-  
+
   const [currentSection, setCurrentSection] = useState(0);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     personalDetails: {
-      fullName: '',
-      email: '',
-      mobileNumber: '',
-      fathersName: '',
-      fathersmobileNumber: '',
-      fathersOccupation: '',
-      mothersName: '',
-      mothersOccupation: '',
-      mothersmobileNumber: '',
-      annualIncome: '',
-      sex: '',
-      corrAddr: '',
-      perAddr: '',
-      area: '',
-      category: '',
-      nationality: '',
-      religion: '',
-      domicile: '',
-      mothersTongue: '',
-      dateofBirth: ''
+      fullName: "",
+      email: "",
+      mobileNumber: "",
+      fathersName: "",
+      fathersmobileNumber: "",
+      fathersOccupation: "",
+      mothersName: "",
+      mothersOccupation: "",
+      mothersmobileNumber: "",
+      annualIncome: "",
+      sex: "",
+      corrAddr: "",
+      perAddr: "",
+      area: "",
+      category: "",
+      nationality: "",
+      religion: "",
+      domicile: "",
+      mothersTongue: "",
+      dateofBirth: "",
     },
     academicDetails: {
-      hscmathsMarks: '',
-      hscphysicsMarks: '',
-      hscchemistryMarks: '',
-      hscpcmPercentage: '',
-      hscvocationalSub: '',
-      hscvocationalsubjectMarks: '',
-      hscvovationalsubjectPer: '',
-      sscBoard: '',
-      sscyearofPass: '',
-      ssctotalMarks: '',
-      sscmarksObtained: '',
-      sscPercentage: '',
-      hscBoard: '',
-      hscyearofPass: '',
-      hsctotalMarks: '',
-      hscmarksObtained: '',
-      hscPercentage: ''
+      hscmathsMarks: "",
+      hscphysicsMarks: "",
+      hscchemistryMarks: "",
+      hscpcmPercentage: "",
+      hscvocationalSub: "",
+      hscvocationalsubjectMarks: "",
+      hscvovationalsubjectPer: "",
+      sscBoard: "",
+      sscyearofPass: "",
+      ssctotalMarks: "",
+      sscmarksObtained: "",
+      sscPercentage: "",
+      hscBoard: "",
+      hscyearofPass: "",
+      hsctotalMarks: "",
+      hscmarksObtained: "",
+      hscPercentage: "",
     },
     cetDetails: {
-      cetappId: '',
-      cetrollNo: '',
-      cetmathsPer: '',
-      cetphysicsPer: '',
-      cetchemistryPer: '',
-      jeeappNum: '',
-      jeePer: ''
+      cetappId: "",
+      cetrollNo: "",
+      cetmathsPer: "",
+      cetphysicsPer: "",
+      cetchemistryPer: "",
+      jeeappNum: "",
+      jeePer: "",
     },
-    documentUpload: {}
+    documentUpload: {},
   });
 
   const personalDetailsRef = useRef();
@@ -104,62 +101,93 @@ export default function App() {
   const documentUploadRef = useRef();
 
   const sections = [
-    <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
+    <PersonalDetails
+      ref={personalDetailsRef}
+      formData={formData}
+      setFormData={setFormData}
+      setError={setError}
+    />,
+    <AcademicDetails
+      ref={academicDetailsRef}
+      formData={formData}
+      setFormData={setFormData}
+      setError={setError}
+    />,
+    <CETDetails
+      ref={cetDetailsRef}
+      formData={formData}
+      setFormData={setFormData}
+      setError={setError}
+    />,
+    <DocumentUpload
+      ref={documentUploadRef}
+      formData={formData}
+      setFormData={setFormData}
+      setError={setError}
+    />,
   ];
 
   const nextSection = () => {
     if (!validateCurrentSection()) return;
     if (currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
-      setError('');
+      setError("");
     }
   };
 
   const prevSection = () => {
     if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
-      setError('');
+      setError("");
     }
   };
 
   const validateCurrentSection = () => {
-    const refs = [personalDetailsRef, academicDetailsRef, cetDetailsRef, documentUploadRef];
+    const refs = [
+      personalDetailsRef,
+      academicDetailsRef,
+      cetDetailsRef,
+      documentUploadRef,
+    ];
     return refs[currentSection].current.validate();
   };
 
   const handleSubmit = async () => {
     const formDataToSend = new FormData();
-  
-  // Append personal, academic, and cet details as JSON string
-  formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
-  formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
-  formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
-  
-  // Append files
-  Object.keys(formData.documentUpload).forEach(key => {
-    formDataToSend.append(key, formData.documentUpload[key]);
-  });
+
+    // Append personal, academic, and cet details as JSON string
+    formDataToSend.append(
+      "personalDetails",
+      JSON.stringify(formData.personalDetails)
+    );
+    formDataToSend.append(
+      "academicDetails",
+      JSON.stringify(formData.academicDetails)
+    );
+    formDataToSend.append("cetDetails", JSON.stringify(formData.cetDetails));
+
+    // Append files
+    Object.keys(formData.documentUpload).forEach((key) => {
+      formDataToSend.append(key, formData.documentUpload[key]);
+    });
 
     try {
-      const response = await fetch('http://localhost:3001/api/submit', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/api/submit", {
+        method: "POST",
         body: formDataToSend,
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-      
+
       const result = await response.json();
-      result.message = 'Successfully Submitted Form'
+      result.message = "Successfully Submitted Form";
       alert("Form submitted successfully");
-      console.log(result) // Show success message
+      console.log(result); // Show success message
       setCurrentSection(0); // Reset to first section
     } catch (error) {
-      setError('Network error: ' + error.message);
+      setError("Network error: " + error.message);
     }
   };
 
@@ -176,26 +204,54 @@ export default function App() {
   //);
   return (
     <>
-      
       <Router>
         <div>
-          <Navbar/>
+          <Navbar />
           <Routes>
             <Route path="/" element={<Admin />} />
             <Route path="/documentverification" element={<DocVerification />} />
-            <Route path="/transactionrejected" element={<RejectedTransaction/>}  />
-            <Route path="/receitGeneration" element={<CertificateList/>}  />
-            <Route path="/ApplicationList" element={<ApplicantsList/>}  />
-            <Route path="/documentReceiptGenerator" element={<SelectedCertificate/>}  />
-            <Route path="/selected" element={<SelectedCertificate/>}  />
+            <Route
+              path="/transactionrejected"
+              element={<RejectedTransaction />}
+            />
+            <Route path="/receitGeneration" element={<CertificateList />} />
+            <Route path="/ApplicationList" element={<ApplicantsList />} />
+            <Route
+              path="/documentReceiptGenerator"
+              element={<SelectedCertificate />}
+            />
+            <Route path="/selected" element={<SelectedCertificate />} />
+            <Route
+              path="/register"
+              element={
+                <div className="container">
+                  {sections[currentSection]}
+                  {error && <p className="error">{error}</p>}
+                  <div className="buttons">
+                    <button
+                      onClick={prevSection}
+                      disabled={currentSection === 0}
+                    >
+                      BACK
+                    </button>
+                    <button
+                      onClick={nextSection}
+                      disabled={currentSection === sections.length - 1}
+                    >
+                      NEXT
+                    </button>
+                    {currentSection === sections.length - 1 && (
+                      <button className="add-course" onClick={handleSubmit}>
+                        <b>+ SUBMIT DATA</b>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              }
+            />
           </Routes>
         </div>
-        
       </Router>
-        
     </>
-      
-    
   );
-    
 }
