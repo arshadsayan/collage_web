@@ -10,6 +10,8 @@ import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
 import AdmissionForm from './AdmissionForm';
 import Layout from './Layout';
+import Documents from './Documents';
+import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -31,11 +33,13 @@ export default function App() {
       perAddr: '',
       area: '',
       category: '',
-      nationality: '',
+      nationality: 'Indian',
       religion: '',
       domicile: '',
       mothersTongue: '',
-      dateofBirth: ''
+      dateofBirth: '',
+      bloodGroup: '',
+      state: 'Maharashtra'
     },
     academicDetails: {
       hscmathsMarks: '',
@@ -72,7 +76,8 @@ export default function App() {
       transactionId: '',
       file: null,
       transactionAgainst: ''
-    }
+    },
+    preferences: ['', '', '', '', '', '', '', '']
   });
 
   const personalDetailsRef = useRef();
@@ -81,11 +86,14 @@ export default function App() {
   const documentUploadRef = useRef();
   const transactionDetailsRef = useRef();
   const admissionFormRef = useRef();
+  const preferencesFormRef = useRef();
 
   const sections = [
+    <Documents />,
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <PreferencesForm formData={preferencesFormRef} setFormData={setFormData} setError={setError} />,
     <TransactionDetails ref={transactionDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} setError={setError}/>
@@ -107,11 +115,18 @@ export default function App() {
   };
 
   const validateCurrentSection = () => {
+
+    if (currentSection === -2 || currentSection === -1 || currentSection === 4) {
+      return true;
+    }
+    
     if (currentSection >= 0 && currentSection < sections.length) {
       const refs = [
+        null,
         personalDetailsRef,
         academicDetailsRef,
         cetDetailsRef,
+        preferencesFormRef,
         transactionDetailsRef,
         documentUploadRef,
         admissionFormRef
@@ -126,13 +141,22 @@ export default function App() {
   };
   
   const handleSubmit = async () => {
+    const formDataToSend = new FormData();
+  
+  // Append personal, academic, and cet details as JSON string
+  formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
+  formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
+  formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
+  
+  // Append files
+  Object.keys(formData.documentUpload).forEach(key => {
+    formDataToSend.append(key, formData.documentUpload[key]);
+  });
+
     try {
       const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
@@ -186,6 +210,7 @@ export default function App() {
         <>
           {sections[currentSection]}
           {error && <p className="error">{error}</p>}
+          <br></br>
           <div className="buttons">
             <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
             <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>

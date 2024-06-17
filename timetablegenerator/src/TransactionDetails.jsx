@@ -1,9 +1,18 @@
-import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
+function TransactionForm() {
+  const [formData, setFormData] = useState({
+    date: '',
+    amount: '2000',
+    transactionId: '',
+    file: null,
+    paymentAgainst: '' // Added for payment purpose selection
+  });
+  
+  const [formErrors, setFormErrors] = useState({});
   const [generatedText, setGeneratedText] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -33,7 +42,10 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
       }
     });
 
-    if (ocrResult.date !== formData.transactionDetails.date) {
+    // console.log('OCR Result:', ocrResult);
+    // console.log('Form Data:', formData);
+
+    if (ocrResult.date !== formData.date) {
       setMessage(`Transaction not approved. Please contact the Admin.`);
     } else {
       setMessage('Transaction verified and approved!');
@@ -49,29 +61,42 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      transactionDetails: {
-        ...prevFormData.transactionDetails,
-        [name]: files ? files[0] : value
-      }
-    }));
+    setFormData({
+      ...formData,
+      [name]: files ? files[0] : value
+    });
   };
 
   const handleDateChange = (date) => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      transactionDetails: {
-        ...prevFormData.transactionDetails,
-        date: date ? date.toLocaleDateString('en-GB') : ''
-      }
-    }));
+    setFormData({
+      ...formData,
+      date: date ? date.toLocaleDateString('en-GB') : ''
+    });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.date) {
+      errors.date = 'Date of Transaction is required.';
+    }
+    if (!formData.transactionId) {
+      errors.transactionId = 'Transaction ID is required.';
+    }
+    if (!formData.file) {
+      errors.file = 'Proof of transaction is required.';
+    }
+    if (formData.paymentAgainst === 'select payment for') {
+      errors.paymentAgainst = 'Please select the purpose of payment.';
+    }
+  
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.transactionDetails.file) {
-      setError('Please upload a receipt.');
+    // if (!formData.file) return;
+    if (!validateForm()) {
       return;
     }
 
@@ -79,13 +104,13 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
     const genAI = new GoogleGenerativeAI('AIzaSyDYecx7ZQUfrUOksHRU1JHLFPxJuHyfy5Y');
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
 
-    const prompt = "Read the image which is proof of transaction and extract all details like date, Transaction ID and amount (no currency symbol) without mistake.";
+    const prompt = "Read the image which is proof of transaction and extract all details like date, Transaction ID and amount(no currency symbol) without mistake.";
     const reader = new FileReader();
     reader.onloadend = async () => {
       const imagePart = {
         inlineData: {
           data: reader.result.split(",")[1],
-          mimeType: formData.transactionDetails.file.type
+          mimeType: formData.file.type
         },
       };
 
@@ -94,18 +119,22 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
       const text = await response.text();
       setGeneratedText(text);
     };
-    reader.readAsDataURL(formData.transactionDetails.file);
+    reader.readAsDataURL(formData.file);
   };
 
+  
+
+  // Function to parse various date formats and convert them to DD/MM/YYYY or range DD/MM/YYYY - DD/MM/YYYY
   function parseAndFormatDate(dateString) {
     const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
 
+    // Function to parse a single date
     const parseSingleDate = (singleDateString) => {
       let parsedDate = new Date(singleDateString);
       if (!isNaN(parsedDate)) {
-        return parsedDate.toLocaleDateString('en-GB');
+        return parsedDate.toLocaleDateString('en-GB'); // UK format is DD/MM/YYYY
       } else {
         const regex = /(\d{1,2})\w{2} ([a-zA-Z]+) (\d{4})/;
         const matches = singleDateString.match(regex);
@@ -118,31 +147,23 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
           }
         }
       }
-      return singleDateString;
+      return singleDateString; // or "Date format unknown";
     };
 
+    // Check for date range
     if (dateString.toLowerCase().includes('to')) {
       const dateParts = dateString.split('to');
       if (dateParts.length === 2) {
+        // Parse each date in the range and return the formatted string
         const startDate = parseSingleDate(dateParts[0].trim());
         const endDate = parseSingleDate(dateParts[1].trim());
         return `${startDate} - ${endDate}`;
       }
     }
 
+    // If not a range, parse as a single date
     return parseSingleDate(dateString);
   }
-
-  useImperativeHandle(ref, () => ({
-    validate() {
-      const { date, amount, transactionId, transactionAgainst } = formData.transactionDetails;
-      if (!date || !amount || !transactionId || !transactionAgainst) {
-        setError('Please fill all transaction details.');
-        return false;
-      }
-      return true;
-    }
-  }));
 
   return (
     <div>
@@ -175,6 +196,7 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
               <span style={{ flex: '1', textAlign: 'left' }}>:  Savings</span>
             </div>
           </div>
+
           <br />
           <p>Please note that after making the payment, share the UTR No., so that we will be able to generate the fee receipt for you.</p>
         </div>
@@ -186,39 +208,48 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
         <div className='container'>
           <div className="inputs">
             <div className='input-fiels side-by-side'>
-              <div className='input-field'>
-                <label htmlFor="amount">Amount:</label>
-                <input type="text" name="amount" value={formData.transactionDetails.amount} readOnly />
-              </div>
-              <div className='input-field'>
-                <label htmlFor="date">Date of Transaction:</label>
-                <DatePicker
-                  selected={formData.transactionDetails.date ? new Date(formData.transactionDetails.date.split('/').reverse().join('-')) : null}
-                  onChange={date => handleDateChange(date)}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="dd/mm/yyyy"
-                />
-              </div>
+              
+            <div className='input-field'>
+              <label htmlFor="amount">Amount:</label>
+              <input type="text" name="amount" value={formData.amount} readOnly />
             </div>
             <div className='input-field'>
-              <label htmlFor="transactionId">Transaction ID:</label>
-              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData.transactionDetails.transactionId} onChange={handleChange} />
+              <label htmlFor="date">Date of Transaction:</label>
+              <DatePicker
+                selected={formData.date ? new Date(formData.date.split('/').reverse().join('-')) : null}
+                onChange={date => handleDateChange(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="dd/mm/yyyy"
+              />
+              {formErrors.date && <div className="error">{formErrors.date}</div>}
             </div>
+
+            </div>
+
+            <div className='input-field'>
+              <label htmlFor="transactionId">Transaction ID:</label>
+              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData.transactionId} onChange={handleChange} />
+              {formErrors.transactionId && <span className="error">{formErrors.transactionId}</span>}
+            </div>
+
             <div className="input-field">
-              <label htmlFor="transactionAgainst">Transaction Against:</label>
-              <select id="transactionAgainst" className="dropdown-field" value={formData.transactionDetails.transactionAgainst} onChange={handleChange} name="transactionAgainst">
-                <option value="">Select</option>
+              <label htmlFor="paymentAgainst">Payment For:</label>
+              <select id="paymentAgainst" className="dropdown-field" value={formData.paymentAgainst} onChange={handleChange} name="paymentAgainst">
+                <option value="select payment for">Select payment for</option>
                 <option value="Admission Brochure Fees">Admission Brochure Fees</option>
                 <option value="Admission Fees">Admission Fees</option>
               </select>
             </div>
+
             <div className='input-field'>
               <label htmlFor="file">Upload Proof (only* JPG format):</label>
               <input type="file" name="file" accept="image/*" onChange={handleChange} />
             </div>
+
             {loading && <p>Loading...</p>}
+
             <div className='buttons'>
-              <button type="submit">Validate Payment</button>
+              <button type="submit">Submit</button>
             </div>
           </div>
           <div className='center page-heading'>
@@ -228,6 +259,6 @@ const TransactionDetails = forwardRef(({ formData, setFormData, setError }, ref)
       </form>
     </div>
   );
-});
+}
 
-export default TransactionDetails;
+export default TransactionForm;
