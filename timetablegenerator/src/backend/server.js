@@ -163,6 +163,8 @@ app.post('/api/submit', upload.fields([
   const personalDetails = JSON.parse(req.body.personalDetails);
   const academicDetails = JSON.parse(req.body.academicDetails);
   const cetDetails = JSON.parse(req.body.cetDetails);
+  const preferences = JSON.parse(req.body.preferences); // Parse preferences
+  const transactionDetails = JSON.parse(req.body.transactionDetails);
   
   // Retrieve the user's id from the user_registration table using the email
   const getUserQuery = 'SELECT id FROM user_registration WHERE email = ?';
@@ -226,7 +228,12 @@ app.post('/api/submit', upload.fields([
         marksheet12: req.files['marksheet12'] ? req.files['marksheet12'][0].path : null,
         cetMarksheet: req.files['cetMarksheet'] ? req.files['cetMarksheet'][0].path : null,
         jeeMarksheet: req.files['jeeMarksheet'] ? req.files['jeeMarksheet'][0].path : null,
-        signature: req.files['signature'] ? req.files['signature'][0].path : null
+        signature: req.files['signature'] ? req.files['signature'][0].path : null,
+        preferences: preferences,
+        transaction_date: transactionDetails.date,
+        transaction_amount: transactionDetails.amount,
+        transaction_id: transactionDetails.transactionId,
+        transaction_against: transactionDetails.transactionAgainst
       };
 
       const query = 'INSERT INTO user_details SET ?';

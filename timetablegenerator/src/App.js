@@ -93,7 +93,7 @@ export default function App() {
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <PreferencesForm formData={preferencesFormRef} setFormData={setFormData} setError={setError} />,
+    <PreferencesForm ref={preferencesFormRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <TransactionDetails ref={transactionDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} setError={setError}/>
@@ -102,6 +102,8 @@ export default function App() {
   const nextSection = () => {
     if (!validateCurrentSection()) return;
     if (currentSection < sections.length - 1) {
+      // const currentForm = sections[currentSection].current; // Get current form reference
+      // setFormData(currentForm.formData);
       setCurrentSection(currentSection + 1);
       setError('');
     }
@@ -147,6 +149,8 @@ export default function App() {
   formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
   formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
+  formDataToSend.append('preferences', JSON.stringify(formData.preferences));
+  formDataToSend.append('transactionDetails', JSON.stringify(formData.transactionDetails));
   
   // Append files
   Object.keys(formData.documentUpload).forEach(key => {

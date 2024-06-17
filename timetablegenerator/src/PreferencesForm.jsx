@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 
 const initialOptions = [
   'Computer Engineering',
@@ -11,8 +11,17 @@ const initialOptions = [
   'Mechanical Engineering'
 ];
 
-const PreferencesForm = ({ formData, setFormData, setError }) => {
-  const [preferences, setPreferences] = useState(['', '', '', '', '', '', '', '']);
+const PreferencesForm = forwardRef(({ formData, setFormData, setError }) => {
+
+  const [preferences, setPreferences] = useState(formData.preferences || []);
+
+  useEffect(() => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      preferences
+    }));
+  }, [preferences, setFormData]);
+
   const [preferencesOptions, setPreferencesOptions] = useState([]);
 
   useEffect(() => {
@@ -32,7 +41,7 @@ const PreferencesForm = ({ formData, setFormData, setError }) => {
     // Update formData when preferences change
     setFormData(prevFormData => ({
       ...prevFormData,
-      preferences: preferences
+      preferences
     }));
   }, [preferences, setFormData]);
 
@@ -72,6 +81,6 @@ const PreferencesForm = ({ formData, setFormData, setError }) => {
       </div>
     </div>
   );
-};
+});
 
 export default PreferencesForm;

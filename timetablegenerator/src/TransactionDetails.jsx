@@ -3,28 +3,32 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function TransactionForm() {
-  const [formData, setFormData] = useState({
+function TransactionForm({ formData, setFormData }) {
+  const [transactionDetails, setTransactionDetails] = useState({
     date: '',
     amount: '2000',
     transactionId: '',
     file: null,
-    paymentAgainst: '' // Added for payment purpose selection
+    transactionAgainst: ''
   });
-  
+
+  // const [formData, setFormData] = useState({
+  //   date: '',
+  //   amount: '2000',
+  //   transactionId: '',
+  //   file: null,
+  //   paymentAgainst: 'select payment for' // Initialize paymentAgainst with a default value
+  // });
+
   const [formErrors, setFormErrors] = useState({});
+
   const [generatedText, setGeneratedText] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const verifyDetails = useCallback((text, formData) => {
     const lines = text.split('\n');
-    let ocrResult = {
-      date: '',
-      amount: '',
-      transactionId: ''
-    };
-
+    let ocrResult = { date: '', amount: '', transactionId: '' };
     lines.forEach(line => {
       const [key, value] = line.split(':');
       switch (key.trim()) {
@@ -41,10 +45,6 @@ function TransactionForm() {
           break;
       }
     });
-
-    // console.log('OCR Result:', ocrResult);
-    // console.log('Form Data:', formData);
-
     if (ocrResult.date !== formData.date) {
       setMessage(`Transaction not approved. Please contact the Admin.`);
     } else {
@@ -61,49 +61,50 @@ function TransactionForm() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value
-    });
+    setFormData(prev => ({
+      ...prev,
+      transactionDetails: {
+        ...prev.transactionDetails,
+        [name]: files ? files[0] : value
+      }
+    }));
   };
 
   const handleDateChange = (date) => {
-    setFormData({
-      ...formData,
-      date: date ? date.toLocaleDateString('en-GB') : ''
-    });
+    setFormData(prev => ({
+      ...prev,
+      transactionDetails: {
+        ...prev.transactionDetails,
+        date: date ? date.toLocaleDateString('en-GB') : ''
+      }
+    }));
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.date) {
+    if (!formData.transactionDetails.date) {
       errors.date = 'Date of Transaction is required.';
     }
-    if (!formData.transactionId) {
+    if (!formData.transactionDetails.transactionId) {
       errors.transactionId = 'Transaction ID is required.';
     }
-    if (!formData.file) {
+    if (!formData.transactionDetails.file) {
       errors.file = 'Proof of transaction is required.';
     }
-    if (formData.paymentAgainst === 'select payment for') {
+    if (formData.transactionDetails.transactionAgainst === 'select payment for') {
       errors.paymentAgainst = 'Please select the purpose of payment.';
     }
-  
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!formData.file) return;
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!formData.file) return;
+    if (!validateForm()) return;
     setLoading(true);
     const genAI = new GoogleGenerativeAI('AIzaSyDYecx7ZQUfrUOksHRU1JHLFPxJuHyfy5Y');
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-
     const prompt = "Read the image which is proof of transaction and extract all details like date, Transaction ID and amount(no currency symbol) without mistake.";
     const reader = new FileReader();
     reader.onloadend = async () => {
@@ -113,7 +114,6 @@ function TransactionForm() {
           mimeType: formData.file.type
         },
       };
-
       const result = await model.generateContent([prompt, imagePart]);
       const response = await result.response;
       const text = await response.text();
@@ -122,19 +122,12 @@ function TransactionForm() {
     reader.readAsDataURL(formData.file);
   };
 
-  
-
-  // Function to parse various date formats and convert them to DD/MM/YYYY or range DD/MM/YYYY - DD/MM/YYYY
-  function parseAndFormatDate(dateString) {
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-
-    // Function to parse a single date
+  const parseAndFormatDate = (dateString) => {
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const parseSingleDate = (singleDateString) => {
       let parsedDate = new Date(singleDateString);
       if (!isNaN(parsedDate)) {
-        return parsedDate.toLocaleDateString('en-GB'); // UK format is DD/MM/YYYY
+        return parsedDate.toLocaleDateString('en-GB');
       } else {
         const regex = /(\d{1,2})\w{2} ([a-zA-Z]+) (\d{4})/;
         const matches = singleDateString.match(regex);
@@ -147,23 +140,18 @@ function TransactionForm() {
           }
         }
       }
-      return singleDateString; // or "Date format unknown";
+      return dateString;
     };
-
-    // Check for date range
     if (dateString.toLowerCase().includes('to')) {
       const dateParts = dateString.split('to');
       if (dateParts.length === 2) {
-        // Parse each date in the range and return the formatted string
         const startDate = parseSingleDate(dateParts[0].trim());
         const endDate = parseSingleDate(dateParts[1].trim());
         return `${startDate} - ${endDate}`;
       }
     }
-
-    // If not a range, parse as a single date
     return parseSingleDate(dateString);
-  }
+  };
 
   return (
     <div>
@@ -211,12 +199,12 @@ function TransactionForm() {
               
             <div className='input-field'>
               <label htmlFor="amount">Amount:</label>
-              <input type="text" name="amount" value={formData.amount} readOnly />
+              <input type="text" name="amount" value={formData.transactionDetails.amount} readOnly />
             </div>
             <div className='input-field'>
               <label htmlFor="date">Date of Transaction:</label>
               <DatePicker
-                selected={formData.date ? new Date(formData.date.split('/').reverse().join('-')) : null}
+                selected={formData.transactionDetails.date ? new Date(formData.transactionDetails.date.split('/').reverse().join('-')) : null}
                 onChange={date => handleDateChange(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="dd/mm/yyyy"
@@ -228,13 +216,19 @@ function TransactionForm() {
 
             <div className='input-field'>
               <label htmlFor="transactionId">Transaction ID:</label>
-              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData.transactionId} onChange={handleChange} />
+              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData.transactionDetails.transactionId} onChange={handleChange} />
               {formErrors.transactionId && <span className="error">{formErrors.transactionId}</span>}
             </div>
 
             <div className="input-field">
               <label htmlFor="paymentAgainst">Payment For:</label>
-              <select id="paymentAgainst" className="dropdown-field" value={formData.paymentAgainst} onChange={handleChange} name="paymentAgainst">
+              <select
+    id="transactionAgainst"
+    className="dropdown-field"
+    value={formData.transactionDetails.transactionAgainst}
+    onChange={handleChange}
+    name="transactionAgainst"
+  >
                 <option value="select payment for">Select payment for</option>
                 <option value="Admission Brochure Fees">Admission Brochure Fees</option>
                 <option value="Admission Fees">Admission Fees</option>
