@@ -8,6 +8,7 @@ import DocumentUpload from './DocumentUpload';
 import TransactionDetails from './TransactionDetails';
 import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
+import AdmissionForm from './AdmissionForm';
 import Layout from './Layout';
 
 export default function App() {
@@ -79,13 +80,15 @@ export default function App() {
   const cetDetailsRef = useRef();
   const documentUploadRef = useRef();
   const transactionDetailsRef = useRef();
+  const admissionFormRef = useRef();
 
   const sections = [
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <TransactionDetails ref={transactionDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />
+    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />,
+    <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} setError={setError}/>
   ];
 
   const nextSection = () => {
@@ -105,37 +108,39 @@ export default function App() {
 
   const validateCurrentSection = () => {
     if (currentSection >= 0 && currentSection < sections.length) {
-      const refs = [personalDetailsRef, academicDetailsRef, cetDetailsRef, transactionDetailsRef, documentUploadRef];
-      return refs[currentSection].current.validate();
+      const refs = [
+        personalDetailsRef,
+        academicDetailsRef,
+        cetDetailsRef,
+        transactionDetailsRef,
+        documentUploadRef,
+        admissionFormRef
+      ];
+  
+      // Check if the ref is defined before calling validate
+      if (refs[currentSection] && refs[currentSection].current) {
+        return refs[currentSection].current.validate();
+      }
     }
     return true; // Skip validation for sign-in and sign-up sections
   };
-
-  const handleSubmit = async () => {
-    const formDataToSend = new FormData();
-    // Append personal, academic, and cet details as JSON string
-    formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
-    formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
-    formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
   
-    // Append files
-    Object.keys(formData.documentUpload).forEach(key => {
-    formDataToSend.append(key, formData.documentUpload[key]);
-    });
+  const handleSubmit = async () => {
     try {
       const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
+
       const result = await response.json();
-      result.message = 'Successfully Submitted Form'
-      alert("Form submitted successfully");
-      console.log(result) // Show success message
+      alert(result.message); // Show success message
       setCurrentSection(0); // Reset to first section
     } catch (error) {
       setError('Network error: ' + error.message);
@@ -172,6 +177,7 @@ export default function App() {
   return (
     <Layout>
     <div className="container">
+      
       {currentSection === -2 ? (
         <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
       ) : currentSection === -1 ? (

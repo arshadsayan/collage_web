@@ -21,6 +21,7 @@
   .logo {
     max-width: 50%; /* Ensure the logo fits within its container */
     height: auto;
+    padding-top: 50px;
   }
   
     
