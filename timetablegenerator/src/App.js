@@ -1,3 +1,24 @@
+
+import './styles.css'
+import './styles-import.css'
+
+import Admin  from './components/Admin';
+import DocVerification from './components/DocVerification';
+
+import Navbar from './components/Navbar';
+import CertificateList from './components/CertificateList'
+import SelectedCertificates from './components/SelectedCertificates';
+import RejectedTransaction from './components/RejectedTransaction';
+import ApplicantsList from './components/ApplicantsList';
+import SelectedCertificate from './components/SelectedCertificates'
+
+
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import Importdept from './importdept';
+// import './import';
+
+// var departmentButton = false;
+// var importButton = false;
 import React, { useState, useRef } from 'react';
 import './styles.css';
 import './styles-import.css';
@@ -7,6 +28,20 @@ import CETDetails from './CETDetails';
 import DocumentUpload from './DocumentUpload';
 
 export default function App() {
+
+  // const [dept, setDept] = useState(false);
+  // const [impr, setImpr] = useState(false);
+
+  // function deptAdder() {
+  //   setDept(true);
+  //   setImpr(false);
+  // }
+  
+  // function importAdder() {
+  //   setImpr(true);
+  //   setDept(false);
+  // }
+  
   const [currentSection, setCurrentSection] = useState(0);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -128,15 +163,39 @@ export default function App() {
     }
   };
 
+  // return (
+  //   <div className="container">
+  //     <h1 className="center page-heading">Personal Details</h1>
+  //     <Adddept />
+  //     {/* <div className="buttons">
+  //       <button id="add-department" onClick={deptAdder}>+ ADD DEPARTMENT</button>
+  //       <button id="import-btn" onClick={importAdder}>+ IMPORT</button>
+  //     </div> */}
+  //     {/* {(dept === true) ? <Adddept /> : (impr === true) ? <Importdept /> : null} */}
+  //   </div>
+  //);
   return (
-    <div className="container">
-      {sections[currentSection]}
-      {error && <p className="error">{error}</p>}
-      <div className="buttons">
-        <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
-        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-        {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
-      </div>
-    </div>
+    <>
+      
+      <Router>
+        <div>
+          <Navbar/>
+          <Routes>
+            <Route path="/" element={<Admin />} />
+            <Route path="/documentverification" element={<DocVerification />} />
+            <Route path="/transactionrejected" element={<RejectedTransaction/>}  />
+            <Route path="/receitGeneration" element={<CertificateList/>}  />
+            <Route path="/ApplicationList" element={<ApplicantsList/>}  />
+            <Route path="/documentReceiptGenerator" element={<SelectedCertificate/>}  />
+            <Route path="/selected" element={<SelectedCertificate/>}  />
+          </Routes>
+        </div>
+        
+      </Router>
+        
+    </>
+      
+    
   );
+    
 }
