@@ -4,8 +4,9 @@ import "bootstrap/dist/js/bootstrap.bundle"; //bootstrap.bundle.min.js / bootstr
 
 
 import "./ApplicantsList.css";
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 
 function ApplicantsList() {
@@ -42,12 +43,12 @@ function ApplicantsList() {
   };
 
 
-  const [DocStatus, setDocStatus] = useState("Not approved");
+  const [DocStatus, setDocStatus] = useState("Not Approved");
   const setDocStatusApproved = ()=>{
     setDocStatus("Approved");
   };
   const setDocStatusDisapproved = ()=>{
-    setDocStatus("Not approved");
+    setDocStatus("Not Approved");
   };
 
   const [TransactionStatus, setTransactionStatus] = useState("Pending");
@@ -57,6 +58,19 @@ function ApplicantsList() {
   const setTransactionStatusPending = ()=>{
     setTransactionStatus("Pending");
   }
+////
+  const [data2, setData] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/data')
+      .then((response) => {
+        setData(response.data);
+        console.log(data2);
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the data!', error);
+      });
+  }, []);
 
   const data = [
       {
@@ -576,19 +590,19 @@ function ApplicantsList() {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => {
-              if (AdmissionType === "All") {
-                if(row.DocStatus === DocStatus){
-                  if(row.TransactionStatus === TransactionStatus){
+            {data2.map((row, index) => {
+              // if (AdmissionType === "All") {
+                if(row.documentsApproved === DocStatus){
+                  if(row.transactionApproved === TransactionStatus){
                     return (
                       <tr key={row.id}>
                         <th scope="row">{index + 1}</th>
-                        <td>{row.uid}</td>
-                        <td>{row.name}</td>
-                        <td>{row.applicationNumber}</td>
-                        <td>{row.admissionType}</td>
-                        <td>{row.DocStatus}</td>
-                        <td>{row.TransactionStatus}</td>
+                        <td>{row.id}</td>
+                        <td>{row.fullname}</td>
+                        <td>{row.cet_application_id}</td>
+                        <td>Brochure Institute Level</td>
+                        <td>{row.documentsApproved}</td>
+                        <td>{row.transactionApproved}</td>
                         
                         <td>
                           <button
@@ -603,8 +617,9 @@ function ApplicantsList() {
                     );
                   }
                 }
-              } else if (row.admissionType === AdmissionType) {
-                if(row.DocStatus === DocStatus){
+              // } 
+              // else if (row.admissionType === AdmissionType) {
+                else if(row.DocStatus === DocStatus){
                   if(row.TransactionStatus === TransactionStatus){
                     return (
                       <tr key={row.id}>
@@ -631,7 +646,7 @@ function ApplicantsList() {
                   }
                 }
                 
-              }
+              // }
               // else if (row.admissionType === "Institute Level") {
               //   return (
               //     <tr key={row.id}>

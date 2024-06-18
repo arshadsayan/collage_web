@@ -20,20 +20,20 @@ app.use(bodyParser.json());
 app.use('/files', express.static(path.join(__dirname, 'public')));
 
 // MySQL connection setup
-// const db = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: 'admin',
-//   database: 'reg_portal' // Your database name
-// });
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'reg_portal' // Your database name
+});
 
-// db.connect(err => {
-//   if (err) {
-//     console.error('Error connecting to MySQL database:', err);
-//     return;
-//   }
-//   console.log('Connected to MySQL database');
-// });
+db.connect(err => {
+  if (err) {
+    console.error('Error connecting to MySQL database:', err);
+    return;
+  }
+  console.log('Connected to MySQL database');
+});
 let data = {};
 
 const storage = multer.diskStorage({
@@ -148,6 +148,24 @@ app.post('/api/submit', upload.fields([
   //   res.status(200).json({ message: 'Data inserted successfully' }); // Send JSON response on success
   // });
 });
+
+
+//Admin portal data fetching
+// Create an endpoint to fetch data
+app.get('/data', (req, res) => {
+  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionApproved FROM user_details';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
