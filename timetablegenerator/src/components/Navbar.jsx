@@ -38,7 +38,7 @@ function Navbar() {
           <Link to="/" style={styles.navLink}>CSV upload</Link>
         </li>
         <li style={styles.navItem}>
-          <Link to="/" style={styles.navLink}>Report Generator</Link>
+          <Link to="/reportgeneration" style={styles.navLink}>Report Generator</Link>
         </li>
       </ul>
     </nav>

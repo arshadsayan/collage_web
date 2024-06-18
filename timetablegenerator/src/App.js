@@ -10,6 +10,7 @@ import SelectedCertificates from "./components/SelectedCertificates";
 import RejectedTransaction from "./components/RejectedTransaction";
 import ApplicantsList from "./components/ApplicantsList";
 import SelectedCertificate from "./components/SelectedCertificates";
+import ReportGenerator from "./components/ReportGenerator";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import Importdept from './importdept';
@@ -221,6 +222,7 @@ export default function App() {
               element={<SelectedCertificate />}
             />
             <Route path="/selected" element={<SelectedCertificate />} />
+            <Route path="/reportgeneration" element={<ReportGenerator/>} />
             <Route
               path="/register"
               element={
