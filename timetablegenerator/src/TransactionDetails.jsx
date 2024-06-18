@@ -3,22 +3,11 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function TransactionForm({ formData, setFormData }) {
-  const [transactionDetails, setTransactionDetails] = useState({
-    date: '',
-    amount: '2000',
-    transactionId: '',
-    file: null,
-    transactionAgainst: ''
-  });
 
-  // const [formData, setFormData] = useState({
-  //   date: '',
-  //   amount: '2000',
-  //   transactionId: '',
-  //   file: null,
-  //   paymentAgainst: 'select payment for' // Initialize paymentAgainst with a default value
-  // });
+
+function TransactionForm({formData1,setFormData1}) {
+ 
+  
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -26,7 +15,7 @@ function TransactionForm({ formData, setFormData }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const verifyDetails = useCallback((text, formData) => {
+  const verifyDetails = useCallback((text, formData1) => {
     const lines = text.split('\n');
     let ocrResult = { date: '', amount: '', transactionId: '' };
     lines.forEach(line => {
@@ -45,7 +34,12 @@ function TransactionForm({ formData, setFormData }) {
           break;
       }
     });
-    if (ocrResult.date !== formData.date) {
+
+    // console.log('OCR Result:', ocrResult);
+    // console.log('Form Data:', formData);
+
+    if (ocrResult.date !== formData1.date) {
+
       setMessage(`Transaction not approved. Please contact the Admin.`);
     } else {
       setMessage('Transaction verified and approved!');
@@ -55,43 +49,39 @@ function TransactionForm({ formData, setFormData }) {
   useEffect(() => {
     if (generatedText) {
       setLoading(false);
-      verifyDetails(generatedText, formData);
+      verifyDetails(generatedText, formData1);
     }
-  }, [generatedText, formData, verifyDetails]);
+  }, [generatedText, formData1, verifyDetails]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      transactionDetails: {
-        ...prev.transactionDetails,
-        [name]: files ? files[0] : value
-      }
-    }));
+    setFormData1({
+      ...formData1,
+      [name]: files ? files[0] : value
+    });
   };
 
   const handleDateChange = (date) => {
-    setFormData(prev => ({
-      ...prev,
-      transactionDetails: {
-        ...prev.transactionDetails,
-        date: date ? date.toLocaleDateString('en-GB') : ''
-      }
-    }));
+    setFormData1({
+      ...formData1,
+      date: date ? date.toLocaleDateString('en-GB') : ''
+    });
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.transactionDetails.date) {
+
+    if (!formData1.date) {
       errors.date = 'Date of Transaction is required.';
     }
-    if (!formData.transactionDetails.transactionId) {
+    if (!formData1.transactionId) {
       errors.transactionId = 'Transaction ID is required.';
     }
-    if (!formData.transactionDetails.file) {
+    if (!formData1.file) {
       errors.file = 'Proof of transaction is required.';
     }
-    if (formData.transactionDetails.transactionAgainst === 'select payment for') {
+    if (formData1.paymentAgainst === 'select payment for') {
+
       errors.paymentAgainst = 'Please select the purpose of payment.';
     }
     setFormErrors(errors);
@@ -100,7 +90,7 @@ function TransactionForm({ formData, setFormData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.file) return;
+    if (!formData1.file) return;
     if (!validateForm()) return;
     setLoading(true);
     const genAI = new GoogleGenerativeAI('AIzaSyDYecx7ZQUfrUOksHRU1JHLFPxJuHyfy5Y');
@@ -111,7 +101,7 @@ function TransactionForm({ formData, setFormData }) {
       const imagePart = {
         inlineData: {
           data: reader.result.split(",")[1],
-          mimeType: formData.file.type
+          mimeType: formData1.file.type
         },
       };
       const result = await model.generateContent([prompt, imagePart]);
@@ -119,7 +109,7 @@ function TransactionForm({ formData, setFormData }) {
       const text = await response.text();
       setGeneratedText(text);
     };
-    reader.readAsDataURL(formData.file);
+    reader.readAsDataURL(formData1.file);
   };
 
   const parseAndFormatDate = (dateString) => {
@@ -199,12 +189,12 @@ function TransactionForm({ formData, setFormData }) {
               
             <div className='input-field'>
               <label htmlFor="amount">Amount:</label>
-              <input type="text" name="amount" value={formData.transactionDetails.amount} readOnly />
+              <input type="text" name="amount" value={formData1.amount} readOnly />
             </div>
             <div className='input-field'>
               <label htmlFor="date">Date of Transaction:</label>
               <DatePicker
-                selected={formData.transactionDetails.date ? new Date(formData.transactionDetails.date.split('/').reverse().join('-')) : null}
+                selected={formData1.date ? new Date(formData1.date.split('/').reverse().join('-')) : null}
                 onChange={date => handleDateChange(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="dd/mm/yyyy"
@@ -216,19 +206,13 @@ function TransactionForm({ formData, setFormData }) {
 
             <div className='input-field'>
               <label htmlFor="transactionId">Transaction ID:</label>
-              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData.transactionDetails.transactionId} onChange={handleChange} />
+              <input type="text" name="transactionId" placeholder="Enter Transaction ID" value={formData1.transactionId} onChange={handleChange} />
               {formErrors.transactionId && <span className="error">{formErrors.transactionId}</span>}
             </div>
 
             <div className="input-field">
               <label htmlFor="paymentAgainst">Payment For:</label>
-              <select
-    id="transactionAgainst"
-    className="dropdown-field"
-    value={formData.transactionDetails.transactionAgainst}
-    onChange={handleChange}
-    name="transactionAgainst"
-  >
+              <select id="paymentAgainst" className="dropdown-field" value={formData1.paymentAgainst} onChange={handleChange} name="paymentAgainst">
                 <option value="select payment for">Select payment for</option>
                 <option value="Admission Brochure Fees">Admission Brochure Fees</option>
                 <option value="Admission Fees">Admission Fees</option>

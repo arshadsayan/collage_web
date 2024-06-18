@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-export default function DocumentUpload({formData, setFormData}) {
-  const [filePreviews, setFilePreviews] = useState({});
+export default function DocumentUpload({ formData, setFormData, filePreviews, setFilePreviews }) {
+
 
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];

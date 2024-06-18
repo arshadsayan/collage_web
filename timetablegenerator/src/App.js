@@ -69,16 +69,32 @@ export default function App() {
       jeeappNum: '',
       jeePer: ''
     },
-    documentUpload: {},
-    transactionDetails: {
-      date: '',
-      amount: '2000',
-      transactionId: '',
-      file: null,
-      transactionAgainst: ''
+    documentUpload: {
+      photo: null,
+      signature: null,
+      marksheet10: null,
+      leavingCertificate12: null,
+      marksheet12: null,
+      cetMarksheet: null,
+      jeeMarksheet: null
     },
+   
     preferences: ['', '', '', '', '', '', '', '']
   });
+
+  const [filePreviews, setFilePreviews] = useState({});
+
+  const [formData1, setFormData1] = useState({
+  
+      date: '',
+      amount: '2000/-',
+      transactionId: '',
+      file: null,
+      paymentAgainst: ''
+    
+  });
+
+  const [userId, setUserId] = useState('');
 
   const personalDetailsRef = useRef();
   const academicDetailsRef = useRef();
@@ -94,16 +110,14 @@ export default function App() {
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <PreferencesForm ref={preferencesFormRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <TransactionDetails ref={transactionDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} setError={setError} />,
-    <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} setError={setError}/>
+    <TransactionDetails ref={transactionDetailsRef}  formData1={formData1} setFormData1={setFormData1} setError={setError} />,
+    <DocumentUpload ref={documentUploadRef} formData={formData} setFormData={setFormData} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
+    <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
 
   const nextSection = () => {
     if (!validateCurrentSection()) return;
     if (currentSection < sections.length - 1) {
-      // const currentForm = sections[currentSection].current; // Get current form reference
-      // setFormData(currentForm.formData);
       setCurrentSection(currentSection + 1);
       setError('');
     }
@@ -129,7 +143,6 @@ export default function App() {
         academicDetailsRef,
         cetDetailsRef,
         preferencesFormRef,
-        transactionDetailsRef,
         documentUploadRef,
         admissionFormRef
       ];
@@ -149,8 +162,6 @@ export default function App() {
   formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
   formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
-  formDataToSend.append('preferences', JSON.stringify(formData.preferences));
-  formDataToSend.append('transactionDetails', JSON.stringify(formData.transactionDetails));
   
   // Append files
   Object.keys(formData.documentUpload).forEach(key => {
@@ -176,6 +187,7 @@ export default function App() {
   };
 
   const handleSignIn = (userData) => {
+    setUserId(userData.userId);
     setFormData(prevFormData => ({
       ...prevFormData,
       personalDetails: {

@@ -22,7 +22,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'admin',
+  password: 'MySQL123',
   database: 'reg_portal'
 });
 
@@ -50,7 +50,7 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
   const { email, password } = req.body;
 
   // Generate unique key
-  const uniqueKey = 'unique-key-' + Date.now();
+  const uniqueKey =  Date.now();
 
   // Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -109,7 +109,8 @@ app.post('/api/signin', (req, res) => {
     }
 
     if (results.length > 0) {
-      res.status(200).json({ success: true, userData: { email, uniqueKey: results[0].unique_key } });
+      const userId = results[0].id;
+      res.status(200).json({ success: true, userData: { email, uniqueKey: results[0].unique_key, userId  }});
     } else {
       res.status(400).json({ success: false, message: 'Invalid email or password' });
     }
@@ -177,6 +178,7 @@ app.post('/api/submit', upload.fields([
     if (results.length > 0) {
       const userId = results[0].id;
       
+
       const data = {
         id: userId, // Add the id field
         fullname: personalDetails.fullName,
@@ -243,7 +245,7 @@ app.post('/api/submit', upload.fields([
           return res.status(500).json({ message: 'Error inserting data' });
         }
 
-        res.status(200).json({ message: 'Data inserted successfully' });
+        res.status(200).json({ message: 'Data inserted successfully'});
       });
     } else {
       res.status(400).json({ message: 'User not found' });

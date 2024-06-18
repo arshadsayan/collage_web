@@ -162,6 +162,12 @@ th{
   .header-left {
     display: flex;
     margin-left: 20px;
+    font-size: 9px;
+  }
+
+  .header-right {
+    margin-right: -250px;
+
   }
   
   .logo {
@@ -173,23 +179,18 @@ th{
     text-align: left;
   }
   
-  .profile-pic {
+  .profile-photo {
     width: 100px;
-    border-radius: 50%;
+    border-radius: 20%;
   }
    
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-left {
-    display: flex;
-  }
-  
+ 
   .logo {
     margin-right: 20px;
     margin-top: 0px;
     margin-bottom: 175px;
+  }
+
+  .signature-img {
+    width: 100px;
   }
