@@ -12,7 +12,8 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
       case 'cetrollNo':
       case 'jeeappNum':
         // Allow only integers
-        newValue = value.replace(/\D/g, '');
+        // newValue = value.replace(/\D/g, '');
+        newValue = value;
         break;
       case 'cetmathsPer':
       case 'cetphysicsPer':
@@ -21,7 +22,7 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
       case 'jeePer':
         // Allow only floats with 2 digits after decimal
         newValue = value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except dot
-        const match = /^(\d*\.?\d{0,2})/.exec(newValue);
+        const match = /^(\d*\.?\d{0,7})/.exec(newValue);
         if (match) {
           newValue = match[1];
         }
@@ -81,17 +82,17 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label for="cetmathsPer">CET maths percentage:</label>
+          <label for="cetmathsPer">CET maths percentile:</label>
           <input type="text" id="cetmathsPer" value={formData.cetDetails.cetmathsPer} onChange={handleChange} placeholder="Enter semester" />
         </div>
         <div className="input-field">
-          <label for="cetphysicsPer">CET physics percentage:</label>
+          <label for="cetphysicsPer">CET physics percentile:</label>
           <input type="text" id="cetphysicsPer" value={formData.cetDetails.cetphysicsPer} onChange={handleChange} placeholder="Enter semester" />
         </div>
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label for="cetchemistryPer">CET chemistry percentage:</label>
+          <label for="cetchemistryPer">CET chemistry percentile:</label>
           <input type="text" id="cetchemistryPer" value={formData.cetDetails.cetchemistryPer} onChange={handleChange} placeholder="Enter semester" />
         </div>
         <div className="input-field">

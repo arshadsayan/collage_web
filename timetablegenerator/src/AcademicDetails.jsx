@@ -108,7 +108,7 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         </div>
         <div className="input-field">
           <label for="hscvocationalsubjectPer">HSC vocational subject percentage:</label>
-          <input type="text" id="hscvovationalsubjectPer" value={formData.academicDetails.hscvovationalsubjectPer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="hscvovationalsubjectPer" value={formData.academicDetails.hscvocationalsubjectPer} onChange={handleChange} placeholder="Enter semester" />
         </div>
       </div>        
 

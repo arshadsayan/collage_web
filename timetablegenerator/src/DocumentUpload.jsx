@@ -39,7 +39,15 @@ export default function DocumentUpload({ formData, setFormData, filePreviews, se
             { label: "12th Marksheet", field: "marksheet12" },
             { label: "CET Marksheet", field: "cetMarksheet" },
             { label: "JEE Marksheet", field: "jeeMarksheet" },
+            { label: "Domicile", field: "domicilecert" },
+            { label: "Caste Certificate", field: "castecertificate" },
+            { label: "Caste Validity", field: "castevalidity" },
+            { label: "Non creamy layer", field: "noncreamylayer" },
+            { label: "Income", field: "income" },
+            { label: "Transaction Proof", field: "transactionproof" },
+            { label: "Other Documents", field: "other" },
             { label: "Signature", field: "signature" },
+            
           ].map((doc, index) => (
             <tr key={index}>
               <th>{doc.label}</th>

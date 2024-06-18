@@ -8,7 +8,7 @@ export default function SignInPage({ onSignIn, goToSignup }) {
   const handleSignIn = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/signin', {
+      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
