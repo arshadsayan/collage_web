@@ -169,7 +169,7 @@ app.get('/data', (req, res) => {
 app.get('/docverification/:uid', (req, res) => {
   const userId = req.params.uid;
   console.log(userId);
-  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature FROM user_details WHERE id = '${userId}';`;
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus FROM user_details WHERE id = '${userId}';`;
   
   db.query(query, (err, results) => {
     if (err) {
@@ -181,7 +181,65 @@ app.get('/docverification/:uid', (req, res) => {
   });
 });
 
+//Fetching documents URL and send the URL back to React
+app.get('/docverification/:uid/:docname', (req, res) => {
+  const userId = req.params.uid;
+  const docname = req.params.docname;
+  console.log(userId);
+  console.log(docname)
+  const query = `SELECT ${docname} FROM user_details WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
 
+//Document verification page making updation request to make document status to approve
+app.put('/approveDoc/:uid/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+
+  const sql = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
+
+//Document verification page making updation request to make document status to Reject
+app.put('/rejectDoc/:uid/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+
+  const sql = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

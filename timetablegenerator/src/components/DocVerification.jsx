@@ -2,29 +2,113 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./DocVerification.css";
-import DocumentViewerComponent from "./DocumentViewerComponent";
-import axios from 'axios';
+
+import axios from "axios";
 
 function DocVerification() {
   const location = useLocation();
   const { uidRecieved } = location.state || {};
-  
+
   const [DocVerificationData, setDocVerificationData] = useState([]);
   const [loading, setLoading] = useState(true); // Add a loading state
 
+  //Documents that are not approved  are added to NotApprovedDocument Array
+  let NotApprovedDocument = [];
+  let RejectedDocument = [];
+  let ApprovedDocument = [];
+
   useEffect(() => {
     if (uidRecieved) {
-      axios.get(`http://localhost:3001/docverification/${uidRecieved}`)
+      axios
+        .get(`http://localhost:3001/docverification/${uidRecieved}`)
         .then((response) => {
           setDocVerificationData(response.data);
           setLoading(false); // Set loading to false once data is fetched
         })
         .catch((error) => {
-          console.error('There was an error fetching the data!', error);
+          console.error("There was an error fetching the data!", error);
           setLoading(false); // Set loading to false even if there's an error
         });
     }
-  }, [uidRecieved]);
+  }, [uidRecieved, RejectedDocument, NotApprovedDocument, ApprovedDocument]);
+
+  ///Finding Documents that have been uploaded by User
+  const documentsNotUploaded = [];
+  const allPossibleDocuments = [
+    "photo",
+    "marksheet10",
+    "leavingCertificate12",
+    "marksheet12",
+    "cetMarksheet",
+    "jeeMarksheet",
+    "domicilecert",
+    "castecertificate",
+    "castevalidity",
+    "noncreamylayer",
+    "income",
+    "other",
+    "signature",
+  ];
+
+  function findDisjoint(arr1, arr2) {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+
+    const disjointFromArr1 = arr1.filter((item) => !set2.has(item));
+    const disjointFromArr2 = arr2.filter((item) => !set1.has(item));
+
+    return [...disjointFromArr1, ...disjointFromArr2];
+  }
+///Document which are not uploaded are added to documentsNotUploaded array
+  for (const key in DocVerificationData[0]) {
+    if (Object.hasOwnProperty.call(DocVerificationData[0], key)) {
+      const value = DocVerificationData[0][key];
+      if (value === null || value === "") {
+        documentsNotUploaded.push(key);
+      }
+    }
+  }
+
+  
+
+  for (const key in DocVerificationData[0]) {
+    if (Object.hasOwnProperty.call(DocVerificationData[0], key)) {
+      const value = DocVerificationData[0][key];
+      if (value === "Not Approved") {
+        NotApprovedDocument.push(key);
+      }
+      else if (value === "Rejected") {
+        RejectedDocument.push(key);
+      }
+      else if (value === "Approved") {
+        ApprovedDocument.push(key);
+      }
+      
+    }
+  }
+  //Function to remove the Status string from each array
+  function removeStatusSuffix(statusesArray) {
+    return statusesArray.map(status => status.replace("Status", ""));
+  }
+  
+
+  NotApprovedDocument =  removeStatusSuffix(NotApprovedDocument)
+  ApprovedDocument = removeStatusSuffix(ApprovedDocument);
+  RejectedDocument = removeStatusSuffix(RejectedDocument);
+
+  // console.log(removeStatusSuffix(NotApprovedDocument));
+  // console.log(removeStatusSuffix(ApprovedDocument));
+  // console.log(removeStatusSuffix(RejectedDocument));
+
+
+  //Array of documents uploaded
+  const documentUploaded = findDisjoint(
+    allPossibleDocuments,
+    documentsNotUploaded
+  );
+  console.log("Uploaded Documents : ", documentUploaded);
+
+  console.log("Not uploaded Documents", documentsNotUploaded);
 
   const navigate = useNavigate();
 
@@ -36,170 +120,176 @@ function DocVerification() {
     navigate("/receitGeneration");
   };
 
-  // let [showModal, setShowModal] = useState(false);
-  // const setmodaltrue = () => {
-  //   setShowModal(true);
-  // };
-  // const setmodalfalse = () => {
-  //   setShowModal(false);
-  // };
-
-  // function PreviewModal() {
-  //   const ApproveDoc = () => {
-  //     console.log("Document approved");
-  //   };
-  //   const RejectDoc = () => {
-  //     console.log("Document rejected");
-  //   };
-  //   return (
-  //     <>
-  //       <div className="modal-wrapper">
-  //         <div className="modal">
-  //           <div className="row">
-  //             <button
-  //               type="button"
-  //               onClick={setmodalfalse}
-  //               className="btn btn-secondary"
-  //             >
-  //               Back
-  //             </button>
-  //           </div>
-  //           <div className="row">
-  //             <img
-  //               src="https://picsum.photos/200/300"
-  //               className="img-fluid"
-  //               alt="..."
-  //             />
-  //           </div>
-  //           <div className="row">
-  //             <div className="col">
-  //               <button
-  //                 type="button"
-  //                 onClick={ApproveDoc}
-  //                 className="btn btn-success"
-  //               >
-  //                 Approve
-  //               </button>
-  //             </div>
-  //             <div className="col">
-  //               <button
-  //                 type="button"
-  //                 onClick={RejectDoc}
-  //                 className="btn btn-danger"
-  //               >
-  //                 Reject
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
   const [rejectedDocuments, setRejectedDocuments] = useState([]);
 
   const [documents, setDocuments] = useState([
     {
       id: 1,
       name: "12th Marksheet",
-      dbcol: "",
+      dbcol: "marksheet12",
       preview: "This is the preview of Document 1",
     },
     {
       id: 2,
       name: "10th Marksheet",
+      dbcol: "marksheet10",
       preview: "This is the preview of Document 2",
     },
     {
       id: 3,
       name: "CET Marksheet",
+      dbcol: "cetMarksheet",
       preview: "This is the preview of Document 3",
     },
     {
       id: 4,
       name: "JEE Marksheet",
+      dbcol: "jeeMarksheet",
       preview: "This is the preview of Document 4",
     },
     {
       id: 5,
-      name: "Minority Certificate",
+      name: "Caste Certificate",
+      dbcol: "castecertificat",
       preview: "This is the preview of Document 5",
     },
-    { id: 6, 
-      name: "Signature", 
-      preview: "This is the preview of Document 6" },
+    {
+      id: 6,
+      name: "Signature",
+      dbcol: "signature",
+      preview: "This is the preview of Document 6",
+    },
     {
       id: 7,
-      name: "Transaction Proof",
+      name: "Domicile Certificate",
+      dbcol: "domicilecert",
       preview: "This is the preview of Document 7",
     },
     {
       id: 8,
-      name: "Domicile",
+      name: "Caste Validity",
+      dbcol: "castevalidity",
       preview: "This is the preview of Document 8",
     },
     {
       id: 9,
-      name: "Caste Certificate",
+      name: "Non Creamy Layer",
+      dbcol: "noncreamylayer",
       preview: "This is the preview of Document 9",
     },
     {
       id: 10,
-      name: "Caste Validity",
+      name: "12th Leaving Certificate",
+      dbcol: "leavingCertificate12",
       preview: "This is the preview of Document 10",
     },
     {
       id: 11,
       name: "Income Certificate",
+      dbcol: "income",
       preview: "This is the preview of Document 11",
     },
     {
       id: 12,
-      name: "Non Creamy layer",
+      name: "Passport-size photo",
+      dbcol: "photo",
       preview: "This is the preview of Document 12",
     },
     {
       id: 13,
       name: "Other Document",
+      dbcol: "other",
       preview: "This is the preview of Document 7",
     },
-    
   ]);
 
+  const handlePreview = async (docName) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/docverification/${DocVerificationData[0].id}/${docName}`);
+        console.log("Response Data:", response.data); // Log the entire response data
 
-  const handlePreview = (nameURL) => {
-    axios({
-      url: `http://localhost:3001/files/aryaangane@gmail.com/cetMarksheet.pdf`,
-      method: 'GET',
-      responseType: 'blob', // Ensure response is treated as binary data
-    })
-      .then((response) => {
-        const file = new Blob([response.data], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(file);
-        window.open(fileURL, '_blank');
-      })
-      .catch((error) => {
-        console.error('Error fetching document URL:', error);
-        // Handle error as needed
-      });
+        // Check if response has data and is an array with at least one element
+        if (Array.isArray(response.data) && response.data.length > 0) {
+            // Extract URLpre from the first element of the response array
+            const keyNames = Object.keys(response.data[0]); // Get all keys from the first element
+
+            // Assuming the key to be used is the first key found in the response
+            const firstKey = keyNames[0];
+            const URLpre = response.data[0][firstKey];
+            
+            // Replace backslashes with forward slashes
+            function replaceBackslashWithSlash(inputString) {
+                return inputString.replace(/\\/g, '/');
+            }
+            
+            const actualURL = replaceBackslashWithSlash(URLpre);
+            console.log("Key Name:", firstKey);
+            console.log("URLpre:", URLpre);
+            console.log(actualURL);
+
+            // Make another request to fetch the actual file
+            const fileResponse = await axios.get(`http://localhost:3001/files/${actualURL}`, {
+                responseType: 'blob' // Important for binary data
+            });
+
+            // Create a URL for the received file
+            const fileURL = window.URL.createObjectURL(fileResponse.data);
+            console.log("File URL:", fileURL);
+
+            // Open the file in a new tab
+            window.open(fileURL, '_blank');
+        } else {
+            console.error("Empty or invalid response data");
+        }
+    } catch (error) {
+        console.error("Error fetching preview data:", error);
+    }
+};
+
+const handleApprove = async (docName) => {
+  try {
+    const URL = `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`;
+    console.log(URL);
+    const response = await axios.put(`http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`, {
+      // fieldToUpdate: 'status',  // Replace with your specific field to update
+      // updatedValue: 'approved'  // Replace with the value to update
+    });
+    console.log(`${docName} Approved`);
+    console.log(response.data);  // Log the response from server
+    // Optionally, update local state or perform other actions upon successful approval
+
+  } catch (error) {
+    console.error("Error approving document:", error);
+    // Handle error scenarios as needed
   }
+};
 
-  const handleApprove = (id) => {
-    console.log(`Approved document with ID: ${id}`);
-  };
 
-  const handleReject = (id) => {
-    console.log(`Rejected document with ID: ${id}`);
-    setRejectedDocuments([...rejectedDocuments, id]);
-  };
+const handleReject = async (docName) => {
+  try {
+    const URL = `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${docName}`;
+    console.log(URL);
+    const response = await axios.put(`http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${docName}`, {
+      // fieldToUpdate: 'status',  // Replace with your specific field to update
+      // updatedValue: 'approved'  // Replace with the value to update
+    });
+    console.log(`${docName} Rejected`);
+    console.log(response.data);  // Log the response from server
+    // Optionally, update local state or perform other actions upon successful approval
+
+  } catch (error) {
+    console.error("Error approving document:", error);
+    // Handle error scenarios as needed
+  }
+};
+
 
   const handleReupload = (id, event) => {
     const file = event.target.files[0];
     console.log(`Reuploaded document with ID: ${id}`, file);
 
     const updatedDocuments = documents.map((doc) =>
-      doc.id === id ? { ...doc, preview: URL.createObjectURL(file) } : doc
+      doc.id === id ? { ...doc, preview: window.URL.createObjectURL(file) } : doc
     );
 
     setDocuments(updatedDocuments);
@@ -257,10 +347,12 @@ function DocVerification() {
                 <b>Application number</b>: 1718437327903
               </div>
               <div className="col">
-                <b>JEE seat number</b>: {DocVerificationData[0].jee_application_number}
+                <b>JEE seat number</b>:{" "}
+                {DocVerificationData[0].jee_application_number}
               </div>
               <div className="col">
-                <b>CET seat number</b>: {DocVerificationData[0].cet_application_id}
+                <b>CET seat number</b>:{" "}
+                {DocVerificationData[0].cet_application_id}
               </div>
             </div>
             <div className="row verify-row2">
@@ -277,53 +369,56 @@ function DocVerification() {
           </div>
         </div>
         <div className="doc-container">
-          {documents.map((row) => (
-            
-            <div className="row doc-row" key={row.id}>
-              <div className="col arbtn">
-                <b>{row.name}</b>
-              </div>
-              <div className="col">
-                <button
-                  className="btn arbtn preview-btn"
-                  onClick={() =>{handlePreview()} }
-                >
-                  Preview
-                </button>
-              </div>
-              <div className="col">
-                <div className="row btn-row">
+          {documents
+            .filter((doc) => documentUploaded.includes(doc.dbcol))
+            .map((row) => (
+              <div className="row doc-row" key={row.id}>
+                <div className="col arbtn">
+                  <b>{row.name}</b>
+                </div>
+                <div className="col">
                   <button
-                    type="button"
-                    className="btn btn-success arbtn"
-                    onClick={() => handleApprove(row.id)}
+                    className="btn arbtn preview-btn"
+                    onClick={() => {
+                      handlePreview(row.dbcol);
+                    }}
                   >
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-danger arbtn"
-                    onClick={() => handleReject(row.id)}
-                  >
-                    Reject
+                    Preview
                   </button>
                 </div>
-              </div>
-              {rejectedDocuments.includes(row.id) && (
-                <div className="input-group mb-3">
-                  <input
-                    type="file"
-                    className="form-control"
-                    id="inputGroupFile02"
-                    onChange={(event) => handleReupload(row.id, event)}
-                  />
-                  <label className="input-group-text" for="inputGroupFile02">
-                    Upload
-                  </label>
+                <div className="col">
+                  <div className="row btn-row">
+                    <button
+                      type="button"
+                      className="btn btn-success arbtn"
+                      onClick={() => handleApprove(row.dbcol)}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger arbtn"
+                      onClick={() => handleReject(row.dbcol)}
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+                {RejectedDocument.includes(row.dbcol) && (
+                  <div className="input-group mb-3">
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="inputGroupFile02"
+                      onChange={(event) => handleReupload(row.id, event)}
+                    />
+                    <label className="input-group-text" htmlFor="inputGroupFile02">
+                      Upload
+                    </label>
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
         <div className="generate-receipt">
           <div className="row">
@@ -333,7 +428,6 @@ function DocVerification() {
           </div>
         </div>
       </div>
-      {/* {showModal && <PreviewModal />} */}
     </>
   );
 }
