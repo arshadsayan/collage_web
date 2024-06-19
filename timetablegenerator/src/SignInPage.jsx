@@ -21,7 +21,7 @@ export default function SignInPage({ onSignIn, goToSignup, handleCheck }) {
   
     // Proceed with the usual sign-in process
     try {
-      const response = await fetch('http://localhost:3001/api/signin', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default function SignInPage({ onSignIn, goToSignup, handleCheck }) {
 const handleResetPassword = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/reset-password', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const handleResetPassword = async (event) => {
 const handleRequestOtp = async (event) => {
   event.preventDefault();
   try {
-    const response = await fetch('http://localhost:3001/api/request-reset-password', {
+    const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/request-reset-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

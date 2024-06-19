@@ -126,7 +126,7 @@ export default function App() {
 
   const handleCheck = async (email) => {
     try {
-      const response = await fetch('http://localhost:3001/api/check', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -208,7 +208,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('http://localhost:3001/api/submit', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });
