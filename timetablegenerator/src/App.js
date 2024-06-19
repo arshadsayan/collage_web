@@ -16,6 +16,7 @@ import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
   const [error, setError] = useState('');
+
   const [formData, setFormData] = useState({
     personalDetails: {
       fullName: '',
@@ -123,6 +124,30 @@ export default function App() {
     <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
 
+  const handleCheck = async (email) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+  
+      const result = await response.json();
+      if (result.key === 1) {
+        return true;
+      } else {
+        alert('User already submitted the form');
+        setError(result.message);
+        return false;
+      }
+    } catch (error) {
+      setError('Network error: ' + error.message);
+      return false;
+    }
+  };
+
   const nextSection = () => {
     if (!validateCurrentSection()) return;
     if (currentSection < sections.length - 1) {
@@ -183,7 +208,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/submit', {
+      const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -227,13 +252,14 @@ export default function App() {
     }));
     setCurrentSection(-2); // Navigate back to the sign-in page after signup
   };
+  
 
   return (
     <Layout>
     <div className="container">
       
       {currentSection === -2 ? (
-        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
+        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} handleCheck={handleCheck} />
       ) : currentSection === -1 ? (
         <SignupPage onSignupComplete={handleSignupComplete} />
       ) : (

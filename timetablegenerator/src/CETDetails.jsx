@@ -45,12 +45,12 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
   const validate = () => {
     const { cetappId, cetrollNo, cetmathsPer, cetphysicsPer, cetchemistryPer, cetPer, jeeappNum, jeePer } = formData.cetDetails;
 
-    if (!cetappId || !cetrollNo || !cetmathsPer || !cetphysicsPer || !cetchemistryPer || !cetPer || !jeeappNum || !jeePer) {
+    if (!cetappId || !cetrollNo || !cetmathsPer || !cetphysicsPer || !cetchemistryPer || !cetPer) {
       setError('Please fill out all fields.');
       return false;
     }
 
-    const percentages = [cetmathsPer, cetphysicsPer, cetchemistryPer, cetPer, jeePer];
+    const percentages = [cetmathsPer, cetphysicsPer, cetchemistryPer, cetPer];
     for (const percentage of percentages) {
       if (isNaN(parseFloat(percentage)) || parseFloat(percentage) < 0 || parseFloat(percentage) > 100) {
         setError(<span style={{ color: 'red' }}>'Percentages and percentiles must be between 0 and 100.'</span>);
@@ -73,31 +73,31 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
       <div className="input-fields side-by-side">
         <div className="input-field">
           <label for="cetappId">CET application ID:</label>
-          <input type="text" id="cetappId" value={formData.cetDetails.cetappId} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetappId" value={formData.cetDetails.cetappId} onChange={handleChange} placeholder="Enter CET application ID" />
         </div>
         <div className="input-field">
           <label for="cetrollNo">CET roll number:</label>
-          <input type="text" id="cetrollNo" value={formData.cetDetails.cetrollNo} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetrollNo" value={formData.cetDetails.cetrollNo} onChange={handleChange} placeholder="Enter CET roll number" />
         </div>
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
           <label for="cetmathsPer">CET maths percentile:</label>
-          <input type="text" id="cetmathsPer" value={formData.cetDetails.cetmathsPer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetmathsPer" value={formData.cetDetails.cetmathsPer} onChange={handleChange} placeholder="Enter CET maths percentile" />
         </div>
         <div className="input-field">
           <label for="cetphysicsPer">CET physics percentile:</label>
-          <input type="text" id="cetphysicsPer" value={formData.cetDetails.cetphysicsPer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetphysicsPer" value={formData.cetDetails.cetphysicsPer} onChange={handleChange} placeholder="Enter CET physics percentile" />
         </div>
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
           <label for="cetchemistryPer">CET chemistry percentile:</label>
-          <input type="text" id="cetchemistryPer" value={formData.cetDetails.cetchemistryPer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetchemistryPer" value={formData.cetDetails.cetchemistryPer} onChange={handleChange} placeholder="Enter CET chemistry percentile" />
         </div>
         <div className="input-field">
           <label for="cetPer">CET Percentile:</label>
-          <input type="text" id="cetPer" value={formData.cetDetails.cetPer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="cetPer" value={formData.cetDetails.cetPer} onChange={handleChange} placeholder="Enter CET Percentile" />
         </div>
       </div>
 
@@ -106,11 +106,11 @@ const CETDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
       <div className="input-fields side-by-side">
         <div className="input-field">
           <label for="jeeappNum">JEE application number:</label>
-          <input type="text" id="jeeappNum" value={formData.cetDetails.jeeappNum} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="jeeappNum" value={formData.cetDetails.jeeappNum} onChange={handleChange} placeholder="Enter JEE application number" />
         </div>
         <div className="input-field">
           <label for="jeePer">JEE percentile:</label>
-          <input type="text" id="jeePer" value={formData.cetDetails.jeePer} onChange={handleChange} placeholder="Enter semester" />
+          <input type="text" id="jeePer" value={formData.cetDetails.jeePer} onChange={handleChange} placeholder="Enter JEE percentile" />
         </div>
       </div>
       <br></br>

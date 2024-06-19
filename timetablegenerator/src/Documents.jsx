@@ -153,7 +153,7 @@ NT(B) / NT(C) /NT(D) /O.B.C/ SBC
                 </tr>
             </tbody>
         </table>
-        <h1 className="center page-heading">All the documents should be scanned (PDF) or in photo format (JPEG,PNG) and it should be under 250KB</h1>
+        <h5 className="center page-heading">All the documents should be scanned (PDF) or in photo format (JPEG,PNG) and it should be under 250KB</h5>
         
     </div>
     
