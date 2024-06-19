@@ -86,20 +86,18 @@ export default function App() {
       transactionproof: null,
       other: null
     },
-   
-    preferences: ['', '', '', '', '', '', '', '']
+    preferences: ['', '', '', '', '', '', '', ''],
+    formType: '' // Add formType to formData
   });
 
   const [filePreviews, setFilePreviews] = useState({});
 
   const [formData1, setFormData1] = useState({
-  
-      date: '',
-      amount: '2000/-',
-      transactionId: '',
-      file: null,
-      paymentAgainst: ''
-    
+    date: '',
+    amount: '2000/-',
+    transactionId: '',
+    file: null,
+    paymentAgainst: ''
   });
 
   const [userId, setUserId] = useState('');
@@ -139,11 +137,10 @@ export default function App() {
   };
 
   const validateCurrentSection = () => {
-
     if (currentSection === -2 || currentSection === -1 || currentSection === 4) {
       return true;
     }
-    
+
     if (currentSection >= 0 && currentSection < sections.length) {
       const refs = [
         null,
@@ -154,36 +151,29 @@ export default function App() {
         documentUploadRef,
         admissionFormRef
       ];
-  
-      // Check if the ref is defined before calling validate
+
       if (refs[currentSection] && refs[currentSection].current) {
         return refs[currentSection].current.validate();
       }
     }
     return true; // Skip validation for sign-in and sign-up sections
   };
-  
+
   const handleSubmit = async () => {
     const formDataToSend = new FormData();
-  
-  // Append personal, academic, and cet details as JSON string
-  formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
-  formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
-  formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
-  formDataToSend.append('preferences', JSON.stringify(formData.preferences));
+    formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
+    formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
+    formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
+    formDataToSend.append('preferences', JSON.stringify(formData.preferences));
+    formDataToSend.append('formType', formData.formType);
+    formDataToSend.append('formData1', JSON.stringify(formData1));
 
-  formDataToSend.append('formData1', JSON.stringify(formData1));
-
-
-  
-  
-  // Append files
-  Object.keys(formData.documentUpload).forEach(key => {
-    formDataToSend.append(key, formData.documentUpload[key]);
-  });
+    Object.keys(formData.documentUpload).forEach(key => {
+      formDataToSend.append(key, formData.documentUpload[key]);
+    });
 
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/submit', {
+      const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -228,27 +218,47 @@ export default function App() {
     setCurrentSection(-2); // Navigate back to the sign-in page after signup
   };
 
+  const handleFormSelection = (formLabel) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      formType: formLabel // Update formType in formData
+    }));
+  };
+
   return (
     <Layout>
-    <div className="container">
-      
-      {currentSection === -2 ? (
-        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
-      ) : currentSection === -1 ? (
-        <SignupPage onSignupComplete={handleSignupComplete} />
-      ) : (
-        <>
-          {sections[currentSection]}
-          {error && <p className="error">{error}</p>}
-          <br></br>
-          <div className="buttons">
-            <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
-            <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-            {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
-          </div>
-        </>
-      )}
-    </div>
+      <div className="container">
+        {currentSection === -2 ? (
+          <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
+        ) : currentSection === -1 ? (
+          <SignupPage onSignupComplete={handleSignupComplete} />
+        ) : (
+          <>
+            <div className="form-selection">
+              <button onClick={() => handleFormSelection('Form A')}>Form A</button>
+              <button onClick={() => handleFormSelection('Form B')}>Form B</button>
+              <button onClick={() => handleFormSelection('Form C')}>Form C</button>
+              <button onClick={() => handleFormSelection('Form D')}>Form D</button>
+            </div>
+            {formData.formType === 'Form A' ? (
+              <>
+                {sections[currentSection]}
+                {error && <p className="error">{error}</p>}
+                <br />
+                <div className="buttons">
+                  <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+                  <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
+                  {currentSection === sections.length - 1 && (
+                    <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p>Select a form to fill</p> // Placeholder text for other forms
+            )}
+          </>
+        )}
+      </div>
     </Layout>
   );
 }

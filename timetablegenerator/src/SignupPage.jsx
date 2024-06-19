@@ -11,7 +11,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/generate-key-and-send-otp', {
+      const response = await fetch('http://localhost:3001/api/generate-key-and-send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleVerifyOtp = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/verify-otp', {
+      const response = await fetch('http://localhost:3001/api/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
