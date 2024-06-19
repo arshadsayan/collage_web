@@ -219,16 +219,16 @@ function TransactionForm({formData1,setFormData1}) {
               </select>
             </div>
 
-            <div className='input-field'>
+            {/* <div className='input-field'>
               <label htmlFor="file">Upload Proof (only* JPG format):</label>
               <input type="file" name="file" accept="image/*" onChange={handleChange} />
-            </div>
+            </div> */}
 
             {loading && <p>Loading...</p>}
 
-            <div className='buttons'>
+            {/* <div className='buttons'>
               <button type="submit">Submit</button>
-            </div>
+            </div> */}
           </div>
           <div className='center page-heading'>
             {message && <p>{message}</p>}

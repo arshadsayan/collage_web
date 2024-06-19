@@ -67,7 +67,8 @@ export default function App() {
       cetphysicsPer: '',
       cetchemistryPer: '',
       jeeappNum: '',
-      jeePer: ''
+      jeePer: '',
+      cetPer: ''
     },
     documentUpload: {
       photo: null,
@@ -76,7 +77,14 @@ export default function App() {
       leavingCertificate12: null,
       marksheet12: null,
       cetMarksheet: null,
-      jeeMarksheet: null
+      jeeMarksheet: null,
+      domicilecert: null,
+      castecertificate: null,
+      castevalidity: null,
+      noncreamylayer: null,
+      income: null,
+      transactionproof: null,
+      other: null
     },
    
     preferences: ['', '', '', '', '', '', '', '']
@@ -162,6 +170,12 @@ export default function App() {
   formDataToSend.append('personalDetails', JSON.stringify(formData.personalDetails));
   formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
+  formDataToSend.append('preferences', JSON.stringify(formData.preferences));
+
+  formDataToSend.append('formData1', JSON.stringify(formData1));
+
+
+  
   
   // Append files
   Object.keys(formData.documentUpload).forEach(key => {
@@ -169,7 +183,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('http://localhost:3001/api/submit', {
+      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });

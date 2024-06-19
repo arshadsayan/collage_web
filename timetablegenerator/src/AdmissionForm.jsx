@@ -127,6 +127,10 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
               <td colSpan="3">{formData.personalDetails.perAddr}</td>
             </tr>
             <tr>
+              <td className="label">State</td>
+              <td colSpan="3">{formData.personalDetails.state}</td>
+            </tr>
+            <tr>
               <td className="label">Area</td>
               <td>{formData.personalDetails.area}</td>
               <td className="label">Nationality</td>

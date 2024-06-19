@@ -55,6 +55,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
     setDate(date); // Update selectedDate state with the new date
     CustomDateInput(date, setIsValidDate); // Validate the date and update isValidDate
   };
+
   const handleChange = (e) => {    //change2
     const { id, value, type, checked } = e.target;
     let newValue = value;
@@ -73,7 +74,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       return;
     }
 
-    if (id !== 'email' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category') {
+    if (id !== 'email' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category' && id !== 'state' && id !== 'nationality' && id !== 'religion') {
       newValue = value.toUpperCase();
     }
 

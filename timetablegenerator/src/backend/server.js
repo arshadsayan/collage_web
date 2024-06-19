@@ -22,7 +22,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'MySQL123',
+  password: 'admin',
   database: 'reg_portal'
 });
 
@@ -126,7 +126,7 @@ const storage = multer.diskStorage({
     console.log(dirname);
     console.log(typeof(dirname))
     
-    const uploadPath =  dirname;
+    const uploadPath =  `public/${dirname}`;
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
@@ -159,13 +159,21 @@ app.post('/api/submit', upload.fields([
   { name: 'marksheet12', maxCount: 1 },
   { name: 'cetMarksheet', maxCount: 1 },
   { name: 'jeeMarksheet', maxCount: 1 },
+  { name: 'domicilecert', maxCount: 1 },
+  { name: 'castecertificate', maxCount: 1 },
+  { name: 'castevalidity', maxCount: 1 },
+  { name: 'noncreamylayer', maxCount: 1 },
+  { name: 'income', maxCount: 1 },
+  { name: 'transactionproof', maxCount: 1 },
+  { name: 'other', maxCount: 1 },
   { name: 'signature', maxCount: 1 }
 ]), (req, res) => {
   const personalDetails = JSON.parse(req.body.personalDetails);
   const academicDetails = JSON.parse(req.body.academicDetails);
   const cetDetails = JSON.parse(req.body.cetDetails);
   const preferences = JSON.parse(req.body.preferences); // Parse preferences
-  const transactionDetails = JSON.parse(req.body.transactionDetails);
+  const formData1 = JSON.parse(req.body.formData1);
+  // const transactionDetails = JSON.parse(req.body.transactionDetails);
   
   // Retrieve the user's id from the user_registration table using the email
   const getUserQuery = 'SELECT id FROM user_registration WHERE email = ?';
@@ -192,7 +200,7 @@ app.post('/api/submit', upload.fields([
         mother_occupation: personalDetails.mothersOccupation,
         mother_mobile_number: personalDetails.mothersmobileNumber,
         sex: personalDetails.sex,
-        annual_income: personalDetails.annualIncome,
+        annual_income: personalDetails.annualIncome.replace(/₹/g, ''),
         corres_address: personalDetails.corrAddr,
         permanent_address: personalDetails.perAddr,
         area: personalDetails.area,
@@ -206,7 +214,7 @@ app.post('/api/submit', upload.fields([
         hsc_chemistry: academicDetails.hscchemistryMarks,
         hsc_pcm_percentage: academicDetails.hscpcmPercentage,
         hsc_vocational_subject_name: academicDetails.hscvocationalSub,
-        hsc_vocational_subject_percentage: academicDetails.hscvocationalsubjectPer,
+        hsc_vocational_subject_percentage: academicDetails.hscvovationalsubjectPer,
         '10th_board_name': academicDetails.sscBoard,
         '10th_year_of_passing': academicDetails.sscyearofPass,
         '10th_total_marks': academicDetails.ssctotalMarks,
@@ -219,6 +227,7 @@ app.post('/api/submit', upload.fields([
         '12th_percentage': academicDetails.hscPercentage,
         cet_application_id: cetDetails.cetappId,  
         cet_roll_number: cetDetails.cetrollNo,
+        cet_percentile: cetDetails.cetPer,
         cet_maths_percentile: cetDetails.cetmathsPer,
         cet_physics_percentile: cetDetails.cetphysicsPer,
         cet_chemistry_percentile: cetDetails.cetchemistryPer,
@@ -230,12 +239,19 @@ app.post('/api/submit', upload.fields([
         marksheet12: req.files['marksheet12'] ? req.files['marksheet12'][0].path : null,
         cetMarksheet: req.files['cetMarksheet'] ? req.files['cetMarksheet'][0].path : null,
         jeeMarksheet: req.files['jeeMarksheet'] ? req.files['jeeMarksheet'][0].path : null,
+        domicilecert: req.files['domicilecert'] ? req.files['domicilecert'][0].path : null,
+        castecertificate: req.files['castecertificate'] ? req.files['castecertificate'][0].path : null,
+        castevalidity: req.files['castevalidity'] ? req.files['castevalidity'][0].path : null,
+        noncreamylayer: req.files['noncreamylayer'] ? req.files['noncreamylayer'][0].path : null,
+        income: req.files['income'] ? req.files['income'][0].path : null,
+        transaction_proof: req.files['transactionproof'] ? req.files['transactionproof'][0].path : null,
+        other: req.files['other'] ? req.files['other'][0].path : null,
         signature: req.files['signature'] ? req.files['signature'][0].path : null,
-        preferences: preferences,
-        transaction_date: transactionDetails.date,
-        transaction_amount: transactionDetails.amount,
-        transaction_id: transactionDetails.transactionId,
-        transaction_against: transactionDetails.transactionAgainst
+        preferences: JSON.stringify(preferences).replace(/'/g, '"'),
+        transaction_date: formData1.date,
+        transaction_amount: formData1.amount,
+        transaction_id: formData1.transactionId,
+        transaction_against: formData1.paymentAgainst
       };
 
       const query = 'INSERT INTO user_details SET ?';
