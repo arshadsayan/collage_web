@@ -1,14 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./DocVerification.css";
 import DocumentViewerComponent from "./DocumentViewerComponent";
-
-// import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-// import PreviewModal from "./PreviewModal";
+import axios from 'axios';
 
 function DocVerification() {
   const location = useLocation();
+  const { uidRecieved } = location.state || {};
+  
+  const [DocVerificationData, setDocVerificationData] = useState([]);
+  const [loading, setLoading] = useState(true); // Add a loading state
+
+  useEffect(() => {
+    if (uidRecieved) {
+      axios.get(`http://localhost:3001/docverification/${uidRecieved}`)
+        .then((response) => {
+          setDocVerificationData(response.data);
+          setLoading(false); // Set loading to false once data is fetched
+        })
+        .catch((error) => {
+          console.error('There was an error fetching the data!', error);
+          setLoading(false); // Set loading to false even if there's an error
+        });
+    }
+  }, [uidRecieved]);
+
   const navigate = useNavigate();
 
   const handleBackClick = () => {
@@ -19,75 +36,74 @@ function DocVerification() {
     navigate("/receitGeneration");
   };
 
-  let [showModal, setShowModal] = useState(false);
-  const setmodaltrue = () => {
-    setShowModal(true);
-  };
-  const setmodalfalse = () => {
-    setShowModal(false);
-  };
+  // let [showModal, setShowModal] = useState(false);
+  // const setmodaltrue = () => {
+  //   setShowModal(true);
+  // };
+  // const setmodalfalse = () => {
+  //   setShowModal(false);
+  // };
 
-  function PreviewModal() {
-    const ApproveDoc = () => {
-      console.log("Document approved");
-    };
-    const RejectDoc = () => {
-      console.log("Document rejected");
-    };
-    return (
-      <>
-        <div className="modal-wrapper">
-          <div className="modal">
-            <div className="row">
-              <button
-                type="button"
-                onClick={setmodalfalse}
-                class="btn btn-secondary"
-              >
-                Back
-              </button>
-            </div>
-            <div className="row">
-              <img
-                src="https://picsum.photos/200/300"
-                className="img-fluid"
-                alt="..."
-              />
-            </div>
-            <div className="row">
-              <div className="col">
-                <button
-                  type="button"
-                  onClick={ApproveDoc}
-                  class="btn btn-success"
-                >
-                  Approve
-                </button>
-              </div>
-              <div className="col">
-                <button
-                  type="button"
-                  onClick={RejectDoc}
-                  class="btn btn-danger"
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  // function PreviewModal() {
+  //   const ApproveDoc = () => {
+  //     console.log("Document approved");
+  //   };
+  //   const RejectDoc = () => {
+  //     console.log("Document rejected");
+  //   };
+  //   return (
+  //     <>
+  //       <div className="modal-wrapper">
+  //         <div className="modal">
+  //           <div className="row">
+  //             <button
+  //               type="button"
+  //               onClick={setmodalfalse}
+  //               className="btn btn-secondary"
+  //             >
+  //               Back
+  //             </button>
+  //           </div>
+  //           <div className="row">
+  //             <img
+  //               src="https://picsum.photos/200/300"
+  //               className="img-fluid"
+  //               alt="..."
+  //             />
+  //           </div>
+  //           <div className="row">
+  //             <div className="col">
+  //               <button
+  //                 type="button"
+  //                 onClick={ApproveDoc}
+  //                 className="btn btn-success"
+  //               >
+  //                 Approve
+  //               </button>
+  //             </div>
+  //             <div className="col">
+  //               <button
+  //                 type="button"
+  //                 onClick={RejectDoc}
+  //                 className="btn btn-danger"
+  //               >
+  //                 Reject
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
-  // State to keep track of rejected documents
   const [rejectedDocuments, setRejectedDocuments] = useState([]);
 
-  // State for documents
   const [documents, setDocuments] = useState([
     {
       id: 1,
       name: "12th Marksheet",
+      dbcol: "",
       preview: "This is the preview of Document 1",
     },
     {
@@ -110,39 +126,92 @@ function DocVerification() {
       name: "Minority Certificate",
       preview: "This is the preview of Document 5",
     },
-    { id: 6, name: "Signature", preview: "This is the preview of Document 6" },
+    { id: 6, 
+      name: "Signature", 
+      preview: "This is the preview of Document 6" },
     {
       id: 7,
       name: "Transaction Proof",
       preview: "This is the preview of Document 7",
     },
+    {
+      id: 8,
+      name: "Domicile",
+      preview: "This is the preview of Document 8",
+    },
+    {
+      id: 9,
+      name: "Caste Certificate",
+      preview: "This is the preview of Document 9",
+    },
+    {
+      id: 10,
+      name: "Caste Validity",
+      preview: "This is the preview of Document 10",
+    },
+    {
+      id: 11,
+      name: "Income Certificate",
+      preview: "This is the preview of Document 11",
+    },
+    {
+      id: 12,
+      name: "Non Creamy layer",
+      preview: "This is the preview of Document 12",
+    },
+    {
+      id: 13,
+      name: "Other Document",
+      preview: "This is the preview of Document 7",
+    },
+    
   ]);
+
+
+  const handlePreview = (nameURL) => {
+    axios({
+      url: `http://localhost:3001/files/aryaangane@gmail.com/cetMarksheet.pdf`,
+      method: 'GET',
+      responseType: 'blob', // Ensure response is treated as binary data
+    })
+      .then((response) => {
+        const file = new Blob([response.data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, '_blank');
+      })
+      .catch((error) => {
+        console.error('Error fetching document URL:', error);
+        // Handle error as needed
+      });
+  }
 
   const handleApprove = (id) => {
     console.log(`Approved document with ID: ${id}`);
-    // Add your logic for handling approval here
   };
 
   const handleReject = (id) => {
     console.log(`Rejected document with ID: ${id}`);
-    setRejectedDocuments([...rejectedDocuments, id]); // Mark document as rejected
+    setRejectedDocuments([...rejectedDocuments, id]);
   };
 
   const handleReupload = (id, event) => {
     const file = event.target.files[0];
-    // Simulate uploading logic; replace with actual upload to server
     console.log(`Reuploaded document with ID: ${id}`, file);
 
-    // Update the document's preview URL based on your upload logic
     const updatedDocuments = documents.map((doc) =>
       doc.id === id ? { ...doc, preview: URL.createObjectURL(file) } : doc
     );
 
-    const HandleUpload = ()=>{
-      console.log('Handle upload');
-    }
     setDocuments(updatedDocuments);
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Render loading state while fetching data
+  }
+
+  if (DocVerificationData.length === 0) {
+    return <div>No data available</div>; // Render a message if there's no data
+  }
 
   return (
     <>
@@ -165,7 +234,6 @@ function DocVerification() {
       <div className="documents-container">
         <div className="row verify-row1">
           <div className="col-1 verify-col">
-            {/* Replace with actual profile picture */}
             <img
               className="img-style"
               src="C:\Users\Arya\OneDrive\Documents\GitHub\T-G\timetablegenerator\documents\student pic.jpeg"
@@ -175,32 +243,32 @@ function DocVerification() {
           <div className="col-9 verify-col2">
             <div className="row verify-row2">
               <div className="col">
-                <b>Name</b>: ggh
+                <b>Name</b>: {DocVerificationData[0].fullname}
               </div>
               <div className="col">
-                <b>Email</b>: markhenry2020@gmail.com
+                <b>Email</b>: {DocVerificationData[0].email}
               </div>
               <div className="col">
-                <b>Mobile number</b>: 9812367212
-              </div>
-            </div>
-            <div className="row verify-row2">
-              <div className="col">
-                <b>Application number</b>: 23812912
-              </div>
-              <div className="col">
-                <b>JEE seat number</b>: ADSA12133
-              </div>
-              <div className="col">
-                <b>CET seat number</b>: BCK123129
+                <b>Mobile number</b>: {DocVerificationData[0].mobile_number}
               </div>
             </div>
             <div className="row verify-row2">
               <div className="col">
-                <b>Annual Income</b>: 600000 - 800000
+                <b>Application number</b>: 1718437327903
               </div>
               <div className="col">
-                <b>Minority</b>: Yes
+                <b>JEE seat number</b>: {DocVerificationData[0].jee_application_number}
+              </div>
+              <div className="col">
+                <b>CET seat number</b>: {DocVerificationData[0].cet_application_id}
+              </div>
+            </div>
+            <div className="row verify-row2">
+              <div className="col">
+                <b>Annual Income</b>: {DocVerificationData[0].annual_income}
+              </div>
+              <div className="col">
+                <b>Category</b>: {DocVerificationData[0].category}
               </div>
               <div className="col">
                 <b>Applied TFWS</b>: No
@@ -210,15 +278,15 @@ function DocVerification() {
         </div>
         <div className="doc-container">
           {documents.map((row) => (
+            
             <div className="row doc-row" key={row.id}>
               <div className="col arbtn">
                 <b>{row.name}</b>
               </div>
               <div className="col">
-                {/* Preview button opens document in a new tab */}
                 <button
                   className="btn arbtn preview-btn"
-                  onClick={() => window.open(row.preview, "_blank")}
+                  onClick={() =>{handlePreview()} }
                 >
                   Preview
                 </button>
@@ -241,16 +309,15 @@ function DocVerification() {
                   </button>
                 </div>
               </div>
-              {/* Display re-upload input for rejected documents */}
               {rejectedDocuments.includes(row.id) && (
-                <div class="input-group mb-3">
+                <div className="input-group mb-3">
                   <input
                     type="file"
-                    class="form-control"
+                    className="form-control"
                     id="inputGroupFile02"
+                    onChange={(event) => handleReupload(row.id, event)}
                   />
-                  <label class="input-group-text" 
-                  for="inputGroupFile02">
+                  <label className="input-group-text" for="inputGroupFile02">
                     Upload
                   </label>
                 </div>
@@ -266,7 +333,7 @@ function DocVerification() {
           </div>
         </div>
       </div>
-      {showModal && <PreviewModal />}
+      {/* {showModal && <PreviewModal />} */}
     </>
   );
 }

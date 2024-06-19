@@ -165,6 +165,22 @@ app.get('/data', (req, res) => {
   });
 });
 
+//Docverification page get and fetching
+app.get('/docverification/:uid', (req, res) => {
+  const userId = req.params.uid;
+  console.log(userId);
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature FROM user_details WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
 
 
 app.listen(port, () => {
