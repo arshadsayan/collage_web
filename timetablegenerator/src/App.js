@@ -259,6 +259,7 @@ export default function App() {
       setCurrentSection(0); // Proceed to the first section of the form
     }
   };
+
   const handleCheck = async (email, formType) => {
     try {
       const response = await fetch('http://localhost:3001/api/check', {
@@ -325,7 +326,7 @@ export default function App() {
                 </div>
               </>
             ) : (
-              <p>Select a form to fill</p> // Placeholder text for other forms
+              <p></p> // Placeholder text for other forms
             )
             )}
           </>
