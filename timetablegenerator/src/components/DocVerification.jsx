@@ -334,18 +334,46 @@ function DocVerification() {
     // window.location.reload();
   }
 
-  const handleReupload = (id, event) => {
-    const file = event.target.files[0];
-    console.log(`Reuploaded document with ID: ${id}`, file);
+  ///////////////////////////Handling Reupload Button///////////////////////////////////////
+  const [file, setFile] = useState(null);
 
-    const updatedDocuments = documents.map((doc) =>
-      doc.id === id
-        ? { ...doc, preview: window.URL.createObjectURL(file) }
-        : doc
-    );
-
-    setDocuments(updatedDocuments);
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
   };
+  const handleUpload = () => {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      axios.post('http://localhost:3001/reupload', formData)
+        .then(response => {
+          console.log('File uploaded successfully');
+          // Handle success, e.g., show a success message
+        })
+        .catch(error => {
+          console.error('Error uploading file: ', error);
+          // Handle errors, e.g., show an error message
+        });
+    } else {
+      // Handle case where no file is selected
+      console.warn('No file selected');
+    }
+  };
+  //////////////////////////////////////////////////////////////////////////////////////////
+
+  // const handleReupload = (id, event) => {
+  //   const file = event.target.files[0];
+  //   console.log(`Reuploaded document with ID: ${id}`, file);
+
+  //   const updatedDocuments = documents.map((doc) =>
+  //     doc.id === id
+  //       ? { ...doc, preview: window.URL.createObjectURL(file) }
+  //       : doc
+  //   );
+
+  //   setDocuments(updatedDocuments);
+  // };
 
   if (loading) {
     return <div>Loading...</div>; // Render loading state while fetching data
@@ -428,6 +456,9 @@ function DocVerification() {
                 <div className="col arbtn">
                   <b>{row.name}</b>
                 </div>
+                <div className="col arbtn">
+                  <b>Status   :   {DocVerificationData[0][`${row.dbcol}Status`]}</b>
+                </div>
                 <div className="col">
                   <button
                     className="btn arbtn preview-btn"
@@ -438,6 +469,8 @@ function DocVerification() {
                     Preview
                   </button>
                 </div>
+               
+                
                 <div className="col">
                   <div className="row btn-row">
                     <button
@@ -462,11 +495,12 @@ function DocVerification() {
                       type="file"
                       className="form-control"
                       id="inputGroupFile02"
-                      onChange={(event) => handleReupload(row.id, event)}
+                      onChange={handleFileChange}
                     />
                     <label
                       className="input-group-text"
                       htmlFor="inputGroupFile02"
+                      onClick={handleUpload}
                     >
                       Reupload
                     </label>
@@ -498,7 +532,7 @@ function DocVerification() {
           </div>
         )}
         {DocVerificationData[0].documentsApproved === 'Approved' &&(
-          <div className="generate-receipt">
+          <div className="generate-receipt2">
             <div className="row doc-row">
               <div className="col doc-Submitted">
                 All Documents Submitted and Approved

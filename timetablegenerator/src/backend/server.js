@@ -35,7 +35,7 @@ function mailsend(docName, email){
     from: 'otp.graphicalauthenticator@gmail.com',
     to: emailtoSend,
     subject: 'Rejected Documents',
-    text: `${documentReject} Documnet Rejected`,
+    text: `${documentReject} Documnet Rejected \n Please visit admin office with correct softcopy of Corresponding document \n[File size < 250kb, File type allowed(pdf/jpeg/png) `,
     // attachments: [
     //   {
     //       path: 'E:/Desktop/attachment.txt'
@@ -188,7 +188,7 @@ app.post('/api/submit', upload.fields([
 //Admin portal data fetching
 // Create an endpoint to fetch data
 app.get('/data', (req, res) => {
-  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionApproved FROM user_details';
+  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus FROM user_details';
   
   db.query(query, (err, results) => {
     if (err) {
@@ -204,7 +204,7 @@ app.get('/data', (req, res) => {
 app.get('/docverification/:uid', (req, res) => {
   const userId = req.params.uid;
   console.log(userId);
-  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, transactionApproved, documentsApproved FROM user_details WHERE id = '${userId}';`;
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, transactionproofStatus, documentsApproved FROM user_details WHERE id = '${userId}';`;
   
   db.query(query, (err, results) => {
     if (err) {
@@ -301,6 +301,15 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
   });
 });
 
+// Endpoint to handle file Reupload at Admin side
+app.post('/reupload', upload.single('file'), (req, res) => {
+  // Multer adds a 'file' object to the request object
+  const file = req.file;
+  if (!file) {
+      return res.status(400).send('No file uploaded.');
+  }
+  res.send('File uploaded successfully.');
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -160,3 +160,12 @@ body{
 .titlepage{
     text-align: left;
 }
+
+.doc-Submitted{
+    height: 50px;
+    margin-top: 20px;
+}
+
+.generate-receipt2{
+    padding-bottom: 50px;
+}

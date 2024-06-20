@@ -47,16 +47,22 @@ function ApplicantsList() {
   const setDocStatusApproved = ()=>{
     setDocStatus("Approved");
   };
-  const setDocStatusDisapproved = ()=>{
+  const setDocStatusNotApproved = ()=>{
     setDocStatus("Not Approved");
   };
+  const setDocStatusRejected = ()=>{
+    setDocStatus("Rejected");
+  };
 
-  const [TransactionStatus, setTransactionStatus] = useState("Pending");
-  const setTransactionStatusCompleted = ()=>{
-    setTransactionStatus("Completed");
+  const [TransactionStatus, setTransactionStatus] = useState("Not Approved");
+  const setTransactionStatusApproved = ()=>{
+    setTransactionStatus("Approved");
   }
-  const setTransactionStatusPending = ()=>{
-    setTransactionStatus("Pending");
+  const setTransactionStatusNotApproved = ()=>{
+    setTransactionStatus("Not Approved");
+  }
+  const setTransactionStatusRejected= ()=>{
+    setTransactionStatus("Rejected");
   }
 
 
@@ -67,13 +73,21 @@ function ApplicantsList() {
     axios.get('http://localhost:3001/data')
       .then((response) => {
         setData(response.data);
-        console.log(data2);
       })
       .catch((error) => {
         console.error('There was an error fetching the data!', error);
       });
   }, []);
 
+  useEffect(() => {
+    // This useEffect will run whenever `data2` changes.
+    console.log(data2); // Logs the updated state.
+  }, [data2]);
+
+  // useEffect(() => {
+  //   // This useEffect will run whenever `data2` changes.
+  //   console.log(data2); // Logs the updated state.
+  // }, [data2]); 
   
 
   const navigate = useNavigate();
@@ -89,9 +103,9 @@ function ApplicantsList() {
   return (
     <>
       <div className="title">
-        <h2>Applicants list</h2>
+        <h2>Applicants list </h2>
       </div>
-
+    
       <div className="search-container">
         <div className="row search-bar-row">
           <div className="col-1">
@@ -190,7 +204,7 @@ function ApplicantsList() {
               <div className="row admissionSelectButton">
                 <div className="col-6 row1col1 admission-type">
                   <div className="row">
-                    <div className="col-4">Documents Approved</div>
+                    <div className="col-4">Documents Status</div>
                     <div className="col-8">
                       <div className="dropdown dropdown-btn ">
                         <div className="dropdown SelectButton">
@@ -211,11 +225,16 @@ function ApplicantsList() {
                             </li>
                             <li
                               className="dropdown-item"
-                              onClick={setDocStatusDisapproved}
+                              onClick={setDocStatusNotApproved}
                             >
                               Not Approved
                             </li>
-                            
+                            <li
+                              className="dropdown-item"
+                              onClick={setDocStatusRejected}
+                            >
+                              Rejected
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -224,7 +243,7 @@ function ApplicantsList() {
                 </div>
                 <div className="col-6 row1col1">
                   <div className="row">
-                    <div className="col-4">Transaction approved</div>
+                    <div className="col-4">Transaction Status</div>
                     <div className="col-8">
                       <div className="dropdown dropdown-btn ">
                         <div className="dropdown SelectButton">
@@ -239,15 +258,21 @@ function ApplicantsList() {
                           <ul className="dropdown-menu">
                             <li
                               className="dropdown-item"
-                              onClick={setTransactionStatusCompleted}
+                              onClick={setTransactionStatusApproved}
                             >
-                              Completed
+                              Approved
                             </li>
                             <li
                               className="dropdown-item"
-                              onClick={setTransactionStatusPending}
+                              onClick={setTransactionStatusNotApproved}
                             >
-                              Pending
+                              Not Approved
+                            </li>
+                            <li
+                              className="dropdown-item"
+                              onClick={setTransactionStatusRejected}
+                            >
+                              Rejected
                             </li>
                            
                           </ul>
@@ -278,83 +303,37 @@ function ApplicantsList() {
             </tr>
           </thead>
           <tbody>
+            
             {data2.map((row, index) => {
-              // if (AdmissionType === "All") {
-                if(row.documentsApproved === DocStatus){
-                  if(row.transactionApproved === TransactionStatus){
-                    return (
-                      <tr key={row.id}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{row.id}</td>
-                        <td>{row.fullname}</td>
-                        <td>{row.cet_application_id}</td>
-                        <td>Brochure Institute Level</td>
-                        <td>{row.documentsApproved}</td>
-                        <td>{row.transactionApproved}</td>
-                        
-                        <td>
-                          <button
-                            type="button"
-                            onClick={()=>{navigateToDocVerification(row.id)}}
-                            
-                            className="btn verify-btn"
-                          >
-                            Verify
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  }
-                }
-              // } 
-              // else if (row.admissionType === AdmissionType) {
-                else if(row.DocStatus === DocStatus){
-                  if(row.TransactionStatus === TransactionStatus){
-                    return (
-                      <tr key={row.id}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{row.uid}</td>
-                        <td>{row.name}</td>
-                        <td>{row.applicationNumber}</td>
-                        <td>{row.admissionType}</td>
-                        <td>{row.DocStatus}</td>
-                        <td>{row.TransactionStatus}</td>
-                        
-                        <td>
-                          
-                          <button
-                            type="button"
-                            onClick={()=>{navigateToDocVerification(row.id)}}//row.id
-                            className="btn verify-btn"
-                          >
-                            Verify
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  }
-                }
+              if(row.documentsApproved === DocStatus && row.transactionproofStatus === TransactionStatus){
+                return(
                 
-              // }
-              // else if (row.admissionType === "Institute Level") {
-              //   return (
-              //     <tr key={row.id}>
-              //       <th scope="row">{index + 1}</th>
-              //       <td>{row.name}</td>
-              //       <td>{row.applicationNumber}</td>
-              //       <td>{row.admissionType}</td>
-              //       <td>
-              //         <button
-              //           type="button"
-              //           onClick={navigateToDocVerification}
-              //           className="btn verify-btn"
-              //         >
-              //           Verify
-              //         </button>
-              //       </td>
-              //     </tr>
-              //   );
-              // }
+                  <tr key={row.id}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{row.id}</td>
+                          <td>{row.fullname}</td>
+                          <td>{row.cet_application_id}</td>
+                          <td>Brochure Institute Level</td>
+                          <td>{row.documentsApproved}</td>
+                          <td>{row.transactionproofStatus}</td>
+                          
+                          <td>
+                            <button
+                              type="button"
+                              onClick={()=>{navigateToDocVerification(row.id)}}
+                              
+                              className="btn verify-btn"
+                            >
+                              Verify
+                            </button>
+                          </td>
+                        </tr>
+                )
+              }
+              
+             
+                      
+               
             })}
           </tbody>
         </table>
