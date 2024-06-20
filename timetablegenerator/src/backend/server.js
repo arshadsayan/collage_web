@@ -5,6 +5,7 @@ const mysql = require('mysql');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = 3001; // or any other port you prefer
@@ -15,6 +16,40 @@ app.use(cors());
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
 
+///To bypass security for email
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+function mailsend(docName, email){
+  const documentReject = docName;
+  const emailtoSend = email;
+  console.log(emailtoSend);
+;  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'otp.graphicalauthenticator@gmail.com',
+      pass: 'awdw yvwr unzw hqgj'
+    }
+  });
+  
+  const mailOptions = {
+    from: 'otp.graphicalauthenticator@gmail.com',
+    to: emailtoSend,
+    subject: 'Rejected Documents',
+    text: `${documentReject} Documnet Rejected`,
+    // attachments: [
+    //   {
+    //       path: 'E:/Desktop/attachment.txt'
+    //   }
+  // ]
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  }); 
+}
 
 //setting up file server
 app.use('/files', express.static(path.join(__dirname, 'public')));
@@ -169,7 +204,7 @@ app.get('/data', (req, res) => {
 app.get('/docverification/:uid', (req, res) => {
   const userId = req.params.uid;
   console.log(userId);
-  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus FROM user_details WHERE id = '${userId}';`;
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, transactionApproved, documentsApproved FROM user_details WHERE id = '${userId}';`;
   
   db.query(query, (err, results) => {
     if (err) {
@@ -207,6 +242,7 @@ app.put('/approveDoc/:uid/:docName', (req, res) => {
   const sql = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ?`;
   const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ${uid}`;
   console.log(sqlQuery);
+ 
   const values = [uid];
 
   db.query(sql, values, (err, result) => {
@@ -221,10 +257,13 @@ app.put('/approveDoc/:uid/:docName', (req, res) => {
 });
 
 //Document verification page making updation request to make document status to Reject
-app.put('/rejectDoc/:uid/:docName', (req, res) => {
+app.put('/rejectDoc/:uid/:email/:docName', (req, res) => {
   const  uid  = req.params.uid;
   const  docName  = req.params.docName;
+  const  email = req.params.email;
 
+  console.log(email)
+  mailsend(docName, email);
   const sql = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ?`;
   const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ${uid}`;
   console.log(sqlQuery);
@@ -240,6 +279,28 @@ app.put('/rejectDoc/:uid/:docName', (req, res) => {
     res.send('Entry updated successfully');
   });
 });
+
+//Update all Document status to Approved
+app.put('/DocumentsApproved/:uid', (req, res) => {
+  const  uid  = req.params.uid;
+  
+  const sql = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+ 
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log("All documents Approved sucessfully");
+    res.send('Entry updated successfully');
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

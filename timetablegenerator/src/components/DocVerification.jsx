@@ -30,7 +30,7 @@ function DocVerification() {
           setLoading(false); // Set loading to false even if there's an error
         });
     }
-  }, [uidRecieved, RejectedDocument, NotApprovedDocument, ApprovedDocument]);
+  }, [uidRecieved]);
 
   ///Finding Documents that have been uploaded by User
   const documentsNotUploaded = [];
@@ -59,7 +59,7 @@ function DocVerification() {
 
     return [...disjointFromArr1, ...disjointFromArr2];
   }
-///Document which are not uploaded are added to documentsNotUploaded array
+  ///Document which are not uploaded are added to documentsNotUploaded array
   for (const key in DocVerificationData[0]) {
     if (Object.hasOwnProperty.call(DocVerificationData[0], key)) {
       const value = DocVerificationData[0][key];
@@ -69,37 +69,30 @@ function DocVerification() {
     }
   }
 
-  
-
   for (const key in DocVerificationData[0]) {
     if (Object.hasOwnProperty.call(DocVerificationData[0], key)) {
       const value = DocVerificationData[0][key];
       if (value === "Not Approved") {
         NotApprovedDocument.push(key);
-      }
-      else if (value === "Rejected") {
+      } else if (value === "Rejected") {
         RejectedDocument.push(key);
-      }
-      else if (value === "Approved") {
+      } else if (value === "Approved") {
         ApprovedDocument.push(key);
       }
-      
     }
   }
   //Function to remove the Status string from each array
   function removeStatusSuffix(statusesArray) {
-    return statusesArray.map(status => status.replace("Status", ""));
+    return statusesArray.map((status) => status.replace("Status", ""));
   }
-  
 
-  NotApprovedDocument =  removeStatusSuffix(NotApprovedDocument)
+  NotApprovedDocument = removeStatusSuffix(NotApprovedDocument);
   ApprovedDocument = removeStatusSuffix(ApprovedDocument);
   RejectedDocument = removeStatusSuffix(RejectedDocument);
 
-  // console.log(removeStatusSuffix(NotApprovedDocument));
-  // console.log(removeStatusSuffix(ApprovedDocument));
-  // console.log(removeStatusSuffix(RejectedDocument));
-
+  console.log(NotApprovedDocument);
+  console.log(ApprovedDocument);
+  console.log(RejectedDocument);
 
   //Array of documents uploaded
   const documentUploaded = findDisjoint(
@@ -107,6 +100,7 @@ function DocVerification() {
     documentsNotUploaded
   );
   console.log("Uploaded Documents : ", documentUploaded);
+  console.log("Uploaded Documents length : ", documentUploaded.length);
 
   console.log("Not uploaded Documents", documentsNotUploaded);
 
@@ -120,7 +114,7 @@ function DocVerification() {
     navigate("/receitGeneration");
   };
 
-  const [rejectedDocuments, setRejectedDocuments] = useState([]);
+  // const [rejectedDocuments, setRejectedDocuments] = useState([]);
 
   const [documents, setDocuments] = useState([
     {
@@ -205,91 +199,142 @@ function DocVerification() {
 
   const handlePreview = async (docName) => {
     try {
-        const response = await axios.get(`http://localhost:3001/docverification/${DocVerificationData[0].id}/${docName}`);
-        console.log("Response Data:", response.data); // Log the entire response data
+      const response = await axios.get(
+        `http://localhost:3001/docverification/${DocVerificationData[0].id}/${docName}`
+      );
+      console.log("Response Data:", response.data); // Log the entire response data
 
-        // Check if response has data and is an array with at least one element
-        if (Array.isArray(response.data) && response.data.length > 0) {
-            // Extract URLpre from the first element of the response array
-            const keyNames = Object.keys(response.data[0]); // Get all keys from the first element
+      // Check if response has data and is an array with at least one element
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        // Extract URLpre from the first element of the response array
+        const keyNames = Object.keys(response.data[0]); // Get all keys from the first element
 
-            // Assuming the key to be used is the first key found in the response
-            const firstKey = keyNames[0];
-            const URLpre = response.data[0][firstKey];
-            
-            // Replace backslashes with forward slashes
-            function replaceBackslashWithSlash(inputString) {
-                return inputString.replace(/\\/g, '/');
-            }
-            
-            const actualURL = replaceBackslashWithSlash(URLpre);
-            console.log("Key Name:", firstKey);
-            console.log("URLpre:", URLpre);
-            console.log(actualURL);
+        // Assuming the key to be used is the first key found in the response
+        const firstKey = keyNames[0];
+        const URLpre = response.data[0][firstKey];
 
-            // Make another request to fetch the actual file
-            const fileResponse = await axios.get(`http://localhost:3001/files/${actualURL}`, {
-                responseType: 'blob' // Important for binary data
-            });
-
-            // Create a URL for the received file
-            const fileURL = window.URL.createObjectURL(fileResponse.data);
-            console.log("File URL:", fileURL);
-
-            // Open the file in a new tab
-            window.open(fileURL, '_blank');
-        } else {
-            console.error("Empty or invalid response data");
+        // Replace backslashes with forward slashes
+        function replaceBackslashWithSlash(inputString) {
+          return inputString.replace(/\\/g, "/");
         }
+
+        const actualURL = replaceBackslashWithSlash(URLpre);
+        console.log("Key Name:", firstKey);
+        console.log("URLpre:", URLpre);
+        console.log(actualURL);
+
+        // Make another request to fetch the actual file
+        const fileResponse = await axios.get(
+          `http://localhost:3001/files/${actualURL}`,
+          {
+            responseType: "blob", // Important for binary data
+          }
+        );
+
+        // Create a URL for the received file
+        const fileURL = window.URL.createObjectURL(fileResponse.data);
+        console.log("File URL:", fileURL);
+
+        // Open the file in a new tab
+        window.open(fileURL, "_blank");
+      } else {
+        console.error("Empty or invalid response data");
+      }
     } catch (error) {
-        console.error("Error fetching preview data:", error);
+      console.error("Error fetching preview data:", error);
     }
-};
+  };
 
-const handleApprove = async (docName) => {
-  try {
-    const URL = `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`;
-    console.log(URL);
-    const response = await axios.put(`http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`, {
-      // fieldToUpdate: 'status',  // Replace with your specific field to update
-      // updatedValue: 'approved'  // Replace with the value to update
-    });
-    console.log(`${docName} Approved`);
-    console.log(response.data);  // Log the response from server
-    // Optionally, update local state or perform other actions upon successful approval
+  const handleApprove = async (docName) => {
+    try {
+      const URL = `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`;
+      console.log(URL);
+      const response = await axios.put(
+        `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`,
+        {
+          // fieldToUpdate: 'status',  // Replace with your specific field to update
+          // updatedValue: 'approved'  // Replace with the value to update
+        }
+      );
+      console.log(`${docName} Approved`);
+      console.log(response.data); // Log the response from server
+      // Optionally, update local state or perform other actions upon successful approval
+    } catch (error) {
+      console.error("Error approving document:", error);
+      // Handle error scenarios as needed
+    }
+    window.location.reload();
+  };
 
-  } catch (error) {
-    console.error("Error approving document:", error);
-    // Handle error scenarios as needed
+  const handleReject = async (docName) => {
+    try {
+      const URL = `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
+      console.log(URL);
+      const response = await axios.put(
+        `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
+        {
+          // fieldToUpdate: 'status',  // Replace with your specific field to update
+          // updatedValue: 'approved'  // Replace with the value to update
+        }
+      );
+      console.log(`${docName} Rejected`);
+      console.log(response.data); // Log the response from server
+      // Optionally, update local state or perform other actions upon successful approval
+    } catch (error) {
+      console.error("Error approving document:", error);
+      // Handle error scenarios as needed
+    }
+    window.location.reload();
+  };
+
+   
+  const handleReceiptTransaction = async ()=>{
+    
+    const confirmAction = window.confirm("Are you sure?");
+
+    if (confirmAction) {
+      try {
+        const URL = `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`;
+        console.log(URL);
+        const response = await axios.put(URL);
+        console.log(`All Documents Approved`);
+        console.log(response.data); // Log the response from server
+        // Optionally, update local state or perform other actions upon successful approval
+      } catch (error) {
+        console.error("Error approving document:", error);
+        // Handle error scenarios as needed
+      }
+      window.location.reload(); // Reload the page after operation
+    } else {
+      // Handle if user chooses not to continue (optional)
+      console.log("Operation cancelled by user");
+    }
+
+    // try {
+    //   const URL = `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`;
+    //   console.log(URL);
+    //   const response = await axios.put(
+    //     `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`,
+        
+    //   );
+    //   console.log(`All Documents Approved`);
+    //   console.log(response.data); // Log the response from server
+    //   // Optionally, update local state or perform other actions upon successful approval
+    // } catch (error) {
+    //   console.error("Error approving document:", error);
+    //   // Handle error scenarios as needed
+    // }
+    // window.location.reload();
   }
-};
-
-
-const handleReject = async (docName) => {
-  try {
-    const URL = `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${docName}`;
-    console.log(URL);
-    const response = await axios.put(`http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${docName}`, {
-      // fieldToUpdate: 'status',  // Replace with your specific field to update
-      // updatedValue: 'approved'  // Replace with the value to update
-    });
-    console.log(`${docName} Rejected`);
-    console.log(response.data);  // Log the response from server
-    // Optionally, update local state or perform other actions upon successful approval
-
-  } catch (error) {
-    console.error("Error approving document:", error);
-    // Handle error scenarios as needed
-  }
-};
-
 
   const handleReupload = (id, event) => {
     const file = event.target.files[0];
     console.log(`Reuploaded document with ID: ${id}`, file);
 
     const updatedDocuments = documents.map((doc) =>
-      doc.id === id ? { ...doc, preview: window.URL.createObjectURL(file) } : doc
+      doc.id === id
+        ? { ...doc, preview: window.URL.createObjectURL(file) }
+        : doc
     );
 
     setDocuments(updatedDocuments);
@@ -412,7 +457,10 @@ const handleReject = async (docName) => {
                       id="inputGroupFile02"
                       onChange={(event) => handleReupload(row.id, event)}
                     />
-                    <label className="input-group-text" htmlFor="inputGroupFile02">
+                    <label
+                      className="input-group-text"
+                      htmlFor="inputGroupFile02"
+                    >
                       Upload
                     </label>
                   </div>
@@ -420,13 +468,113 @@ const handleReject = async (docName) => {
               </div>
             ))}
         </div>
+        {ApprovedDocument.length === documentUploaded.length &&(
+          <div className="generate-receipt">
+            <div className="row">
+              <button className="btn receipt-btn" onClick={()=>{handleReceiptTransaction()}}>
+                Generate Document Receipt
+              </button>
+            </div>
+          </div>
+        )}
+        {(RejectedDocument.length > 0 && NotApprovedDocument.length > 0 && ApprovedDocument.length !== documentUploaded.length) &&(
+          <div className="generate-receipt">
+            <div className="row">
+              <button
+                className="btn receipt-btn"
+                disabled
+                onClick={navigateToReceipt}
+              >
+                Generate Document Receipt
+              </button>
+            </div>
+          </div>
+        )}
+        {DocVerificationData[0].documentsApproved === 'Approved' &&(
+          <div className="generate-receipt">
+            <div className="row">
+              <div className="col">
+                All Documents Submitted
+              </div>
+            </div>
+          </div>
+        )}
         <div className="generate-receipt">
+          <div className="row doc-row">
+            <div className="col arbtn">
+              <b>Transaction Proof</b>
+            </div>
+            <div className="col">
+              <button
+                className="btn arbtn preview-btn"
+                onClick={() => {
+                  handlePreview("");
+                }}
+              >
+                Preview
+              </button>
+            </div>
+            <div className="col">
+              <div className="row btn-row">
+                <button
+                  type="button"
+                  className="btn btn-success arbtn"
+                  onClick={() => handleApprove()}
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger arbtn"
+                  onClick={() => handleReject()}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+            {DocVerificationData[0].transactionApproved === 'Pending' && (
+              <div className="input-group mb-3">
+                <input
+                  type="file"
+                  className="form-control"
+                  id="inputGroupFile02"
+                  onChange={(event) =>
+                    handleReupload("transactionproof", event)
+                  }
+                />
+                <label className="input-group-text" htmlFor="inputGroupFile02">
+                  Upload
+                </label>
+              </div>
+            )}
+          </div>
+        </div>
+        {DocVerificationData[0].transactionApproved === 'Approved' && 
+          <div className="generate-receipt">
           <div className="row">
-            <button className="btn receipt-btn" onClick={navigateToReceipt}>
-              Generate Receipt
+            <button
+              className="btn receipt-btn"
+              
+              onClick={()=>{}}
+            >
+              Generate Transaction Receipt
             </button>
           </div>
         </div>
+        }
+        {DocVerificationData[0].transactionApproved === 'Not Approved' || DocVerificationData[0].transactionApproved === 'Pending' && 
+          <div className="generate-receipt">
+          <div className="row">
+            <button
+              className="btn receipt-btn"
+              disabled
+            >
+              Generate Transaction Receipt
+            </button>
+          </div>
+        </div>
+        }
+        
       </div>
     </>
   );
