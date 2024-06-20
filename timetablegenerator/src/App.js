@@ -9,6 +9,7 @@ import TransactionDetails from './TransactionDetails';
 import SignupPage from './SignupPage';
 import SignInPage from './SignInPage';
 import AdmissionForm from './AdmissionForm';
+import AdmissionForm2 from './AdmissionForm2';
 import Layout from './Layout';
 import Documents from './Documents';
 import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
@@ -167,7 +168,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: ''
+    formType: 'Form B'
   });
 
   const [filePreviews, setFilePreviews] = useState({});
@@ -192,6 +193,7 @@ export default function App() {
   const admissionFormRef = useRef();
   const preferencesFormRef = useRef();
   const preferenceFormAdminRef = useRef();
+  const admissionForm2Ref = useRef();
 
   const sections = [
     <Documents />,
@@ -212,12 +214,12 @@ export default function App() {
     <PreferenceFormAdmin ref={preferenceFormAdminRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
     <TransactionDetails ref={transactionDetailsRef} formData1={formData1} setFormData1={setFormData1} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formDataB} setFormData={setFormDataB} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
-    <AdmissionForm ref={admissionFormRef} formData={formDataB} setFormData={setFormDataB} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
+    <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataB} setFormDataB={setFormDataB} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
 
   const handleCheck = async (email, formType) => {
     try {
-      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/check', {
+      const response = await fetch('http://localhost:3001/api/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -307,7 +309,7 @@ export default function App() {
         cetDetailsRef,
         preferenceFormAdminRef,
         documentUploadRef,
-        admissionFormRef
+        admissionForm2Ref
       ];
   
       // Check if the ref is defined before calling validate
@@ -338,7 +340,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/submit', {
+      const response = await fetch('http://localhost:3001/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -363,7 +365,7 @@ export default function App() {
   formDataToSend.append('academicDetails', JSON.stringify(formDataB.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formDataB.cetDetails));
   formDataToSend.append('preference', JSON.stringify(formDataB.preference));
-  formDataToSend.append('formType', formDataB.formType);
+  formDataToSend.append('formType', formDataB.formType); // Set the formType property
   formDataToSend.append('formData1', JSON.stringify(formData1));
 
 
@@ -375,7 +377,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/submit', {
+      const response = await fetch('http://localhost:3001/api/submit2', {
         method: 'POST',
         body: formDataToSend,
       });
