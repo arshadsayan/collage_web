@@ -250,27 +250,27 @@ const AdmissionForm = ({
                   <tbody>
                     <tr>
                       <td>1 Preference</td>
-                      <td>{formData.preferences[0]}</td>
+                      <td>{formData.preference}</td>
                       <td>2 Preference</td>
-                      <td>{formData.preferences[1]}</td>
+                      <td>{formData.preference}</td>
                     </tr>
                     <tr>
                       <td>3 Preference</td>
-                      <td>{formData.preferences[2]}</td>
+                      <td>{formData.preference}</td>
                       <td>4 Preference</td>
-                      <td>{formData.preferences[3]}</td>
+                      <td>{formData.preference}</td>
                     </tr>
                     <tr>
                       <td>5 Preference</td>
-                      <td>{formData.preferences[4]}</td>
+                      <td>{formData.preference}</td>
                       <td>6 Preference</td>
-                      <td>{formData.preferences[5]}</td>
+                      <td>{formData.preference}</td>
                     </tr>
                     <tr>
                       <td>7 Preference</td>
-                      <td>{formData.preferences[6]}</td>
+                      <td>{formData.preference}</td>
                       <td>8 Preference</td>
-                      <td>{formData.preferences[7]}</td>
+                      <td>{formData.preference}</td>
                     </tr>
                   </tbody>
                 </table>

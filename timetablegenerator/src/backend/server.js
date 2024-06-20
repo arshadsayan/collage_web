@@ -246,9 +246,10 @@ app.post('/api/submit', upload.fields([
   const personalDetails = JSON.parse(req.body.personalDetails);
   const academicDetails = JSON.parse(req.body.academicDetails);
   const cetDetails = JSON.parse(req.body.cetDetails);
-  const preferences = JSON.parse(req.body.preferences); // Parse preferences
+  const preferences = req.body.preferences ? JSON.parse(req.body.preferences) : []; // Parse preferences
   const formData1 = JSON.parse(req.body.formData1);
   const formType = req.body.formType;
+  const preference = req.body.preference;
   // const transactionDetails = JSON.parse(req.body.transactionDetails);
   
   // Retrieve the user's id from the user_registration table using the email
@@ -324,6 +325,7 @@ app.post('/api/submit', upload.fields([
         other: req.files['other'] ? req.files['other'][0].path : null,
         signature: req.files['signature'] ? req.files['signature'][0].path : null,
         preferences: JSON.stringify(preferences).replace(/'/g, '"'),
+        preference: preference,
         transaction_date: formData1.date,
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
@@ -331,7 +333,7 @@ app.post('/api/submit', upload.fields([
         formType:formType
       };
 
-      const query = 'INSERT INTO user_details SET ?';
+      const query = 'INSERT INTO user_details_admission SET ?';
       db.query(query, data, (err, result) => {
         if (err) {
           console.error('Error inserting data:', err);
