@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function SignInPage({ onSignIn, goToSignup, handleCheck }) {
+export default function SignInPage({ onSignIn, goToSignup }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -12,13 +12,7 @@ export default function SignInPage({ onSignIn, goToSignup, handleCheck }) {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-  
-    // First check if the user has already submitted the form
-    const canProceed = await handleCheck(email);
-    if (!canProceed) {
-      return;
-    }
-  
+
     // Proceed with the usual sign-in process
     try {
       const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/signin', {
@@ -28,11 +22,11 @@ export default function SignInPage({ onSignIn, goToSignup, handleCheck }) {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const result = await response.json();
       if (result.success) {
         alert('Login successful');

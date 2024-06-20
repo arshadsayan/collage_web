@@ -175,10 +175,10 @@ app.post('/api/reset-password', (req, res) => {
 });
 
 app.post('/api/check', (req, res) => {
-  const { email } = req.body;
+  const { email, formType } = req.body;
 
-  const query = 'SELECT * FROM user_details WHERE email = ?';
-  db.query(query, [email], (err, results) => {
+  const query = 'SELECT * FROM user_details WHERE email = ? AND formType = ?';
+  db.query(query, [email, formType], (err, results) => {
     if (err) {
       console.error('Error querying data:', err);
       return res.status(500).json({ message: 'Error querying data' });
@@ -248,6 +248,7 @@ app.post('/api/submit', upload.fields([
   const cetDetails = JSON.parse(req.body.cetDetails);
   const preferences = JSON.parse(req.body.preferences); // Parse preferences
   const formData1 = JSON.parse(req.body.formData1);
+  const formType = req.body.formType;
   // const transactionDetails = JSON.parse(req.body.transactionDetails);
   
   // Retrieve the user's id from the user_registration table using the email
@@ -326,7 +327,8 @@ app.post('/api/submit', upload.fields([
         transaction_date: formData1.date,
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
-        transaction_against: formData1.paymentAgainst
+        transaction_against: formData1.paymentAgainst,
+        formType:formType
       };
 
       const query = 'INSERT INTO user_details SET ?';

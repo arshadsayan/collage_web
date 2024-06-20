@@ -16,6 +16,8 @@ import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
   const [error, setError] = useState('');
+  const [formSelectionPage, setFormSelectionPage] = useState(false);
+  const [formAlreadySubmitted, setFormAlreadySubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
     personalDetails: {
@@ -88,7 +90,8 @@ export default function App() {
       other: null
     },
    
-    preferences: ['', '', '', '', '', '', '', '']
+    preferences: ['', '', '', '', '', '', '', ''],
+    formType: ''
   });
 
   const [filePreviews, setFilePreviews] = useState({});
@@ -124,21 +127,20 @@ export default function App() {
     <AdmissionForm ref={admissionFormRef} formData={formData} setFormData={setFormData} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
 
-  const handleCheck = async (email) => {
+  const handleCheck = async (email, formType) => {
     try {
       const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, formType }),
       });
-  
       const result = await response.json();
       if (result.key === 1) {
         return true;
       } else {
-        alert('User already submitted the form');
+        // alert('User already submitted the form');
         setError(result.message);
         return false;
       }
@@ -196,7 +198,7 @@ export default function App() {
   formDataToSend.append('academicDetails', JSON.stringify(formData.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formData.cetDetails));
   formDataToSend.append('preferences', JSON.stringify(formData.preferences));
-
+  formDataToSend.append('formType', formData.formType);
   formDataToSend.append('formData1', JSON.stringify(formData1));
 
 
@@ -219,9 +221,31 @@ export default function App() {
 
       const result = await response.json();
       alert(result.message); // Show success message
-      setCurrentSection(0); // Reset to first section
+      setCurrentSection(-2); // Reset to first section
     } catch (error) {
       setError('Network error: ' + error.message);
+    }
+  };
+
+  const handleFormSelection = async (formLabel) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      formType: formLabel
+    }));
+
+    const email = formData.personalDetails.email;
+    const canProceed = await handleCheck(email, formLabel);
+    if (!canProceed) {
+      if (formAlreadySubmitted) {
+        setFormSelectionPage(true); // If form already submitted, stay on form selection page
+      } else {
+        setFormAlreadySubmitted(true);
+        setCurrentSection(0); // Proceed to the first section of the form
+      }
+    } else {
+      setFormAlreadySubmitted(false);
+      setFormSelectionPage(false); // Set formSelectionPage to false when form type is selected
+      setCurrentSection(0); // Proceed to the first section of the form
     }
   };
 
@@ -256,25 +280,57 @@ export default function App() {
 
   return (
     <Layout>
-    <div className="container">
-      
-      {currentSection === -2 ? (
-        <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} handleCheck={handleCheck} />
-      ) : currentSection === -1 ? (
-        <SignupPage onSignupComplete={handleSignupComplete} />
-      ) : (
-        <>
-          {sections[currentSection]}
-          {error && <p className="error">{error}</p>}
-          <br></br>
-          <div className="buttons">
-            <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
-            <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
-            {currentSection === sections.length - 1 && <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>}
-          </div>
-        </>
-      )}
-    </div>
+      <div className="container">
+        {currentSection === -2 ? (
+          <SignInPage onSignIn={handleSignIn} goToSignup={goToSignup} />
+        ) : currentSection === -1 ? (
+          <SignupPage onSignupComplete={handleSignupComplete} />
+        ) : (
+          <>
+          {(formSelectionPage || !formData.formType) && !formAlreadySubmitted && (
+            <div className="form-selection">
+              <h1 className="center page-heading">Form Selection</h1>
+              <div className='buttons1'>
+                <br></br>
+              <button onClick={() => handleFormSelection('Form A')}>SIES Brochure Form</button>
+              <button onClick={() => handleFormSelection('Form B')}>SIES Admission Form</button>
+              {/* <button onClick={() => handleFormSelection('Form C')}>Form C</button>
+              <button onClick={() => handleFormSelection('Form D')}>Form D</button>
+              <button onClick={() => handleFormSelection('Form E')}>Form E</button>
+              <button onClick={() => handleFormSelection('Form F')}>Form F</button>
+              <button onClick={() => handleFormSelection('Form G')}>Form G</button> */}
+              </div>
+            </div>
+          )}
+          
+            {formAlreadySubmitted ? (
+            
+            <h3 className="center page-heading" style={{ color: 'green', fontSize: '20px'}}>
+              You have already submitted this form!
+            </h3>
+              
+              
+            ) : (
+            formData.formType === 'Form A' ? (
+              <>
+                {sections[currentSection]}
+                {error && <p className="error">{error}</p>}
+                <br />
+                <div className="buttons">
+                  <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+                  <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
+                  {currentSection === sections.length - 1 && (
+                    <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p></p> // Placeholder text for other forms
+            )
+            )}
+          </>
+        )}
+      </div>
     </Layout>
   );
 }
