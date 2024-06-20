@@ -48,6 +48,7 @@ function DocVerification() {
     "income",
     "other",
     "signature",
+    "transactionproof"
   ];
 
   function findDisjoint(arr1, arr2) {
@@ -193,7 +194,13 @@ function DocVerification() {
       id: 13,
       name: "Other Document",
       dbcol: "other",
-      preview: "This is the preview of Document 7",
+      preview: "This is the preview of Document 13",
+    },
+    {
+      id: 14,
+      name: "Transaction Proof",
+      dbcol: "transactionproof",
+      preview: "This is the preview of Document 14",
     },
   ]);
 
@@ -288,7 +295,7 @@ function DocVerification() {
   };
 
    
-  const handleReceiptTransaction = async ()=>{
+  const handleReceiptDocument = async ()=>{
     
     const confirmAction = window.confirm("Are you sure?");
 
@@ -352,7 +359,7 @@ function DocVerification() {
     <>
       <div className="title">
         <div className="row">
-          <div className="col-2">
+          <div className="col-1">
             <button
               type="button"
               onClick={handleBackClick}
@@ -361,8 +368,8 @@ function DocVerification() {
               Back
             </button>
           </div>
-          <div className="col-10">
-            <h2>Approve Documents</h2>
+          <div className="col-11 titlepage">
+            <h2>Documents and Transaction Approval</h2>
           </div>
         </div>
       </div>
@@ -461,7 +468,7 @@ function DocVerification() {
                       className="input-group-text"
                       htmlFor="inputGroupFile02"
                     >
-                      Upload
+                      Reupload
                     </label>
                   </div>
                 )}
@@ -471,8 +478,8 @@ function DocVerification() {
         {ApprovedDocument.length === documentUploaded.length &&(
           <div className="generate-receipt">
             <div className="row">
-              <button className="btn receipt-btn" onClick={()=>{handleReceiptTransaction()}}>
-                Generate Document Receipt
+              <button className="btn receipt-btn" onClick={()=>{handleReceiptDocument()}}>
+                Generate Receipt
               </button>
             </div>
           </div>
@@ -483,97 +490,24 @@ function DocVerification() {
               <button
                 className="btn receipt-btn"
                 disabled
-                onClick={navigateToReceipt}
+                
               >
-                Generate Document Receipt
+                Generate Receipt
               </button>
             </div>
           </div>
         )}
         {DocVerificationData[0].documentsApproved === 'Approved' &&(
           <div className="generate-receipt">
-            <div className="row">
-              <div className="col">
-                All Documents Submitted
+            <div className="row doc-row">
+              <div className="col doc-Submitted">
+                All Documents Submitted and Approved
               </div>
             </div>
           </div>
         )}
-        <div className="generate-receipt">
-          <div className="row doc-row">
-            <div className="col arbtn">
-              <b>Transaction Proof</b>
-            </div>
-            <div className="col">
-              <button
-                className="btn arbtn preview-btn"
-                onClick={() => {
-                  handlePreview("");
-                }}
-              >
-                Preview
-              </button>
-            </div>
-            <div className="col">
-              <div className="row btn-row">
-                <button
-                  type="button"
-                  className="btn btn-success arbtn"
-                  onClick={() => handleApprove()}
-                >
-                  Approve
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger arbtn"
-                  onClick={() => handleReject()}
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-            {DocVerificationData[0].transactionApproved === 'Pending' && (
-              <div className="input-group mb-3">
-                <input
-                  type="file"
-                  className="form-control"
-                  id="inputGroupFile02"
-                  onChange={(event) =>
-                    handleReupload("transactionproof", event)
-                  }
-                />
-                <label className="input-group-text" htmlFor="inputGroupFile02">
-                  Upload
-                </label>
-              </div>
-            )}
-          </div>
-        </div>
-        {DocVerificationData[0].transactionApproved === 'Approved' && 
-          <div className="generate-receipt">
-          <div className="row">
-            <button
-              className="btn receipt-btn"
-              
-              onClick={()=>{}}
-            >
-              Generate Transaction Receipt
-            </button>
-          </div>
-        </div>
-        }
-        {DocVerificationData[0].transactionApproved === 'Not Approved' || DocVerificationData[0].transactionApproved === 'Pending' && 
-          <div className="generate-receipt">
-          <div className="row">
-            <button
-              className="btn receipt-btn"
-              disabled
-            >
-              Generate Transaction Receipt
-            </button>
-          </div>
-        </div>
-        }
+
+        
         
       </div>
     </>

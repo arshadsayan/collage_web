@@ -130,6 +130,13 @@ tr{
     color:#F9F9F9 ;
 }
 
+.receipt-btn:disabled{
+    background-color: #a6a8ae;
+    border-color: #a6a8ae ;
+    color:#1f1e1e ;
+}
+
+
 
 /* .generate-receipt{
     padding: 25px 25px;
@@ -145,4 +152,11 @@ body{
     background-color: #002566;
     color: #F7FAFF;
     
+}
+.doc-Submitted{
+    text-align: center;
+}
+
+.titlepage{
+    text-align: left;
 }
