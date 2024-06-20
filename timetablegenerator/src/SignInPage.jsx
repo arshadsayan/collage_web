@@ -3,12 +3,19 @@ import React, { useState } from 'react';
 export default function SignInPage({ onSignIn, goToSignup }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState('');
+  const [currentSection, setCurrentSection] = useState('initialSection');
 
   const handleSignIn = async (event) => {
     event.preventDefault();
+
+    // Proceed with the usual sign-in process
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/signin', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,27 +38,160 @@ export default function SignInPage({ onSignIn, goToSignup }) {
       setError('Network error: ' + error.message);
     }
   };
+/////////////////////////////////////////////////////////////////////////////////////////
+  // const handleRequestOtp = async (event) => 
+  // {
+  //   event.preventDefault();
+  //   try {
+  //     const response = await fetch('http://localhost:3001/api/request-reset-password', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Email is not registered with usNetwork response was not ok');////////////////////
+  //     }
+
+  //     const result = await response.json();
+  //     if (result.message === 'OTP sent successfully') {
+  //       setOtpSent(true);
+  //       alert(result.message);
+  //     } else {
+  //       setError('Error sending OTP');
+  //     }
+  //   } catch (error) {
+  //     setError('Network error: ' + error.message);
+  //   }
+  // };
+
+//////////////trial1
+
+const handleResetPassword = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, otp, newPassword }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+
+      const result = await response.json();
+      if (result.message === 'Password reset successfully') {
+        alert('Password reset successfully. Please sign in with your new password.');
+        setIsForgotPassword(false);
+        setOtpSent(false);
+      } else {
+        setError('Error resetting password');
+      }
+    } catch (error) {
+      setError('Network error: ' + error.message);
+    }
+  };
+
+const handleRequestOtp = async (event) => {
+  event.preventDefault();
+  try {
+    const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/request-reset-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const result = await response.json();
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        alert('Email is not registered go to SignUp');
+       // throw new Error('Email is not registered with us');
+      } else {
+        throw new Error(result.message || 'Network response was not ok');
+      }
+    }
+
+    if (result.message === 'OTP sent successfully') {
+      setOtpSent(true);
+      alert(result.message);
+    } else {
+      //setError('Error sending OTP');
+    }
+  } catch (error) {
+    setError('Network error: ' + error.message);
+  }
+};
+  //  trail1 end
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <div className="container">
-      <form onSubmit={handleSignIn}>
-      
-      <h1 className="center page-heading">Sign-In</h1>
-        <div className='input-field'>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      {!isForgotPassword ? (
+        <form onSubmit={handleSignIn}>
+          <h1 className="center page-heading">Sign-In</h1>
+          <div className='input-field'>
+            <label>Email:</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className='input-field'>
+            <label>Password:</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          {error && <p className="error">{error}</p>}
+          <br></br>
+          <div className="buttons">
+            <button type="submit">Sign In</button>
+            <button type="button" onClick={goToSignup}>Sign Up</button>
+            <button type="button" onClick={() => setIsForgotPassword(true)}>Forgot Password?</button>
+          </div>
+        </form>
+      ) : (
+        <div>
+          {!otpSent ? (
+            <form onSubmit={handleRequestOtp}>
+              <h1 className="center page-heading">Reset Password</h1>
+              <div className='input-field'>
+                <label>Email:</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              {error && <p className="error">{error}</p>}
+              <br></br>
+              <div className="buttons">
+                <button type="submit">Request OTP</button>
+                <button type="button" onClick={() => setIsForgotPassword(false)}>Back to Sign In</button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleResetPassword}>
+              <h1 className="center page-heading">Reset Password</h1>
+              <div className='input-field'>
+                <label>OTP:</label>
+                <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} required />
+              </div>
+              <div className='input-field'>
+                <label>New Password:</label>
+                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+              </div>
+              {error && <p className="error">{error}</p>}
+              
+              <div className="buttons">
+                <button type="submit">Reset Password</button>
+              </div>
+            </form>
+          )}
+          <div className="buttons">
+            
+          </div>
         </div>
-        <div className='input-field'>
-          <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </div>
-        {error && <p className="error">{error}</p>}
-        <br></br>
-        <div className="buttons">
-            <button  type="submit">Sign In</button>
-            <button  type="button" onClick={goToSignup}>Sign Up</button>
-        </div>
-      </form>
+      )}
     </div>
   );
 }

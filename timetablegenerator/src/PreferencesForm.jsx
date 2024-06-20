@@ -3,11 +3,11 @@ import React, { useState, useEffect, forwardRef } from 'react';
 const initialOptions = [
   'Computer Engineering',
   'Information Technology',
-  'Artificial Intelligence and Data Science',
-  'Artificial Intelligence and Machine Learning',
-  'Internet of Things',
+  'Computer Science Engineering - Artificial Intelligence and Data Science',
+  'Computer Science Engineering - Artificial Intelligence and Machine Learning',
+  'Computer Science Engineering - Internet of Things',
   'Electronics and Telecommunication',
-  'Electronics and Computer Science',
+  'Computer Science Engineering - Electronics and Computer Science',
   'Mechanical Engineering'
 ];
 
@@ -56,7 +56,7 @@ const PreferencesForm = forwardRef(({ formData, setFormData, setError }) => {
   return (
     <div className='container'>
       <div className='inputs'>
-        <h2>Student Preferences Form</h2>
+      <h1 className="center page-heading">Branch Preference Form</h1>
         {preferences.map((preference, index) => (
           <div key={index}>
             <div className='input-field'>

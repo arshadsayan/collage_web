@@ -1,15 +1,54 @@
 import React, { useState } from 'react';
 
 export default function DocumentUpload({ formData, setFormData, filePreviews, setFilePreviews }) {
-
+  const [errors, setErrors] = useState({});
+  const [validations, setValidations] = useState({});
 
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
+      const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+      const maxSize = 250 * 1024; // 250 KB
+
+      if (!validTypes.includes(file.type)) {
+        setErrors({
+          ...errors,
+          [field]: 'Invalid file type. Only PDF, JPEG, and PNG are allowed.'
+        });
+        setValidations({
+          ...validations,
+          [field]: null
+        });
+        return;
+      }
+
+      if (file.size > maxSize) {
+        setErrors({
+          ...errors,
+          [field]: 'File size exceeds 250 KB.'
+        });
+        setValidations({
+          ...validations,
+          [field]: null
+        });
+        return;
+      }
+
+      setErrors({
+        ...errors,
+        [field]: null
+      });
+      
+      setValidations({
+        ...validations,
+        [field]: 'Valid'
+      });
+
       setFilePreviews({
         ...filePreviews,
         [field]: URL.createObjectURL(file)
       });
+
       setFormData({
         ...formData,
         documentUpload: {
@@ -29,6 +68,7 @@ export default function DocumentUpload({ formData, setFormData, filePreviews, se
             <th>Document Name</th>
             <th>Upload</th>
             <th>Preview</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -61,6 +101,11 @@ export default function DocumentUpload({ formData, setFormData, filePreviews, se
                       <a href={filePreviews[doc.field]} target="_blank" rel="noopener noreferrer">View {doc.label}</a>
                     )}
                   </div>
+                )}
+              </td>
+              <td>
+                {errors[doc.field] && (
+                  <div className="error">{errors[doc.field]}</div>
                 )}
               </td>
             </tr>

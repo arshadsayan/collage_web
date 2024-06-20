@@ -62,7 +62,7 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
   const mailOptions = {
     from: 'asiesgst@gmail.com',
     to: email,
-    subject: 'Your OTP Code',
+    subject: 'Your OTP Code for SIESGST Admission Portal',
     text: `Your OTP code is ${otp}`,
   };
 
@@ -113,6 +113,81 @@ app.post('/api/signin', (req, res) => {
       res.status(200).json({ success: true, userData: { email, uniqueKey: results[0].unique_key, userId  }});
     } else {
       res.status(400).json({ success: false, message: 'Invalid email or password' });
+    }
+  });
+});
+
+
+app.post('/api/request-reset-password', (req, res) => {
+  const { email } = req.body;
+
+  const query = 'SELECT id FROM user_registration WHERE email = ?';
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.error('Error querying data:', err);
+      return res.status(500).json({ message: 'Error querying data' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Not a registered user' });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otps[email] = { otp };
+
+    const mailOptions = {
+      from: 'asiesgst@gmail.com',
+      to: email,
+      subject: 'Your Password Reset OTP',
+      text: `Your OTP code is ${otp}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: 'Error sending OTP' });
+      }
+
+      res.status(200).json({ message: 'OTP sent successfully' });
+    });
+  });
+});
+
+
+////////////////////////////////prathamesh trial 3
+
+app.post('/api/reset-password', (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (otps[email] && otps[email].otp == otp) {
+    const query = 'UPDATE user_registration SET password = ? WHERE email = ?';
+    db.query(query, [newPassword, email], (err, result) => {
+      if (err) {
+        console.error('Error updating password:', err);
+        return res.status(500).json({ message: 'Error updating password' });
+      }
+
+      delete otps[email];
+      res.status(200).json({ message: 'Password reset successfully' });
+    });
+  } else {
+    res.status(400).json({ message: 'Invalid OTP' });
+  }
+});
+
+app.post('/api/check', (req, res) => {
+  const { email, formType } = req.body;
+
+  const query = 'SELECT * FROM user_details WHERE email = ? AND formType = ?';
+  db.query(query, [email, formType], (err, results) => {
+    if (err) {
+      console.error('Error querying data:', err);
+      return res.status(500).json({ message: 'Error querying data' });
+    }
+
+    if (results.length > 0) {
+      res.status(200).json({ success: true, key: 0 });
+    } else {
+      res.status(200).json({ success: true, key: 1 });
     }
   });
 });
@@ -173,6 +248,7 @@ app.post('/api/submit', upload.fields([
   const cetDetails = JSON.parse(req.body.cetDetails);
   const preferences = JSON.parse(req.body.preferences); // Parse preferences
   const formData1 = JSON.parse(req.body.formData1);
+  const formType = req.body.formType;
   // const transactionDetails = JSON.parse(req.body.transactionDetails);
   
   // Retrieve the user's id from the user_registration table using the email
@@ -251,7 +327,8 @@ app.post('/api/submit', upload.fields([
         transaction_date: formData1.date,
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
-        transaction_against: formData1.paymentAgainst
+        transaction_against: formData1.paymentAgainst,
+        formType:formType
       };
 
       const query = 'INSERT INTO user_details SET ?';

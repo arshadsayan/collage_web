@@ -38,11 +38,12 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           ...formData,
           personalDetails: {
             ...formData.personalDetails,
-            dateofBirth: date 
-          }
+            dateofBirth: date ,
+          },
         });
         setIsValidDate(true);
       }else{
+        setIsValidDate(false);
         // alert("age must be above 16 ");
       }
 
@@ -213,7 +214,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       <h1 className="center page-heading">Personal Details</h1>
       <div className="inputs">
         <div className="input-field">
-            <label htmlFor="fullName">Full Name:</label>
+            <label htmlFor="fullName">Full Name (according to HSC marksheet):</label>
             <input type="text" id="fullName" value={formData.personalDetails.fullName} placeholder="Enter full name" onChange={handleChange} />
         </div>
         <div className="input-field">
@@ -231,6 +232,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
               selected={formData.personalDetails.dateofBirth}
               onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
+              customInput={<input type="text" value={selectedDate ? selectedDate.toLocaleDateString('en-GB') : ''} />}
             />
             {selectedDate != null && !isValidDate && (
         <p style={{ color: 'red', fontSize: '0.8em' }}>Please enter a valid date.</p>
@@ -267,9 +269,9 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label for="sex">Sex:</label>
+          <label for="sex">Gender:</label>
           <select id="sex" className="dropdown-field" value={formData.personalDetails.sex} onChange={handleChange}>
-            <option value="" disabled selected>Enter gender</option>
+            <option value="" disabled selected>Select gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
@@ -278,7 +280,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         <div className="input-field">
           <label for="annualIncome">Annual Income:</label>
           <select id="annualIncome" className="dropdown-field" value={formData.personalDetails.annualIncome} onChange={handleChange}>
-            <option value="default-income">Enter income range</option>
+            <option value="" disabled selected>Select income range</option>
             <option value="Upto ₹2.5 lakhs">Upto ₹2.5 lakhs</option>
             <option value="₹2.5 lakhs to ₹6 lakhs">₹2.5 lakhs to ₹6 lakhs</option>
             <option value="₹6 lakhs to ₹8 lakhs">₹6 lakhs to ₹8 lakhs</option>
@@ -636,8 +638,8 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label for="domicile">Domicile:</label>
-          <input type="text" id="domicile" value={formData.personalDetails.domicile} onChange={handleChange} placeholder="Enter domicile number" />
+          <label for="domicile">Domicile (state):</label>
+          <input type="text" id="domicile" value={formData.personalDetails.domicile} onChange={handleChange} placeholder="Enter domicile state" />
         </div>
         <div className="input-field">
           <label for="mothersTongue">Mother tongue:</label>
@@ -645,7 +647,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         </div>
       </div>
       </div>
-      <br></br>
+      
     </div>
   );
 });

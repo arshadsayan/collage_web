@@ -11,7 +11,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/generate-key-and-send-otp', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/generate-key-and-send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,6 +25,7 @@ export default function SignupPage({ onSignupComplete }) {
       }
 
       const result = await response.json();
+      
       setOtpSent(true);
       setUniqueKey(result.key);
       alert(result.message); // Inform user OTP is sent
@@ -36,7 +37,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleVerifyOtp = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://influences-assume-bizarre-forecasts.trycloudflare.com/api/verify-otp', {
+      const response = await fetch('https://virginia-nashville-drag-normally.trycloudflare.com/api/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

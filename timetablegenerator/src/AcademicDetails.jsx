@@ -1,70 +1,189 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
 const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
-  // const [formData, setFormData] = useState({
-  //   hscmathsMarks: '',
-  //   hscphysicsMarks: '',
-  //   hscchemistryMarks: '',
-  //   hscpcmPercentage: '',
-  //   hscvocationalSub: '',
-  //   hscvocationalsubjectMarks: '',
-  //   hscvovationalsubjectPer: '',
-  //   sscBoard: '',
-  //   sscyearofPass: '',
-  //   ssctotalMarks: '',
-  //   sscmarksObtained: '',
-  //   sscPercentage: '',
-  //   hscBoard: '',
-  //   hscyearofPass: '',
-  //   hsctotalMarks: '',
-  //   hscmarksObtained: '',
-  //   hscPercentage: '',
-  // });
+  const [isVocationalSubjectOpted, setIsVocationalSubjectOpted] = useState(false);
+
+  const getCurrentYear = () => new Date().getFullYear();
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevFormData) => ({ ...prevFormData, academicDetails: { ...prevFormData.academicDetails, [id]: value } }));
+    const { id, value, type, checked } = e.target;
+    let newValue = type === 'checkbox' ? checked : value;
+
+    // Convert specific fields to uppercase
+    if (id === 'hscvocationalSub' || id === 'sscBoard' || id === 'hscBoard') {
+      newValue = newValue.toUpperCase();
+    }
+
+    // Validate based on field ID
+    switch (id) {
+      case 'hscmathsMarks':
+      case 'hscphysicsMarks':
+      case 'hscchemistryMarks':
+      case 'hscvocationalsubjectMarks':
+        if (!/^\d*$/.test(value) || value < 0 || value > 100) {
+          setError('Marks should be between 0 and 100.');
+          return;
+        }
+        break;
+      case 'ssctotalMarks':
+      case 'sscmarksObtained':
+      case 'hsctotalMarks':
+      case 'hscmarksObtained':
+        if (!/^\d*$/.test(value) || value < 0) return;
+        break;
+      case 'hscpcmPercentage':
+      case 'hscvovationalsubjectPer':
+      case 'sscPercentage':
+      case 'hscPercentage':
+        if (!/^\d*(\.\d{0,2})?$/.test(value) || value < 0 || value > 100) return;
+        break;
+      case 'hscvocationalSub':
+      case 'sscBoard':
+      case 'hscBoard':
+        if (!/^[a-zA-Z\s]*$/.test(value)) return;
+        break;
+      default:
+        break;
+    }
+
+    setError('');
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      academicDetails: { ...prevFormData.academicDetails, [id]: newValue }
+    }));
   };
 
+  useEffect(() => {
+    const { hscmathsMarks, hscphysicsMarks, hscchemistryMarks } = formData.academicDetails;
+
+    if (hscmathsMarks && hscphysicsMarks && hscchemistryMarks) {
+      const maths = parseFloat(hscmathsMarks);
+      const physics = parseFloat(hscphysicsMarks);
+      const chemistry = parseFloat(hscchemistryMarks);
+
+      if (maths <= 100 && physics <= 100 && chemistry <= 100) {
+        const pcmPercentage = ((maths + physics + chemistry) / 3).toFixed(2);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          academicDetails: { ...prevFormData.academicDetails, hscpcmPercentage: pcmPercentage }
+        }));
+      }
+    }
+  }, [formData.academicDetails.hscmathsMarks, formData.academicDetails.hscphysicsMarks, formData.academicDetails.hscchemistryMarks]);
+
+  useEffect(() => {
+    const { hscmathsMarks, hscphysicsMarks, hscvocationalsubjectMarks } = formData.academicDetails;
+
+    if (hscmathsMarks && hscphysicsMarks && hscvocationalsubjectMarks) {
+      const maths = parseFloat(hscmathsMarks);
+      const physics = parseFloat(hscphysicsMarks);
+      const vocational = parseFloat(hscvocationalsubjectMarks);
+
+      if (maths <= 100 && physics <= 100 && vocational <= 100) {
+        const vocationalPercentage = ((maths + physics + vocational) / 3).toFixed(2);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          academicDetails: { ...prevFormData.academicDetails, hscvovationalsubjectPer: vocationalPercentage }
+        }));
+      }
+    }
+  }, [formData.academicDetails.hscmathsMarks, formData.academicDetails.hscphysicsMarks, formData.academicDetails.hscvocationalsubjectMarks]);
+
+  useEffect(() => {
+    const { ssctotalMarks, sscmarksObtained, hsctotalMarks, hscmarksObtained } = formData.academicDetails;
+
+    if (ssctotalMarks && sscmarksObtained) {
+      const total = parseFloat(ssctotalMarks);
+      const obtained = parseFloat(sscmarksObtained);
+
+      if (total > 0 && obtained <= total) {
+        const sscPercentage = ((obtained / total) * 100).toFixed(2);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          academicDetails: { ...prevFormData.academicDetails, sscPercentage: sscPercentage }
+        }));
+      }
+    }
+
+    if (hsctotalMarks && hscmarksObtained) {
+      const total = parseFloat(hsctotalMarks);
+      const obtained = parseFloat(hscmarksObtained);
+
+      if (total > 0 && obtained <= total) {
+        const hscPercentage = ((obtained / total) * 100).toFixed(2);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          academicDetails: { ...prevFormData.academicDetails, hscPercentage: hscPercentage }
+        }));
+      }
+    }
+  }, [formData.academicDetails.ssctotalMarks, formData.academicDetails.sscmarksObtained, formData.academicDetails.hsctotalMarks, formData.academicDetails.hscmarksObtained]);
+
   const validate = () => {
-    const { hscmathsMarks,
-        hscphysicsMarks,
-        hscchemistryMarks,
-        hscpcmPercentage,
-        hscvocationalSub,
-        hscvocationalsubjectMarks,
-        hscvovationalsubjectPer,
-        sscBoard,
-        sscyearofPass,
-        ssctotalMarks,
-        sscmarksObtained,
-        sscPercentage,
-        hscBoard,
-        hscyearofPass,
-        hsctotalMarks,
-        hscmarksObtained,
-        hscPercentage } = formData.academicDetails;
-    if (!hscmathsMarks ||
-        !hscphysicsMarks ||
-        !hscchemistryMarks ||
-        !hscpcmPercentage ||
-        !hscvocationalSub ||
-        !hscvocationalsubjectMarks ||
-        !hscvovationalsubjectPer ||
-        !sscBoard ||
-        !sscyearofPass ||
-        !ssctotalMarks ||
-        !sscmarksObtained ||
-        !sscPercentage ||
-        !hscBoard ||
-        !hscyearofPass ||
-        !hsctotalMarks ||
-        !hscmarksObtained ||
-        !hscPercentage) {
-      setError('Please fill out all fields.');
-      alert('Please fill out all fields.');
+    const {
+      hscmathsMarks,
+      hscphysicsMarks,
+      hscchemistryMarks,
+      hscpcmPercentage,
+      hscvocationalSub,
+      hscvocationalsubjectMarks,
+      hscvovationalsubjectPer,
+      sscBoard,
+      sscyearofPass,
+      ssctotalMarks,
+      sscmarksObtained,
+      sscPercentage,
+      hscBoard,
+      hscyearofPass,
+      hsctotalMarks,
+      hscmarksObtained,
+      hscPercentage
+    } = formData.academicDetails;
+
+    const currentYear = getCurrentYear();
+    const birthYear = new Date(formData.personalDetails.dateofBirth).getFullYear();
+    const minSSCYear = birthYear + 15;
+    const sscYearOfPass = parseInt(sscyearofPass, 10);
+    const minHSCYear = sscYearOfPass + 2;
+
+    if (
+      !hscmathsMarks ||
+      !hscphysicsMarks ||
+      !hscchemistryMarks ||
+      !hscpcmPercentage ||
+      (isVocationalSubjectOpted && (!hscvocationalSub || !hscvocationalsubjectMarks || !hscvovationalsubjectPer)) ||
+      !sscBoard ||
+      !sscyearofPass ||
+      !ssctotalMarks ||
+      !sscmarksObtained ||
+      !sscPercentage ||
+      !hscBoard ||
+      !hscyearofPass ||
+      !hsctotalMarks ||
+      !hscmarksObtained ||
+      !hscPercentage ||
+      !/^\d{4}$/.test(sscyearofPass) ||
+      sscyearofPass < minSSCYear ||
+      sscyearofPass > currentYear ||
+      !/^\d{4}$/.test(hscyearofPass) ||
+      hscyearofPass < minHSCYear ||
+      hscyearofPass > currentYear
+    ) {
+      setError(`Year of passing SSC should be between ${minSSCYear} and ${currentYear}.`);
+      setError(`Year of passing HSC should be between ${minHSCYear} and ${currentYear}.`);
+      alert('Please fill out all fields correctly.');
       return false;
     }
+
+    if (
+      parseFloat(formData.academicDetails.sscmarksObtained) > parseFloat(formData.academicDetails.ssctotalMarks) ||
+      parseFloat(formData.academicDetails.hscmarksObtained) > parseFloat(formData.academicDetails.hsctotalMarks)
+    ) {
+      setError('Marks obtained cannot be more than total marks.');
+      alert('Marks obtained cannot be more than total marks.');
+      return false;
+    }
+
     setError('');
     return true;
   };
@@ -79,72 +198,110 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label for="hscmathsMarks">HSC maths marks:</label>
-          <input type="text" id="hscmathsMarks" value={formData.academicDetails.hscmathsMarks} onChange={handleChange} placeholder="Enter semester" />
+          <label htmlFor="hscmathsMarks">HSC maths marks:</label>
+          <input type="text" id="hscmathsMarks" value={formData.academicDetails.hscmathsMarks} onChange={handleChange} placeholder="Enter marks" />
         </div>
         <div className="input-field">
-          <label for="hscphysicsMarks">HSC physics marks:</label>
-          <input type="text" id="hscphysicsMarks" value={formData.academicDetails.hscphysicsMarks} onChange={handleChange} placeholder="Enter semester" />
+          <label htmlFor="hscphysicsMarks">HSC physics marks:</label>
+          <input type="text" id="hscphysicsMarks" value={formData.academicDetails.hscphysicsMarks} onChange={handleChange} placeholder="Enter marks" />
+        </div>
+        <div className="input-field">
+          <label htmlFor="hscchemistryMarks">HSC chemistry marks:</label>
+          <input type="text" id="hscchemistryMarks" value={formData.academicDetails.hscchemistryMarks} onChange={handleChange} placeholder="Enter marks" />
         </div>
       </div>
-      <div className="input-fields side-by-side">
-        <div className="input-field">
-          <label for="hscchemistryMarks">HSC chemistry marks:</label>
-          <input type="text" id="hscchemistryMarks" value={formData.academicDetails.hscchemistryMarks} onChange={handleChange} placeholder="Enter semester" />
-        </div>
-        <div className="input-field">
-          <label for="hscpcmPercentage">HSC PCM percentage:</label>
-          <input type="text" id="hscpcmPercentage" value={formData.academicDetails.hscpcmPercentage} onChange={handleChange} placeholder="Enter semester" />
-        </div>
-      </div>
-      <div className="input-field">
-        <label for="hscvocationalSub">HSC vocational subject name:</label>
-        <input type="text" id="hscvocationalSub" value={formData.academicDetails.hscvocationalSub} onChange={handleChange} placeholder="Enter department name" />
-      </div>
-      <div className="input-fields side-by-side">
-        <div className="input-field">
-          <label for="hscvocationalsubjectMarks">HSC vocational subject marks:</label>
-          <input type="text" id="hscvocationalsubjectMarks" value={formData.academicDetails.hscvocationalsubjectMarks} onChange={handleChange} placeholder="Enter semester" />
-        </div>
-        <div className="input-field">
-          <label for="hscvocationalsubjectPer">HSC vocational subject percentage:</label>
-          <input type="text" id="hscvovationalsubjectPer" value={formData.academicDetails.hscvocationalsubjectPer} onChange={handleChange} placeholder="Enter semester" />
-        </div>
-      </div>        
 
-      <label id="course-details">Course Details: </label>
-    <table className="course-table">
-      <thead>
-        <tr>
-          <th>Exam Passed</th>
-          <th>Board / University</th>
-          <th>Year of passing</th>
-          <th>Total marks</th>
-          <th>Marks obtained</th>
-          <th>Percentage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>S.S.C(10th)</th>
-          <td><input type="text" id="sscBoard" value={formData.academicDetails.sscBoard} onChange={handleChange} /></td>
-          <td><input type="text" id="sscyearofPass" value={formData.academicDetails.sscyearofPass} onChange={handleChange} /></td>
-          <td><input type="text" id="ssctotalMarks" value={formData.academicDetails.ssctotalMarks} onChange={handleChange} /></td>
-          <td><input type="text" id="sscmarksObtained" value={formData.academicDetails.sscmarksObtained} onChange={handleChange} /></td>
-          <td><input type="text" id="sscPercentage" value={formData.academicDetails.sscPercentage} onChange={handleChange} /></td>
-        </tr>
-        <tr>
-          <th>H.S.C(12th) / Diploma</th>
-          <td><input type="text" id="hscBoard" value={formData.academicDetails.hscBoard} onChange={handleChange} /></td>
-          <td><input type="text" id="hscyearofPass" value={formData.academicDetails.hscyearofPass} onChange={handleChange} /></td>
-          <td><input type="text" id="hsctotalMarks" value={formData.academicDetails.hsctotalMarks} onChange={handleChange} /></td>
-          <td><input type="text" id="hscmarksObtained" value={formData.academicDetails.hscmarksObtained} onChange={handleChange} /></td>
-          <td><input type="text" id="hscPercentage" value={formData.academicDetails.hscPercentage} onChange={handleChange} /></td>
-        </tr>
-      </tbody>
-    </table>
-    <br></br>
-      {/* Add your academic details form fields here */}
+      <div className="input-fields">
+        <div className="input-field">
+          <label htmlFor="hscpcmPercentage">HSC PCM percentage:</label>
+          <input type="text" id="hscpcmPercentage" value={formData.academicDetails.hscpcmPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
+        </div>
+      </div>
+
+      <div className="input-field">
+        <label htmlFor="hscvocationalSub">Is vocational subject opted?</label>
+        <input type="checkbox" id="hscvocationalSub" checked={isVocationalSubjectOpted} onChange={(e) => setIsVocationalSubjectOpted(e.target.checked)} />
+      </div>
+
+      {isVocationalSubjectOpted && (
+        <>
+          <div className="input-fields">
+            <div className="input-field">
+              <label htmlFor="hscvocationalSub">HSC vocational subject name:</label>
+              <input type="text" id="hscvocationalSub" value={formData.academicDetails.hscvocationalSub} onChange={handleChange} placeholder="Enter subject" />
+            </div>
+          </div>
+
+          <div className="input-fields side-by-side">
+            <div className="input-field">
+              <label htmlFor="hscvocationalsubjectMarks">HSC vocational subject marks:</label>
+              <input type="text" id="hscvocationalsubjectMarks" value={formData.academicDetails.hscvocationalsubjectMarks} onChange={handleChange} placeholder="Enter marks" />
+            </div>
+            <div className="input-field">
+              <label htmlFor="hscvovationalsubjectPer">HSC vocational subject percentage:</label>
+              <input type="text" id="hscvovationalsubjectPer" value={formData.academicDetails.hscvovationalsubjectPer} onChange={handleChange} placeholder="Calculated percentage" readOnly />
+            </div>
+          </div>
+        </>
+      )}
+
+      <div className="input-fields">
+        <div className="input-field">
+          <label htmlFor="sscBoard">SSC board:</label>
+          <input type="text" id="sscBoard" value={formData.academicDetails.sscBoard} onChange={handleChange} placeholder="Enter board name" />
+        </div>
+      </div>
+
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label htmlFor="sscyearofPass">SSC year of passing:</label>
+          <input type="text" id="sscyearofPass" value={formData.academicDetails.sscyearofPass} onChange={handleChange} placeholder="Enter year" />
+        </div>
+        <div className="input-field">
+          <label htmlFor="ssctotalMarks">SSC total marks:</label>
+          <input type="text" id="ssctotalMarks" value={formData.academicDetails.ssctotalMarks} onChange={handleChange} placeholder="Enter total marks" />
+        </div>
+        <div className="input-field">
+          <label htmlFor="sscmarksObtained">SSC marks obtained:</label>
+          <input type="text" id="sscmarksObtained" value={formData.academicDetails.sscmarksObtained} onChange={handleChange} placeholder="Enter marks obtained" />
+        </div>
+      </div>
+
+      <div className="input-fields">
+        <div className="input-field">
+          <label htmlFor="sscPercentage">SSC percentage:</label>
+          <input type="text" id="sscPercentage" value={formData.academicDetails.sscPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
+        </div>
+      </div>
+
+      <div className="input-fields">
+        <div className="input-field">
+          <label htmlFor="hscBoard">HSC board:</label>
+          <input type="text" id="hscBoard" value={formData.academicDetails.hscBoard} onChange={handleChange} placeholder="Enter board name" />
+        </div>
+      </div>
+
+      <div className="input-fields side-by-side">
+        <div className="input-field">
+          <label htmlFor="hscyearofPass">HSC year of passing:</label>
+          <input type="text" id="hscyearofPass" value={formData.academicDetails.hscyearofPass} onChange={handleChange} placeholder="Enter year" />
+        </div>
+        <div className="input-field">
+          <label htmlFor="hsctotalMarks">HSC total marks:</label>
+          <input type="text" id="hsctotalMarks" value={formData.academicDetails.hsctotalMarks} onChange={handleChange} placeholder="Enter total marks" />
+        </div>
+        <div className="input-field">
+          <label htmlFor="hscmarksObtained">HSC marks obtained:</label>
+          <input type="text" id="hscmarksObtained" value={formData.academicDetails.hscmarksObtained} onChange={handleChange} placeholder="Enter marks obtained" />
+        </div>
+      </div>
+
+      <div className="input-fields">
+        <div className="input-field">
+          <label htmlFor="hscPercentage">HSC percentage:</label>
+          <input type="text" id="hscPercentage" value={formData.academicDetails.hscPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
+        </div>
+      </div>
     </div>
   );
 });
