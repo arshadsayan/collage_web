@@ -1,42 +1,37 @@
-import React from "react";
-import "./AdmissionForm.css";
-import DownloadPDFButton from "./DownloadPDFButton";
+import React from 'react';
+import './AdmissionForm.css';
+import DownloadPDFButton from './DownloadPDFButton';
 
-import DocumentUpload from "./DocumentUpload";
 
-const AdmissionForm = ({
-  formData,
-  setFormData,
-  filePreviews,
-  setFilePreviews,
-  formData1,
-  userId,
-  setFormData1,
-}) => {
-  const dateOfBirth =
-    formData.personalDetails.dateofBirth instanceof Date
-      ? formData.personalDetails.dateofBirth.toLocaleDateString()
-      : "";
+import DocumentUpload from './DocumentUpload';
 
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const day = d.getDate();
-    const month = d.getMonth() + 1; // Month is zero based, so we add 1
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, formData1, userId, setFormData1 }) => {
+  
+  const dateOfBirth = formData.personalDetails.dateofBirth instanceof Date
+    ? formData.personalDetails.dateofBirth.toLocaleDateString()
+    : '';
 
-  // Get current system date in dd-mm-yyyy format
-  const currentDate = formatDate(new Date());
 
+
+    const formatDate = (date) => {
+      const d = new Date(date);
+      const day = d.getDate();
+      const month = d.getMonth() + 1; // Month is zero based, so we add 1
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+  
+    // Get current system date in dd-mm-yyyy format
+    const currentDate = formatDate(new Date());
+  
   const {
     personalDetails = {},
     academicDetails = {},
     cetDetails = {},
     documentUpload = {},
     transactionDetails = {},
-    preferences = [],
-  } = formData;
+    preferences = []
+  } = formData; 
 
   return (
     <div id="pdf-content">
@@ -46,23 +41,16 @@ const AdmissionForm = ({
             <tr>
               <th colSpan="4">
                 <div className="header">
-                  <img src="/gstlogo.png" alt="SIES Logo" className="logo" />
+                  <img src="/1.png" alt="SIES Logo" className="logo" />
                   <div className="header-left">
                     <div className="school-info">
                       <h2>SIES Graduate School of Technology</h2>
-                      <p>
-                        Sri Chandrasekarendra Saraswati Vidyapuram Sector-V,
-                        Nerul, Navi Mumbai, Maharashtra 400706
-                      </p>
+                      <p>Sri Chandrasekarendra Saraswati Vidyapuram Sector-V, Nerul, Navi Mumbai, Maharashtra 400706</p>
                       <p>Phone: 022 6108 2402</p>
                     </div>
                   </div>
                   <div className="header-right">
-                    <img
-                      src={filePreviews.photo}
-                      alt="Profile"
-                      className="profile-photo"
-                    />
+                    <img src={filePreviews.photo} alt="Profile" className="profile-photo" />
                     <p>{formData.personalDetails.fullName}</p>
                     <p>{currentDate}</p>
                   </div>
@@ -250,43 +238,39 @@ const AdmissionForm = ({
                   <tbody>
                     <tr>
                       <td>1 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[0]}</td>
                       <td>2 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[1]}</td>
                     </tr>
                     <tr>
                       <td>3 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[2]}</td>
                       <td>4 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[3]}</td>
                     </tr>
                     <tr>
                       <td>5 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[4]}</td>
                       <td>6 Preference</td>
-                      <td>{formData.preference}</td>
-                    </tr>
+                      <td>{formData.preferences[5]}</td>
+                      </tr>
                     <tr>
                       <td>7 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[6]}</td>
                       <td>8 Preference</td>
-                      <td>{formData.preference}</td>
+                      <td>{formData.preferences[7]}</td>
                     </tr>
                   </tbody>
                 </table>
               </td>
             </tr>
             <tr>
-              <td className="label">Signature</td>
-              <td colSpan="3">
-                <img
-                  src={filePreviews.signature}
-                  alt="Signature"
-                  className="signature-img"
-                />
-              </td>
-            </tr>
-            <tr></tr>
+                <td className="label">Signature</td>
+                <td colSpan="3">
+                  <img src={filePreviews.signature} alt="Signature" className="signature-img" />
+                </td>
+              </tr>
+              <tr></tr>
             <tr>
               <td className="label">Transaction Details</td>
               <td colSpan="3">
