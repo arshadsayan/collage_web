@@ -7,6 +7,8 @@ export default function SignInPage({ onSignIn, goToSignup }) {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
+
+    // Proceed with the usual sign-in process
     try {
       const response = await fetch('http://localhost:3001/api/signin', {
         method: 'POST',

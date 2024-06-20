@@ -14,8 +14,10 @@ import Documents from './Documents';
 import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 
 export default function App() {
+  const [formSelectionPage, setFormSelectionPage] = useState(false);
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
   const [error, setError] = useState('');
+  const [formAlreadySubmitted, setFormAlreadySubmitted] = useState(false);
   const [formData, setFormData] = useState({
     personalDetails: {
       fullName: '',
@@ -136,6 +138,24 @@ export default function App() {
     }
   };
 
+  // const prevSection = () => {
+  //   if (currentSection > 0) {
+  //     if (currentSection === 1 && formData.formType) {
+  //       setFormData({...formData, formType: '' });
+  //       setFormSelectionPage(true);
+  //     } else {
+  //       setCurrentSection(currentSection - 1);
+  //     }
+  //     setError('');
+  //   }
+  //   if (formAlreadySubmitted && formData.formType ) {
+  //     setFormAlreadySubmitted(false);
+  //     setCurrentSection(-2); // or -2, depending on your requirements
+  //   }
+  // };
+
+  
+
   const validateCurrentSection = () => {
     if (currentSection === -2 || currentSection === -1 || currentSection === 4) {
       return true;
@@ -218,11 +238,48 @@ export default function App() {
     setCurrentSection(-2); // Navigate back to the sign-in page after signup
   };
 
-  const handleFormSelection = (formLabel) => {
+  const handleFormSelection = async (formLabel) => {
     setFormData(prevFormData => ({
       ...prevFormData,
-      formType: formLabel // Update formType in formData
+      formType: formLabel
     }));
+
+    const email = formData.personalDetails.email;
+    const canProceed = await handleCheck(email, formLabel);
+    if (!canProceed) {
+      if (formAlreadySubmitted) {
+        setFormSelectionPage(true); // If form already submitted, stay on form selection page
+      } else {
+        setFormAlreadySubmitted(true);
+        setCurrentSection(0); // Proceed to the first section of the form
+      }
+    } else {
+      setFormAlreadySubmitted(false);
+      setFormSelectionPage(false); // Set formSelectionPage to false when form type is selected
+      setCurrentSection(0); // Proceed to the first section of the form
+    }
+  };
+  const handleCheck = async (email, formType) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, formType }),
+      });
+      const result = await response.json();
+      if (result.key === 1) {
+        return true;
+      } else {
+        // alert('User already submitted the form');
+        setError(result.message);
+        return false;
+      }
+    } catch (error) {
+      setError('Network error: ' + error.message);
+      return false;
+    }
   };
 
   return (
@@ -234,13 +291,27 @@ export default function App() {
           <SignupPage onSignupComplete={handleSignupComplete} />
         ) : (
           <>
+          {(formSelectionPage || !formData.formType) && !formAlreadySubmitted && (
             <div className="form-selection">
+              <div className='buttons1'>
               <button onClick={() => handleFormSelection('Form A')}>Form A</button>
               <button onClick={() => handleFormSelection('Form B')}>Form B</button>
               <button onClick={() => handleFormSelection('Form C')}>Form C</button>
               <button onClick={() => handleFormSelection('Form D')}>Form D</button>
+              <button onClick={() => handleFormSelection('Form E')}>Form E</button>
+              <button onClick={() => handleFormSelection('Form F')}>Form F</button>
+              <button onClick={() => handleFormSelection('Form G')}>Form G</button>
+              </div>
             </div>
-            {formData.formType === 'Form A' ? (
+          )}
+          
+            {formAlreadySubmitted ? (
+            
+              <p>You have already submitted the form.</p>
+              
+              
+            ) : (
+            formData.formType === 'Form A' ? (
               <>
                 {sections[currentSection]}
                 {error && <p className="error">{error}</p>}
@@ -255,6 +326,7 @@ export default function App() {
               </>
             ) : (
               <p>Select a form to fill</p> // Placeholder text for other forms
+            )
             )}
           </>
         )}
