@@ -168,7 +168,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: 'Form B'
+    formType: ''
   });
 
   const [filePreviews, setFilePreviews] = useState({});
@@ -365,7 +365,7 @@ export default function App() {
   formDataToSend.append('academicDetails', JSON.stringify(formDataB.academicDetails));
   formDataToSend.append('cetDetails', JSON.stringify(formDataB.cetDetails));
   formDataToSend.append('preference', JSON.stringify(formDataB.preference));
-  formDataToSend.append('formType', formDataB.formType); // Set the formType property
+  formDataToSend.append('formType', formData.formType); // Set the formType property
   formDataToSend.append('formData1', JSON.stringify(formData1));
 
 
