@@ -256,15 +256,33 @@ export default function App() {
     }
   };
 
+  // const prevSection = () => {
+  //   if (currentSection > 0) {
+  //     setCurrentSection(currentSection - 1);
+  //     setError('');
+  //   }
+  // };
+
+  // const prevSectionB = () => {
+  //   if (currentSection > 0) {
+  //     setCurrentSection(currentSection - 1);
+  //     setError('');
+  //   }
+  // };
+
   const prevSection = () => {
-    if (currentSection > 0) {
+    if (currentSection === 0) {
+      window.location.reload(); // Reload the entire application
+    } else if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
       setError('');
     }
   };
-
+  
   const prevSectionB = () => {
-    if (currentSection > 0) {
+    if (currentSection === 0) {
+      window.location.reload(); // Reload the entire application
+    } else if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
       setError('');
     }
@@ -487,7 +505,7 @@ export default function App() {
                 {error && <p className="error">{error}</p>}
                 <br />
                 <div className="buttons">
-                  <button onClick={prevSection} disabled={currentSection === 0}>BACK</button>
+                  <button onClick={prevSection} >BACK</button>
                   <button onClick={nextSection} disabled={currentSection === sections.length - 1}>NEXT</button>
                   {currentSection === sections.length - 1 && (
                     <button className="add-course" onClick={handleSubmit}><b>+ SUBMIT DATA</b></button>
@@ -501,7 +519,7 @@ export default function App() {
                 {error && <p className="error">{error}</p>}
                 <br />
                 <div className="buttons">
-                  <button onClick={prevSectionB} disabled={currentSection === 0}>BACK</button>
+                  <button onClick={prevSectionB} >BACK</button>
                   <button onClick={nextSectionB} disabled={currentSection === sectionsB.length - 1}>NEXT</button>
                   {currentSection === sectionsB.length - 1 && (
                     <button className="add-course" onClick={handleSubmitB}><b>+ SUBMIT DATA</b></button>
