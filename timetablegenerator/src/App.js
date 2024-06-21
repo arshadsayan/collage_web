@@ -351,7 +351,8 @@ export default function App() {
 
       const result = await response.json();
       alert(result.message); // Show success message
-      setCurrentSection(-2); // Reset to first section
+      // setCurrentSection(-2); // Reset to first section
+      window.location.reload();
     } catch (error) {
       setError('Network error: ' + error.message);
     }
@@ -388,7 +389,8 @@ export default function App() {
 
       const result = await response.json();
       alert(result.message); // Show success message
-      setCurrentSection(-2); // Reset to first section
+      // setCurrentSection(-2); // Reset to first section
+      window.location.reload();
     } catch (error) {
       setError('Network error: ' + error.message);
     }
