@@ -3,7 +3,7 @@ import Datepicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 // import CustomDateInput from './CustomDateInput';
 
-const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
+const PersonalDetails = forwardRef(({ formData, setFormData, setError}, ref) => {
   const [selectedDate, setDate] = useState(null);
   const [sameAddress, setSameAddress] = useState(false); //change1
   const [isValidDate, setIsValidDate] = useState(false);

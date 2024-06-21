@@ -161,7 +161,13 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       !hscyearofPass ||
       !hsctotalMarks ||
       !hscmarksObtained ||
-      !hscPercentage ||
+      !hscPercentage 
+    ) {
+      alert('Please fill out all fields correctly.');
+      return false;
+    }
+
+    if (
       !/^\d{4}$/.test(sscyearofPass) ||
       sscyearofPass < minSSCYear ||
       sscyearofPass > currentYear ||
