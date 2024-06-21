@@ -208,7 +208,7 @@ export default function App() {
 
   const sectionsB = [
     <Documents />,
-    <PersonalDetails ref={personalDetailsRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
+    <PersonalDetails ref={personalDetailsRef} formData={formDataB} setFormData={setFormDataB} formDataB={formDataB} setFormDataB={setFormDataB} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
     <PreferenceFormAdmin ref={preferenceFormAdminRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
@@ -436,18 +436,40 @@ export default function App() {
     }
   };
 
+  // const handleSignIn = (userData) => {
+  //   setUserId(userData.userId);
+  //   setFormData(prevFormData => ({
+  //     ...prevFormData,
+  //     personalDetails: {
+  //       ...prevFormData.personalDetails,
+  //       email: userData.email,
+  //       uniqueKey: userData.uniqueKey
+  //     }
+  //   }));
+  //   setCurrentSection(0); // Proceed to the first section of the form
+  // };
+
   const handleSignIn = (userData) => {
     setUserId(userData.userId);
     setFormData(prevFormData => ({
-      ...prevFormData,
+     ...prevFormData,
       personalDetails: {
-        ...prevFormData.personalDetails,
+       ...prevFormData.personalDetails,
+        email: userData.email,
+        uniqueKey: userData.uniqueKey
+      }
+    }));
+    setFormDataB(prevFormDataB => ({
+     ...prevFormDataB,
+      personalDetails: {
+       ...prevFormDataB.personalDetails,
         email: userData.email,
         uniqueKey: userData.uniqueKey
       }
     }));
     setCurrentSection(0); // Proceed to the first section of the form
   };
+
 
   const goToSignup = () => {
     setCurrentSection(-1); // Navigate to the signup page

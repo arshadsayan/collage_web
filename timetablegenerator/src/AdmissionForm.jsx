@@ -2,11 +2,17 @@ import React from 'react';
 import './AdmissionForm.css';
 import DownloadPDFButton from './DownloadPDFButton';
 
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 
+  
 import DocumentUpload from './DocumentUpload';
 
 const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, formData1, userId, setFormData1 }) => {
-  
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   const dateOfBirth = formData.personalDetails.dateofBirth instanceof Date
     ? formData.personalDetails.dateofBirth.toLocaleDateString()
     : '';
@@ -34,12 +40,12 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
   } = formData; 
 
   return (
-    <div id="pdf-content">
+    <div id="pdf-content" ref={componentRef}>
       <form className="admission-form">
-        <table className="form-table">
+        <table className="form-table table1">
           <thead>
-            <tr>
-              <th colSpan="4">
+            {/* <tr>
+              <th colSpan="4"> */}
                 <div className="header">
                   <img src="/1.png" alt="SIES Logo" className="logo" />
                   <div className="header-left">
@@ -51,19 +57,41 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
                   </div>
                   <div className="header-right">
                     <img src={filePreviews.photo} alt="Profile" className="profile-photo" />
-                    <p>{formData.personalDetails.fullName}</p>
-                    <p>{currentDate}</p>
+                   
+                    <tr>{currentDate}</tr> 
                   </div>
                 </div>
-              </th>
-            </tr>
-            <tr>
-              <th colSpan="4" className="title">
-                <h3>ADMISSIONS (2023-24)</h3>
-              </th>
-            </tr>
+              {/* </th>
+            </tr> */}
+            {/* <tr>
+            <div className="header2-name">
+                  <td>  
+
+                  <p >{formData.personalDetails.fullName}</p><br />
+                  </td>
+                  <td>  
+
+                  <p>{currentDate}</p>
+                  </td>
+            </div>
+            </tr> */}
           </thead>
-          <tbody>
+        </table>
+        {/* <table>
+          <tr>{formData.personalDetails.fullName}</tr>
+          <tr>{currentDate}</tr>
+          </table> */}
+            
+          <table className="form-table table2">
+            <thead>
+              <tr></tr>
+              <tr>
+              <th colSpan="4" className="title">
+                <h3>SIES Brochure Form (2024-25)</h3>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
             <tr>
               <td className="label">Name</td>
               <td>{formData.personalDetails.fullName}</td>
@@ -148,6 +176,15 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
               <td className="label">Mother Tongue</td>
               <td>{formData.personalDetails.mothersTongue}</td>
             </tr>
+            </tbody>
+                
+            </table>
+            <table className="form-table table3">
+            <tbody>
+              <tr></tr>
+            <tr className="sub-title">
+              <td colSpan="4">jee Details</td>
+            </tr>
             <tr>
               <td className="label">JEE Application No</td>
               <td>{formData.cetDetails.jeeappNum}</td>
@@ -203,6 +240,7 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
               <td colSpan="3">
                 <table className="inner-table">
                   <tbody>
+                    <tr></tr>
                     <tr>
                       <td>Exam Passed</td>
                       <td>Name of Board/University</td>
@@ -231,11 +269,16 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
                 </table>
               </td>
             </tr>
+            </tbody>
+            </table>
+            <table className="form-table">
+            <tbody>
             <tr>
               <td className="label">Branch Preference</td>
               <td colSpan="3">
                 <table className="inner-table">
                   <tbody>
+                    <tr></tr>
                     <tr>
                       <td>1 Preference</td>
                       <td>{formData.preferences[0]}</td>
@@ -264,12 +307,22 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
                 </table>
               </td>
             </tr>
+            </tbody>
+            </table>
+            <table className="form-table">
+            <tbody>
+              <tr></tr>
             <tr>
                 <td className="label">Signature</td>
                 <td colSpan="3">
                   <img src={filePreviews.signature} alt="Signature" className="signature-img" />
                 </td>
               </tr>
+              <tr></tr>
+              </tbody>
+            </table>
+            <table className="form-table">
+            <tbody>
               <tr></tr>
             <tr>
               <td className="label">Transaction Details</td>
@@ -305,7 +358,10 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
           </tbody>
         </table>
       </form>
-      <DownloadPDFButton />
+      {/* <DownloadPDFButton /> */}
+      <div className="buttons">
+      <button onClick={handlePrint} style={{ border: '1px solid #E28C41' }}>Download Form as PDF</button>
+      </div>
     </div>
   );
 };
