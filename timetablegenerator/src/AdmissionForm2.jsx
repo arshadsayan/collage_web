@@ -274,13 +274,13 @@ const AdmissionForm2 = ({ formDataB, setFormDataB, filePreviews, setFilePreviews
             <table className="form-table">
             <tbody>
             <tr>
-              <td className="label">Branch Preference</td>
+              <td className="label">Branch Alloted</td>
               <td colSpan="3">
                 <table className="inner-table">
                   <tbody>
                     <tr></tr>
                     <tr>
-                      <td>Preference</td>
+                      
                       <td>{formDataB.preference}</td>
                     </tr>
                   </tbody>
