@@ -40,6 +40,9 @@ function Navbar() {
         <li style={styles.navItem}>
           <Link to="/reportgeneration" style={styles.navLink}>Report Generator</Link>
         </li>
+        <li style={styles.navItem}>
+          <Link to="/meritList" style={styles.navLink}>Merit List</Link>
+        </li>
       </ul>
     </nav>
     </>

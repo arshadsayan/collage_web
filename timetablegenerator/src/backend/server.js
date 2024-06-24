@@ -6,15 +6,19 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const mysql2 = require('mysql2/promise');
 
 const app = express();
 const port = 3001; // or any other port you prefer
+
+
 
 // Enable CORS for all routes
 app.use(cors());
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 ///To bypass security for email
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -86,7 +90,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // const fileString = this.filename;
-    // console.log(file.fieldname.toString());
+    // console.log(reuploadName);
     // console.log(fileString); 
     const fileType = file.mimetype;
     if(fileType === 'application/pdf'){
@@ -301,16 +305,127 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
   });
 });
 
-// Endpoint to handle file Reupload at Admin side
-app.post('/reupload', upload.single('file'), (req, res) => {
-  // Multer adds a 'file' object to the request object
-  const file = req.file;
-  if (!file) {
-      return res.status(400).send('No file uploaded.');
-  }
-  res.send('File uploaded successfully.');
-});
 
+
+// const storage2 = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     //  const dirname =  'dirname'//req.body;///JSON.parse(req.body.email);
+//     // console.log('Dirname : ',dirname);
+//     const email = JSON.stringify(req.body.email);
+//     const body = req.body;
+//     // Use email to dynamically create upload path
+//     const dirname = email || 'default'; 
+//     console.log("Email : ",email);
+//     console.log("dirnam : ",dirname);
+//     console.log("Body : ", typeof(body));
+//     // Use 'default' if email is undefined
+//     // console.log('Dirname : ', dirname);
+
+//     // console.log(JSON.parse(req.body));
+    
+//     const uploadPath = `public/${dirname}`;
+//     if (!fs.existsSync(uploadPath)) {
+//       fs.mkdirSync(uploadPath);
+//     }
+//     cb(null, uploadPath);
+//   },
+//   filename: function (req, file, cb) {
+
+//     // console.log(req.body.email);
+//     const reuploadName = 'reuploads';
+//     const fileString = file.fieldname.toString();
+//     console.log(reuploadName);
+//     console.log(fileString); 
+//     const fileType = file.mimetype;
+//     if(fileType === 'application/pdf'){
+//       cb(null, `${reuploadName}.pdf`);
+//     }
+//     else if(fileType === 'image/jpeg'){
+//       cb(null, `${reuploadName}.jpeg`);
+//     }
+//     else if(fileType === 'image/png'){
+//       cb(null, `${reuploadName}.png`);
+//     }
+//   }
+// });
+// const upload2 = multer({ storage: storage2 });
+
+// // Endpoint to handle file Reupload at Admin side
+// app.post('/reupload', upload2.fields([
+//   {name:'file', maxCount:1}
+// ]), (req, res) => {
+//   // Multer adds a 'file' object to the request object
+//   const file = req.file;
+//   const email = req.body;
+//   const docName = req.body.docName;
+  
+//   // response.append(req.body);
+//   console.log('Email : ',email);
+//   console.log('Document Name : ',docName );
+//   if (!file) {
+//       return res.status(400).send('No file uploaded.');
+//   }
+//   // res.send('File uploaded successfully.');
+
+
+//    response = { message: 'Response body received:', data: req.body };
+
+//   // Sending the response with the appended req.body
+//   res.send(response);
+
+
+// });
+
+///Merit list testing
+// Fetch students from the database
+async function fetchStudents() {
+  const connection = await mysql2.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'reg_portal' // Your database name
+  });
+
+  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm FROM test_merit_algorithm_database');
+  await connection.end();
+  return rows;
+}
+
+// Compare students based on various attributes
+function compareStudents(studentA, studentB) {
+  const attributes = ["s_cet_per", "s_cetmaths", "s_cetphy", "s_cetchem", "s_hscpcm"];
+  for (let attr of attributes) {
+    if (studentA[attr] > studentB[attr]) {
+      return -1; 
+    } else if (studentA[attr] < studentB[attr]) {
+      return 1; 
+    }
+  }
+  return 0; 
+}
+
+// Generate merit list
+function generateMeritList(students) {
+  const sortedStudents = students.slice().sort(compareStudents);
+
+  sortedStudents.forEach((student, index) => {
+    student.meritNumber = index + 1;
+  });
+
+  return sortedStudents;
+}
+
+// API endpoint to get merit list
+app.get('/meritList', async (req, res) => {
+  try {
+    const students = await fetchStudents();
+    const meritList = generateMeritList(students);
+    res.json(meritList);
+  } catch (error) {
+    console.error('Error fetching or processing students:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

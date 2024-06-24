@@ -1,0 +1,24 @@
+@media print {
+    .print-button-container {
+      display: none;
+    }
+    .navbar {
+      display: none;
+    }
+    @page {
+      margin: 20mm;
+    }
+  }
+
+  .verify-btn{
+    color: #F9F9F9;
+    background-color: #E28C41;
+    border: 1px solid #E28C41;
+  }
+
+  .col-pdf{
+    margin: auto;
+    padding-left: 45%;
+    padding-top: 0.3%;
+    padding-bottom: 5%;
+  }
