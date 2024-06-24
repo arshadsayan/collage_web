@@ -219,7 +219,7 @@ export default function App() {
 
   const handleCheck = async (email, formType) => {
     try {
-      const response = await fetch('https://playlist-cho-placing-row.trycloudflare.com/api/check', {
+      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -358,7 +358,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://playlist-cho-placing-row.trycloudflare.com/api/submit', {
+      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -396,7 +396,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://playlist-cho-placing-row.trycloudflare.com/api/submit2', {
+      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit2', {
         method: 'POST',
         body: formDataToSend,
       });

@@ -6,11 +6,12 @@ import DocVerification from "./components/DocVerification";
 
 import Navbar from "./components/Navbar";
 import CertificateList from "./components/CertificateList";
-import SelectedCertificates from "./components/SelectedCertificates";
+// import SelectedCertificates from "./components/SelectedCertificates";
 import RejectedTransaction from "./components/RejectedTransaction";
 import ApplicantsList from "./components/ApplicantsList";
 import SelectedCertificate from "./components/SelectedCertificates";
 import ReportGenerator from "./components/ReportGenerator";
+import MeritList from "./components/MeritList";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import Importdept from './importdept';
@@ -223,6 +224,7 @@ export default function App() {
             />
             <Route path="/selected" element={<SelectedCertificate />} />
             <Route path="/reportgeneration" element={<ReportGenerator/>} />
+            <Route path="/meritList" element={<MeritList/>}/>
             <Route
               path="/register"
               element={

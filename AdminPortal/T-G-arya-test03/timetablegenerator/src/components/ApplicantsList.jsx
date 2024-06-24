@@ -70,7 +70,7 @@ function ApplicantsList() {
   const [data2, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://playlist-cho-placing-row.trycloudflare.com/data')
+    axios.get('http://localhost:3001/data')
       .then((response) => {
         setData(response.data);
       })

@@ -37,6 +37,8 @@ const CertificateList = () => {
     navigate('/selected', { state: { selectedCertificates } });
   };
 
+ 
+
   return (
     <div className="container" style={{background:'none', borderRadius:"none", boxShadow:'none'}}>
       <h1>Documents Collected By College</h1>
@@ -63,4 +65,3 @@ const CertificateList = () => {
 };
 
 export default CertificateList;
-

@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const mysql2 = require('mysql2/promise');
 
 const app = express();
 const port = 3001;
@@ -328,7 +329,7 @@ app.post('/api/submit', upload.fields([
         castevalidity: req.files['castevalidity'] ? req.files['castevalidity'][0].path : null,
         noncreamylayer: req.files['noncreamylayer'] ? req.files['noncreamylayer'][0].path : null,
         income: req.files['income'] ? req.files['income'][0].path : null,
-        transaction_proof: req.files['transactionproof'] ? req.files['transactionproof'][0].path : null,
+        transactionproof: req.files['transactionproof'] ? req.files['transactionproof'][0].path : null,
         other: req.files['other'] ? req.files['other'][0].path : null,
         signature: req.files['signature'] ? req.files['signature'][0].path : null,
         preferences: JSON.stringify(preferences).replace(/'/g, '"'),
@@ -631,6 +632,55 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
     console.log("All documents Approved sucessfully");
     res.send('Entry updated successfully');
   });
+});
+
+async function fetchStudents() {
+  const connection = await mysql2.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'reg_portal' // Your database name
+  });
+
+  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm FROM test_merit_algorithm_database');
+  await connection.end();
+  return rows;
+}
+
+// Compare students based on various attributes
+function compareStudents(studentA, studentB) {
+  const attributes = ["s_cet_per", "s_cetmaths", "s_cetphy", "s_cetchem", "s_hscpcm"];
+  for (let attr of attributes) {
+    if (studentA[attr] > studentB[attr]) {
+      return -1; 
+    } else if (studentA[attr] < studentB[attr]) {
+      return 1; 
+    }
+  }
+  return 0; 
+}
+
+// Generate merit list
+function generateMeritList(students) {
+  const sortedStudents = students.slice().sort(compareStudents);
+
+  sortedStudents.forEach((student, index) => {
+    student.meritNumber = index + 1;
+  });
+
+  return sortedStudents;
+}
+
+// API endpoint to get merit list
+app.get('/meritList', async (req, res) => {
+  try {
+    const students = await fetchStudents();
+    const meritList = generateMeritList(students);
+    res.json(meritList);
+  } catch (error) {
+    console.error('Error fetching or processing students:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 

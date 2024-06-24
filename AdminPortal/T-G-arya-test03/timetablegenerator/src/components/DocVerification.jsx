@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./DocVerification.css";
 
 import axios from "axios";
+import { formControlClasses } from "@mui/material";
 
 function DocVerification() {
   const location = useLocation();
@@ -11,7 +12,7 @@ function DocVerification() {
 
   const [DocVerificationData, setDocVerificationData] = useState([]);
   const [loading, setLoading] = useState(true); // Add a loading state
-
+  console.log(uidRecieved);
   //Documents that are not approved  are added to NotApprovedDocument Array
   let NotApprovedDocument = [];
   let RejectedDocument = [];
@@ -20,7 +21,7 @@ function DocVerification() {
   useEffect(() => {
     if (uidRecieved) {
       axios
-        .get(`https://playlist-cho-placing-row.trycloudflare.com/docverification/${uidRecieved}`)
+        .get(`http://localhost:3001/docverification/${uidRecieved}`)
         .then((response) => {
           setDocVerificationData(response.data);
           setLoading(false); // Set loading to false once data is fetched
@@ -48,7 +49,7 @@ function DocVerification() {
     "income",
     "other",
     "signature",
-    "transactionproof"
+    "transactionproof",
   ];
 
   function findDisjoint(arr1, arr2) {
@@ -104,10 +105,6 @@ function DocVerification() {
   console.log("Uploaded Documents length : ", documentUploaded.length);
 
   console.log("Not uploaded Documents", documentsNotUploaded);
-  console.log("Not uploaded Documents length", documentsNotUploaded.length);
-
-  console.log("Approved Documents", ApprovedDocument);
-  console.log("Not uploaded Documents length", ApprovedDocument.length);
 
   const navigate = useNavigate();
 
@@ -211,7 +208,7 @@ function DocVerification() {
   const handlePreview = async (docName) => {
     try {
       const response = await axios.get(
-        `https://playlist-cho-placing-row.trycloudflare.com/docverification/${DocVerificationData[0].id}/${docName}`
+        `http://localhost:3001/docverification/${DocVerificationData[0].id}/${docName}`
       );
       console.log("Response Data:", response.data); // Log the entire response data
 
@@ -229,29 +226,14 @@ function DocVerification() {
           return inputString.replace(/\\/g, "/");
         }
 
-        let actualURL = replaceBackslashWithSlash(URLpre);
+        const actualURL = replaceBackslashWithSlash(URLpre);
         console.log("Key Name:", firstKey);
         console.log("URLpre:", URLpre);
-        console.log(actualURL);
-        function removePublicWord(inputString, publicWord) {
-          // Find the position of the publicWord in the inputString
-          const index = inputString.indexOf(publicWord);
-          
-          if (index === -1) {
-              // If the publicWord is not found in the inputString, return the original string
-              return inputString;
-          } else {
-              // Remove the publicWord from the inputString
-              return inputString.slice(0, index) + inputString.slice(index + publicWord.length);
-          }
-      }
-
-        actualURL = removePublicWord(actualURL, "public");
         console.log(actualURL);
 
         // Make another request to fetch the actual file
         const fileResponse = await axios.get(
-          `https://playlist-cho-placing-row.trycloudflare.com/files/${actualURL}`,
+          `http://localhost:3001/files/${actualURL}`,
           {
             responseType: "blob", // Important for binary data
           }
@@ -273,10 +255,10 @@ function DocVerification() {
 
   const handleApprove = async (docName) => {
     try {
-      const URL = `https://playlist-cho-placing-row.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`;
+      const URL = `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `https://playlist-cho-placing-row.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`,
+        `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -294,10 +276,10 @@ function DocVerification() {
 
   const handleReject = async (docName) => {
     try {
-      const URL = `https://playlist-cho-placing-row.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
+      const URL = `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `https://playlist-cho-placing-row.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
+        `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -313,24 +295,34 @@ function DocVerification() {
     window.location.reload();
   };
 
-   
-  const handleReceiptDocument = async ()=>{
-    
+  const handleReceiptDocument = async () => {
     const confirmAction = window.confirm("Are you sure?");
 
     if (confirmAction) {
       try {
-        const URL = `https://playlist-cho-placing-row.trycloudflare.com/DocumentsApproved/${DocVerificationData[0].id}`;
+        const URL = `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`;
         console.log(URL);
         const response = await axios.put(URL);
         console.log(`All Documents Approved`);
-        console.log(response.data); // Log the response from server
+        console.log(response.data);
+        // Log the response from server
         // Optionally, update local state or perform other actions upon successful approval
       } catch (error) {
         console.error("Error approving document:", error);
         // Handle error scenarios as needed
       }
-      window.location.reload(); // Reload the page after operation
+      console.log(ApprovedDocument);
+      // const uidtoSend = uidRecieved;
+
+      navigate("/selected", {
+        state: {
+          selectedCertificates: ApprovedDocument,
+          uidtoSend: uidRecieved,
+          fullName: DocVerificationData[0].fullname,
+        },
+      });
+
+      // window.location.reload(); // Reload the page after operation
     } else {
       // Handle if user chooses not to continue (optional)
       console.log("Operation cancelled by user");
@@ -341,7 +333,7 @@ function DocVerification() {
     //   console.log(URL);
     //   const response = await axios.put(
     //     `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`,
-        
+
     //   );
     //   console.log(`All Documents Approved`);
     //   console.log(response.data); // Log the response from server
@@ -351,7 +343,7 @@ function DocVerification() {
     //   // Handle error scenarios as needed
     // }
     // window.location.reload();
-  }
+  };
 
   ///////////////////////////Handling Reupload Button///////////////////////////////////////
   const [file, setFile] = useState(null);
@@ -360,23 +352,37 @@ function DocVerification() {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
   };
-  const handleUpload = () => {
+  const handleUpload = (emailId, docName) => {
     if (file) {
       const formData = new FormData();
-      formData.append('file', file);
+      const email = emailId;
+      formData.append("file", file);
+      formData.append("docName", JSON.stringify(docName));
+      formData.append("email", JSON.stringify(email));
 
-      axios.post('https://playlist-cho-placing-row.trycloudflare.com/reupload', formData)
-        .then(response => {
-          console.log('File uploaded successfully');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      console.log("FormData.email = ", JSON.stringify(formData[email]));
+
+      axios
+        .post("http://localhost:3001/reupload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("File uploaded successfully");
           // Handle success, e.g., show a success message
         })
-        .catch(error => {
-          console.error('Error uploading file: ', error);
+        .catch((error) => {
+          console.error("Error uploading file: ", error);
           // Handle errors, e.g., show an error message
         });
     } else {
       // Handle case where no file is selected
-      console.warn('No file selected');
+      console.warn("No file selected");
     }
   };
   //////////////////////////////////////////////////////////////////////////////////////////
@@ -467,101 +473,120 @@ function DocVerification() {
             </div>
           </div>
         </div>
-        <div className="doc-container">
-          {documents
-            .filter((doc) => documentUploaded.includes(doc.dbcol))
-            .map((row) => (
-              <div className="row doc-row" key={row.id}>
-                <div className="col arbtn">
-                  <b>{row.name}</b>
+        {DocVerificationData[0].documentsApproved === "Approved" && (
+          <>
+            <div className="generate-receipt2">
+              <div className="row doc-row">
+                <div className="col doc-Submitted">
+                  All Documents Submitted and Approved
                 </div>
-                <div className="col arbtn">
-                  <b>Status   :   {DocVerificationData[0][`${row.dbcol}Status`]}</b>
-                </div>
-                <div className="col">
-                  <button
-                    className="btn arbtn preview-btn"
-                    onClick={() => {
-                      handlePreview(row.dbcol);
-                    }}
-                  >
-                    Preview
-                  </button>
-                </div>
-               
-                
-                <div className="col">
-                  <div className="row btn-row">
-                    <button
-                      type="button"
-                      className="btn btn-success arbtn"
-                      onClick={() => handleApprove(row.dbcol)}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger arbtn"
-                      onClick={() => handleReject(row.dbcol)}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-                {RejectedDocument.includes(row.dbcol) && (
-                  <div className="input-group mb-3">
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="inputGroupFile02"
-                      onChange={handleFileChange}
-                    />
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupFile02"
-                      onClick={handleUpload}
-                    >
-                      Reupload
-                    </label>
-                  </div>
-                )}
               </div>
-            ))}
-        </div>
-        {ApprovedDocument.length === documentUploaded.length &&(
-          <div className="generate-receipt">
-            <div className="row">
-              <button className="btn receipt-btn" onClick={()=>{handleReceiptDocument()}}>
-                Generate Receipt
-              </button>
             </div>
+            <div className="generate-receipt">
+              <div className="row">
+                <button
+                  className="btn receipt-btn"
+                  onClick={() => {
+                    handleReceiptDocument();
+                  }}
+                >
+                  Generate Receipt
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+        {DocVerificationData[0].documentsApproved === "Not Approved" && (
+          <div className="doc-container">
+            {documents
+              .filter((doc) => documentUploaded.includes(doc.dbcol))
+              .map((row) => (
+                <div className="row doc-row" key={row.id}>
+                  <div className="col arbtn">
+                    <b>{row.name}</b>
+                  </div>
+                  <div className="col arbtn">
+                    <b>
+                      Status : {DocVerificationData[0][`${row.dbcol}Status`]}
+                    </b>
+                  </div>
+                  <div className="col">
+                    <button
+                      className="btn arbtn preview-btn"
+                      onClick={() => {
+                        handlePreview(row.dbcol);
+                      }}
+                    >
+                      Preview
+                    </button>
+                  </div>
+
+                  <div className="col">
+                    <div className="row btn-row">
+                      <button
+                        type="button"
+                        className="btn btn-success arbtn"
+                        onClick={() => handleApprove(row.dbcol)}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger arbtn"
+                        onClick={() => handleReject(row.dbcol)}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                  {RejectedDocument.includes(row.dbcol) && (
+                    <div className="input-group mb-3">
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="inputGroupFile02"
+                        onChange={handleFileChange}
+                      />
+                      <label
+                        className="input-group-text"
+                        htmlFor="inputGroupFile02"
+                        onClick={() => {
+                          handleUpload(DocVerificationData[0].email, row.dbcol);
+                        }}
+                      >
+                        Reupload
+                      </label>
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
         )}
-        {(RejectedDocument.length > 0 || NotApprovedDocument.length > 0 && ApprovedDocument.length !== documentUploaded.length) &&(
+
+        {ApprovedDocument.length === documentUploaded.length && (
           <div className="generate-receipt">
             <div className="row">
               <button
                 className="btn receipt-btn"
-                disabled
-                
+                onClick={() => {
+                  handleReceiptDocument();
+                }}
               >
                 Generate Receipt
               </button>
             </div>
           </div>
         )}
-        {DocVerificationData[0].documentsApproved === 'Approved' &&(
-          <div className="generate-receipt2">
-            <div className="row doc-row">
-              <div className="col doc-Submitted">
-                All Documents Submitted and Approved
+        {DocVerificationData[0].documentsApproved === "Not Approved" &&
+          ApprovedDocument.length !== documentUploaded.length && (
+            <div className="generate-receipt">
+              <div className="row">
+                <button className="btn receipt-btn" disabled>
+                  Generate Receipt
+                </button>
               </div>
             </div>
-          </div>
-        )}
-
-        
-        
+          )}
       </div>
     </>
   );
