@@ -476,6 +476,164 @@ app.post('/api/submit2', upload.fields([
   });
 });
 
+
+
+///Admin Portal changes
+function mailsend(docName, email){
+  const documentReject = docName;
+  const emailtoSend = email;
+  console.log(emailtoSend);
+;  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'otp.graphicalauthenticator@gmail.com',
+      pass: 'awdw yvwr unzw hqgj'
+    }
+  });
+  
+  const mailOptions = {
+    from: 'otp.graphicalauthenticator@gmail.com',
+    to: emailtoSend,
+    subject: 'Rejected Documents',
+    text: `${documentReject} Documnet Rejected \n Please visit admin office with correct softcopy of Corresponding document \n[File size < 250kb, File type allowed(pdf/jpeg/png) `,
+    // attachments: [
+    //   {
+    //       path: 'E:/Desktop/attachment.txt'
+    //   }
+  // ]
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  }); 
+}
+
+
+///Setting up file server to show preview of Documents
+app.use('/files', express.static(path.join(__dirname, 'public'))); //Working
+
+//Admin portal data fetching
+// Create an endpoint to fetch data
+app.get('/data', (req, res) => {
+  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus FROM user_details';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+
+//Docverification page get and fetching
+app.get('/docverification/:uid', (req, res) => {
+  const userId = req.params.uid;
+  console.log(userId);
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, transactionproofStatus, documentsApproved FROM user_details WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+//Fetching documents URL and send the URL back to React (Preview button)
+app.get('/docverification/:uid/:docname', (req, res) => {
+  const userId = req.params.uid;
+  const docname = req.params.docname;
+  console.log(userId);
+  console.log(docname)
+  const query = `SELECT ${docname} FROM user_details WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+//Document verification page making updation request to make document status to approve
+app.put('/approveDoc/:uid/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+
+  const sql = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Approved' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+ 
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
+
+
+//Document verification page making updation request to make document status to Reject
+app.put('/rejectDoc/:uid/:email/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+  const  email = req.params.email;
+
+  console.log(email)
+  mailsend(docName, email);
+  const sql = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET ${docName}Status = 'Rejected' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
+
+//Update all Document status to Approved
+app.put('/DocumentsApproved/:uid', (req, res) => {
+  const  uid  = req.params.uid;
+  
+  const sql = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+ 
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log("All documents Approved sucessfully");
+    res.send('Entry updated successfully');
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
