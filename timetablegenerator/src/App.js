@@ -335,7 +335,15 @@ export default function App() {
 
   const nextSection = () => {
     if (!validateCurrentSection()) return;
-    if (currentSection < sections.length - 1) {
+    if (currentSection === 0) {
+      // Display warning alert for section 0
+      alert("Make sure to completely fill and submit the form before closing the website");
+  
+      // After OK is pressed, proceed to next section
+      setCurrentSection(currentSection + 1);
+      setError('');
+    } else if (currentSection < sections.length - 1) {
+      // Regular section advancement logic
       setCurrentSection(currentSection + 1);
       setError('');
     }
