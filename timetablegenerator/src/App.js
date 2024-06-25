@@ -299,11 +299,11 @@ export default function App() {
 
   const sectionsC = [
     <Documents />,
-    <PersonalDetails ref={personalDetailsRef} formData={formDataC} setFormData={setFormDataC} formDataB={formDataC} setFormDataC={setFormDataC} setError={setError} />,
+    <PersonalDetails ref={personalDetailsRef} formData={formDataC} setFormData={setFormDataC} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
     <PreferenceFormAdmin ref={preferenceFormAdminRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
-    <TransactionDetails ref={transactionDetailsRef} formData1={formDataC} setFormData1={setFormData1} setError={setError} />,
+    <TransactionDetails ref={transactionDetailsRef} formData1={formData1} setFormData1={setFormData1} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formDataC} setFormData={setFormDataC} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
     <KtDetails ref={ktdetailsRef} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError}/>,
     <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>

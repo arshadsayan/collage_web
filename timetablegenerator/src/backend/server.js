@@ -174,7 +174,7 @@ app.post('/api/reset-password', (req, res) => {
     res.status(400).json({ message: 'Invalid OTP' });
   }
 });
-
+//user_details_admission_SETEBE
 app.post('/api/check', (req, res) => {
   const { email, formType } = req.body;
   let query;
@@ -183,7 +183,7 @@ app.post('/api/check', (req, res) => {
   } else if (formType === 'Form B') {
     query = 'SELECT * FROM user_details_admission WHERE email = ? AND formType = ?';
   } else if (formType === 'Form C') {
-    query = 'SELECT * FROM user_details_admission WHERE email = ? AND formType = ?';
+    query = 'SELECT * FROM user_details_admission_SETEBE WHERE email = ? AND formType = ?';
   } 
   else {
     return res.status(400).json({ message: 'Invalid form type' });
@@ -588,7 +588,7 @@ app.post('/api/submit3', upload.fields([
         formType:formType
       };
 
-      const query = 'INSERT INTO user_details_admission SET ?';
+      const query = 'INSERT INTO user_details_admission_setebe SET ?';
       db.query(query, data, (err, result) => {
         if (err) {
           console.error('Error inserting data:', err);
@@ -609,7 +609,7 @@ function mailsend(docName, email){
   const documentReject = docName;
   const emailtoSend = email;
   console.log(emailtoSend);
-;  const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'asiesgst@gmail.com',
