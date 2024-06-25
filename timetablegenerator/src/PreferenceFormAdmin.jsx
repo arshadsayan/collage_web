@@ -32,7 +32,7 @@ const PreferenceFormAdmin = forwardRef(({ formData, setFormData, setError }) => 
       <div className='inputs'>
         <h1 className="center page-heading">Allotment Details</h1>
         <div className='input-field'>
-          <label htmlFor="preference">Preference: </label>
+          <label htmlFor="preference">Select your Department: </label>
           <select
             id="preference"
             className='dropdown-field'

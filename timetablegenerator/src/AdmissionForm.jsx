@@ -87,7 +87,7 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
               <tr></tr>
               <tr>
               <th colSpan="4" className="title">
-                <h3>SIES Brochure Form (2024-25)</h3>
+                <h3>ADMISSIONS (2023-24)</h3>
               </th>
             </tr>
             </thead>
@@ -183,7 +183,7 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
             <tbody>
               <tr></tr>
             <tr className="sub-title">
-              <td colSpan="4">jee Details</td>
+              <td colSpan="4">JEE Details</td>
             </tr>
             <tr>
               <td className="label">JEE Application No</td>
@@ -360,7 +360,7 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
       </form>
       {/* <DownloadPDFButton /> */}
       <div className="buttons">
-      <button onClick={handlePrint} style={{ border: '1px solid #E28C41' }}>Download Form as PDF</button>
+        <button onClick={handlePrint}>Download PDF copy of form</button>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import Layout from './Layout';
 import Documents from './Documents';
 import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesForm
+import KtDetails from './KtDetails';
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -89,6 +90,7 @@ export default function App() {
       noncreamylayer: null,
       income: null,
       transactionproof: null,
+      fcregistrationcopy: null,
       other: null
     },
    
@@ -171,6 +173,83 @@ export default function App() {
     formType: ''
   });
 
+  const [formDataC, setFormDataC] = useState({
+    personalDetails: {
+      fullName: '',
+      email: '',
+      mobileNumber: '',
+      fathersName: '',
+      fathersmobileNumber: '',
+      fathersOccupation: '',
+      mothersName: '',
+      mothersOccupation: '',
+      mothersmobileNumber: '',
+      annualIncome: '',
+      sex: '',
+      corrAddr: '',
+      perAddr: '',
+      area: '',
+      category: '',
+      nationality: 'Indian',
+      religion: '',
+      domicile: '',
+      mothersTongue: '',
+      dateofBirth: '',
+      bloodGroup: '',
+      state: 'Maharashtra'
+    },
+    academicDetails: {
+      hscmathsMarks: '',
+      hscphysicsMarks: '',
+      hscchemistryMarks: '',
+      hscpcmPercentage: '',
+      hscvocationalSub: '',
+      hscvocationalsubjectMarks: '',
+      hscvovationalsubjectPer: '',
+      sscBoard: '',
+      sscyearofPass: '',
+      ssctotalMarks: '',
+      sscmarksObtained: '',
+      sscPercentage: '',
+      hscBoard: '',
+      hscyearofPass: '',
+      hsctotalMarks: '',
+      hscmarksObtained: '',
+      hscPercentage: ''
+    },
+    cetDetails: {
+      cetappId: '',
+      cetrollNo: '',
+      cetmathsPer: '',
+      cetphysicsPer: '',
+      cetchemistryPer: '',
+      jeeappNum: '',
+      jeePer: '',
+      cetPer: ''
+    },
+    documentUpload: {
+      photo: null,
+      signature: null,
+      marksheet10: null,
+      leavingCertificate12: null,
+      marksheet12: null,
+      cetMarksheet: null,
+      jeeMarksheet: null,
+      domicilecert: null,
+      castecertificate: null,
+      castevalidity: null,
+      noncreamylayer: null,
+      income: null,
+      transactionproof: null,
+      other: null
+    },
+   
+    preference: '',
+    formType: ''
+  });
+
+  
+
   const [filePreviews, setFilePreviews] = useState({});
 
   const [formData1, setFormData1] = useState({
@@ -194,6 +273,7 @@ export default function App() {
   const preferencesFormRef = useRef();
   const preferenceFormAdminRef = useRef();
   const admissionForm2Ref = useRef();
+  const ktdetailsRef = useRef();
 
   const sections = [
     <Documents />,
@@ -216,6 +296,19 @@ export default function App() {
     <DocumentUpload ref={documentUploadRef} formData={formDataB} setFormData={setFormDataB} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
     <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataB} setFormDataB={setFormDataB} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
+
+  const sectionsC = [
+    <Documents />,
+    <PersonalDetails ref={personalDetailsRef} formData={formDataC} setFormData={setFormDataC} formDataB={formDataC} setFormDataC={setFormDataC} setError={setError} />,
+    <AcademicDetails ref={academicDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
+    <CETDetails ref={cetDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
+    <PreferenceFormAdmin ref={preferenceFormAdminRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
+    <TransactionDetails ref={transactionDetailsRef} formData1={formDataC} setFormData1={setFormData1} setError={setError} />,
+    <DocumentUpload ref={documentUploadRef} formData={formDataC} setFormData={setFormDataC} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
+    <KtDetails ref={ktdetailsRef} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError}/>,
+    <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
+  ];
+  
 
   const handleCheck = async (email, formType) => {
     try {
@@ -246,6 +339,7 @@ export default function App() {
       setCurrentSection(currentSection + 1);
       setError('');
     }
+    window.scrollTo(0, 0);
   };
 
   const nextSectionB = () => {
@@ -254,6 +348,16 @@ export default function App() {
       setCurrentSection(currentSection + 1);
       setError('');
     }
+    window.scrollTo(0, 0);
+  };
+
+  const nextSectionC = () => {
+    if (!validateCurrentSectionC()) return;
+    if (currentSection < sectionsC.length - 1) {
+      setCurrentSection(currentSection + 1);
+      setError('');
+    }
+    window.scrollTo(0, 0);
   };
 
   // const prevSection = () => {
@@ -280,6 +384,15 @@ export default function App() {
   };
   
   const prevSectionB = () => {
+    if (currentSection === 0) {
+      window.location.reload(); // Reload the entire application
+    } else if (currentSection > 0) {
+      setCurrentSection(currentSection - 1);
+      setError('');
+    }
+  };
+
+  const prevSectionC = () => {
     if (currentSection === 0) {
       window.location.reload(); // Reload the entire application
     } else if (currentSection > 0) {
@@ -338,6 +451,31 @@ export default function App() {
     return true; // Skip validation for sign-in and sign-up sections
   };
   
+  const validateCurrentSectionC = () => {
+
+    if (currentSection === -2 || currentSection === -1 || currentSection === 4) {
+      return true;
+    }
+    
+    if (currentSection >= 0 && currentSection < sectionsC.length) {
+      const refs = [
+        null,
+        personalDetailsRef,
+        academicDetailsRef,
+        cetDetailsRef,
+        preferenceFormAdminRef,
+        documentUploadRef,
+        admissionForm2Ref
+      ];
+  
+      // Check if the ref is defined before calling validate
+      if (refs[currentSection] && refs[currentSection].current) {
+        return refs[currentSection].current.validate();
+      }
+    }
+    return true; // Skip validation for sign-in and sign-up sections
+  };
+
   const handleSubmit = async () => {
     const formDataToSend = new FormData();
   
@@ -414,6 +552,44 @@ export default function App() {
     }
   };
 
+  const handleSubmitC = async () => {
+    const formDataToSend = new FormData();
+  
+  // Append personal, academic, and cet details as JSON string
+  formDataToSend.append('personalDetails', JSON.stringify(formDataC.personalDetails));
+  formDataToSend.append('academicDetails', JSON.stringify(formDataC.academicDetails));
+  formDataToSend.append('cetDetails', JSON.stringify(formDataC.cetDetails));
+  formDataToSend.append('preference', JSON.stringify(formDataC.preference));
+  formDataToSend.append('formType', formData.formType); // Set the formType property
+  formDataToSend.append('formData1', JSON.stringify(formData1));
+
+
+  
+  
+  // Append files
+  Object.keys(formDataC.documentUpload).forEach(key => {
+    formDataToSend.append(key, formDataC.documentUpload[key]);
+  });
+
+    try {
+      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit3', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      // setCurrentSection(-2); // Reset to first section
+      window.location.reload();
+    } catch (error) {
+      setError('Network error: ' + error.message);
+    }
+  };
+
   const handleFormSelection = async (formLabel) => {
     setFormData(prevFormData => ({
       ...prevFormData,
@@ -467,6 +643,14 @@ export default function App() {
         uniqueKey: userData.uniqueKey
       }
     }));
+    setFormDataC(prevFormDataC => ({
+      ...prevFormDataC,
+       personalDetails: {
+        ...prevFormDataC.personalDetails,
+         email: userData.email,
+         uniqueKey: userData.uniqueKey
+       }
+     }));
     setCurrentSection(0); // Proceed to the first section of the form
   };
 
@@ -503,11 +687,11 @@ export default function App() {
               <div className='buttons1'>
                 <br></br>
               <button onClick={() => handleFormSelection('Form A')}>SIES Brochure Form</button>
-              <button onClick={() => handleFormSelection('Form B')}>SIES Admission Form</button>
-              {/* <button onClick={() => handleFormSelection('Form C')}>Form C</button>
-              <button onClick={() => handleFormSelection('Form D')}>Form D</button>
-              <button onClick={() => handleFormSelection('Form E')}>Form E</button>
-              <button onClick={() => handleFormSelection('Form F')}>Form F</button>
+              <button onClick={() => handleFormSelection('Form B')}>FE Admission Form</button>
+              <button onClick={() => handleFormSelection('Form C')}>SE Admission Form</button>
+              {/* <button onClick={() => handleFormSelection('Form D')}>TE Admission Form</button>
+              <button onClick={() => handleFormSelection('Form E')}>BE Admission Form</button> */}
+              {/* <button onClick={() => handleFormSelection('Form F')}>Form F</button>
               <button onClick={() => handleFormSelection('Form G')}>Form G</button> */}
               </div>
             </div>
@@ -549,7 +733,22 @@ export default function App() {
                 </div>
               </>
               ) : (
-                <p></p>
+                formData.formType === 'Form C' ? (
+                  <>
+                  {sectionsC[currentSection]}
+                  {error && <p className="error">{error}</p>}
+                  <br />
+                  <div className="buttons">
+                    <button onClick={prevSectionC} >BACK</button>
+                    <button onClick={nextSectionC} disabled={currentSection === sectionsC.length - 1}>NEXT</button>
+                    {currentSection === sectionsC.length - 1 && (
+                      <button className="add-course" onClick={handleSubmitC}><b>+ SUBMIT DATA</b></button>
+                    )}
+                  </div>
+                </>
+                ) : (
+                  <p></p>
+                )
               )
             )
             )}
