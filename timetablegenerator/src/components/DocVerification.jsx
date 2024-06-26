@@ -314,9 +314,9 @@ function DocVerification() {
       console.log(ApprovedDocument);
       // const uidtoSend = uidRecieved;
 
-      navigate("/selected", {
+      navigate("/feeReceipt", {
         state: {
-          selectedCertificates: ApprovedDocument,
+          
           uidtoSend: uidRecieved,
           fullName: DocVerificationData[0].fullname,
         },

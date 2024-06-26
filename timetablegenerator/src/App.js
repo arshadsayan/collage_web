@@ -12,6 +12,7 @@ import ApplicantsList from "./components/ApplicantsList";
 import SelectedCertificate from "./components/SelectedCertificates";
 import ReportGenerator from "./components/ReportGenerator";
 import MeritList from "./components/MeritList";
+import FeeStructure from "./components/FeeStructure";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import Importdept from './importdept';
@@ -26,6 +27,7 @@ import PersonalDetails from "./PersonalDetails";
 import AcademicDetails from "./AcademicDetails";
 import CETDetails from "./CETDetails";
 import DocumentUpload from "./DocumentUpload";
+import FeeReceipt from "./components/FeeReceipt";
 
 export default function App() {
   // const [dept, setDept] = useState(false);
@@ -225,34 +227,9 @@ export default function App() {
             <Route path="/selected" element={<SelectedCertificate />} />
             <Route path="/reportgeneration" element={<ReportGenerator/>} />
             <Route path="/meritList" element={<MeritList/>}/>
-            <Route
-              path="/register"
-              element={
-                <div className="container">
-                  {sections[currentSection]}
-                  {error && <p className="error">{error}</p>}
-                  <div className="buttons">
-                    <button
-                      onClick={prevSection}
-                      disabled={currentSection === 0}
-                    >
-                      BACK
-                    </button>
-                    <button
-                      onClick={nextSection}
-                      disabled={currentSection === sections.length - 1}
-                    >
-                      NEXT
-                    </button>
-                    {currentSection === sections.length - 1 && (
-                      <button className="add-course" onClick={handleSubmit}>
-                        <b>+ SUBMIT DATA</b>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              }
-            />
+            <Route path="/meritList" element={<MeritList/>}/>
+            <Route path="/feeStructure" element={<FeeStructure/>}/>
+            <Route path="/feeReceipt" element={<FeeReceipt/>}/>
           </Routes>
         </div>
       </Router>

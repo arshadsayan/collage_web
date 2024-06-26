@@ -7,6 +7,7 @@ function Navbar() {
           padding: '10px',
           backgroundColor: '#002566',
           color: '#fff',
+          width: "100%",
         },
         navLinks: {
           listStyleType: 'none',
@@ -29,13 +30,13 @@ function Navbar() {
           <Link to="/" style={styles.navLink}>Student Details Approval</Link>
         </li>
         <li style={styles.navItem}>
-          <Link to="/receitGeneration" style={styles.navLink}>Document Receipt Generator</Link>
+          <Link to="/receitGeneration" style={styles.navLink}>Document Receipt</Link>
         </li>
         <li style={styles.navItem}>
           <Link to="/transactionrejected" style={styles.navLink}>Transaction rejected list</Link>
         </li>
         <li style={styles.navItem}>
-          <Link to="/" style={styles.navLink}>CSV upload</Link>
+          <Link to="/feeStructure" style={styles.navLink}>Fee Structure</Link>
         </li>
         <li style={styles.navItem}>
           <Link to="/reportgeneration" style={styles.navLink}>Report Generator</Link>

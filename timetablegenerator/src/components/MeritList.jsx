@@ -50,6 +50,13 @@ function MeritList() {
               <th scope="col">Institute Rank</th>
               <th scope="col">Name</th>
               <th scope="col">CET percentile</th>
+              <th scope="col">Preference 1</th>
+              <th scope="col">Preference 2</th>
+              <th scope="col">Preference 3</th>
+              <th scope="col">Preference 4</th>
+              <th scope="col">Preference 5</th>
+              <th scope="col">Preference 6</th>
+              <th scope="col">Preference 7</th>
             </tr>
           </thead>
           <tbody>
