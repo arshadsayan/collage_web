@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const back_url = "http://localhost:3001";
 
 export default function SignInPage({ onSignIn, goToSignup }) {
   const [email, setEmail] = useState('');
@@ -9,13 +10,14 @@ export default function SignInPage({ onSignIn, goToSignup }) {
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState('');
   const [currentSection, setCurrentSection] = useState('initialSection');
+  
 
   const handleSignIn = async (event) => {
     event.preventDefault();
 
     // Proceed with the usual sign-in process
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/signin', {
+      const response = await fetch(`${back_url}/api/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +74,7 @@ export default function SignInPage({ onSignIn, goToSignup }) {
 const handleResetPassword = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/reset-password', {
+      const response = await fetch(`${back_url}/api/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +102,7 @@ const handleResetPassword = async (event) => {
 const handleRequestOtp = async (event) => {
   event.preventDefault();
   try {
-    const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/request-reset-password', {
+    const response = await fetch(`${back_url}/api/request-reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

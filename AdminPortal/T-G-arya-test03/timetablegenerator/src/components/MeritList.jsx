@@ -7,12 +7,13 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import './MeritList.css'
+const back_url = "http://localhost:3001";
 
 function MeritList() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/meritList')
+    axios.get(`${back_url}/meritList`)
       .then((response) => {
         setData(response.data);
       })

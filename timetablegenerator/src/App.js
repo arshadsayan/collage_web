@@ -16,6 +16,8 @@ import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesForm
 import KtDetails from './KtDetails';
 
+const back_url = "http://localhost:3001";
+
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
   const [error, setError] = useState('');
@@ -317,7 +319,7 @@ export default function App() {
 
   const handleCheck = async (email, formType) => {
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/check', {
+      const response = await fetch(`${back_url}/api/check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -509,7 +511,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit', {
+      const response = await fetch(`${back_url}/api/submit`, {
         method: 'POST',
         body: formDataToSend,
       });
@@ -547,7 +549,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit2', {
+      const response = await fetch(`${back_url}/api/submit2`, {
         method: 'POST',
         body: formDataToSend,
       });
@@ -585,7 +587,7 @@ export default function App() {
   });
 
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/submit3', {
+      const response = await fetch(`${back_url}/api/submit3`, {
         method: 'POST',
         body: formDataToSend,
       });

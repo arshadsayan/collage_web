@@ -812,6 +812,66 @@ app.get('/meritList', async (req, res) => {
   }
 });
 
+// Fee structure upload endpoint
+app.post('/fee-structure-upload', (req, res) => {
+  const query = `INSERT INTO fee_structure (admission_year, tuition_fee, development_fee, exam_fee, misc_fee) VALUES (?, ?, ?, ?, ?)`;
+  const { admissionYear, tuitionFee, developmentFee, examFee, miscellaneousFee } = req.body;
+  console.log(req.body);
+  const values = [admissionYear, tuitionFee, developmentFee, examFee, miscellaneousFee];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        console.error('Duplicate entry error: ' + err.stack);
+        res.status(409).send('Duplicate entry: Admission year already exists');
+      } else {
+        console.error('Error updating entry: ' + err.stack);
+        res.status(500).send('Error updating entry');
+      }
+    } else {
+      console.log('Entry updated successfully');
+      console.log(result);
+      res.send('Entry updated successfully');
+    }
+  });
+});
+
+app.put('/fee-structure-update', (req, res) => {
+  const query = `UPDATE fee_structure SET development_fee = ?,exam_fee = ?, misc_fee = ? WHERE admission_year = ?`;
+  const { admissionYear, tuitionFee, developmentFee, examFee, miscellaneousFee } = req.body;
+  console.log(req.body);
+  const values = [developmentFee, examFee, miscellaneousFee, admissionYear];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        console.error('Duplicate entry error: ' + err.stack);
+        res.status(409).send('Duplicate entry: Admission year already exists');
+      } else {
+        console.error('Error updating entry: ' + err.stack);
+        res.status(500).send('Error updating entry');
+      }
+    } else {
+      console.log('Entry updated successfully');
+      console.log(result);
+      res.send('Entry updated successfully');
+    }
+  });
+});
+
+app.get('/feeStructure',(req,res)=>{
+  const query = `SELECT * FROM fee_structure ;`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+})
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

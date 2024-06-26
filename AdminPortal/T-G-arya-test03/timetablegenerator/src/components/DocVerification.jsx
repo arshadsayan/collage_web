@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./DocVerification.css";
 
+const back_url = "http://localhost:3001";
+
 import axios from "axios";
 import { formControlClasses } from "@mui/material";
 
@@ -21,7 +23,7 @@ function DocVerification() {
   useEffect(() => {
     if (uidRecieved) {
       axios
-        .get(`https://initial-freight-design-virginia.trycloudflare.com/docverification/${uidRecieved}`)
+        .get(`${back_url}/docverification/${uidRecieved}`)
         .then((response) => {
           setDocVerificationData(response.data);
           setLoading(false); // Set loading to false once data is fetched
@@ -208,7 +210,7 @@ function DocVerification() {
   const handlePreview = async (docName) => {
     try {
       const response = await axios.get(
-        `https://initial-freight-design-virginia.trycloudflare.com/docverification/${DocVerificationData[0].id}/${docName}`
+        `${back_url}/docverification/${DocVerificationData[0].id}/${docName}`
       );
       console.log("Response Data:", response.data); // Log the entire response data
 
@@ -239,7 +241,7 @@ function DocVerification() {
 
         // Make another request to fetch the actual file
         const fileResponse = await axios.get(
-          `https://initial-freight-design-virginia.trycloudflare.com/files/${actualURL}`,
+          `${back_url}/files/${actualURL}`,
           {
             responseType: "blob", // Important for binary data
           }
@@ -261,10 +263,10 @@ function DocVerification() {
 
   const handleApprove = async (docName) => {
     try {
-      const URL = `https://initial-freight-design-virginia.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`;
+      const URL = `${back_url}/approveDoc/${DocVerificationData[0].id}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `https://initial-freight-design-virginia.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`,
+        `${back_url}/approveDoc/${DocVerificationData[0].id}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -282,10 +284,10 @@ function DocVerification() {
 
   const handleReject = async (docName) => {
     try {
-      const URL = `https://initial-freight-design-virginia.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
+      const URL = `${back_url}/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `https://initial-freight-design-virginia.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
+        `${back_url}/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -306,7 +308,7 @@ function DocVerification() {
 
     if (confirmAction) {
       try {
-        const URL = `https://initial-freight-design-virginia.trycloudflare.com/DocumentsApproved/${DocVerificationData[0].id}`;
+        const URL = `${back_url}/DocumentsApproved/${DocVerificationData[0].id}`;
         console.log(URL);
         const response = await axios.put(URL);
         console.log(`All Documents Approved`);
@@ -320,9 +322,9 @@ function DocVerification() {
       console.log(ApprovedDocument);
       // const uidtoSend = uidRecieved;
 
-      navigate("/selected", {
+      navigate("/feeReceipt", {
         state: {
-          selectedCertificates: ApprovedDocument,
+          
           uidtoSend: uidRecieved,
           fullName: DocVerificationData[0].fullname,
         },
@@ -373,7 +375,7 @@ function DocVerification() {
       console.log("FormData.email = ", JSON.stringify(formData[email]));
 
       axios
-        .post("https://initial-freight-design-virginia.trycloudflare.com/reupload", formData, {
+        .post(`${back_url}/reupload`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

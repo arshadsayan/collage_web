@@ -70,7 +70,7 @@ function ApplicantsList() {
   const [data2, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/data')
+    axios.get(`${back_url}/data`)
       .then((response) => {
         setData(response.data);
       })

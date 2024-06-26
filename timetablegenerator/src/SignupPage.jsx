@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+const back_url = "http://localhost:3001";
+
 
 export default function SignupPage({ onSignupComplete }) {
   const [email, setEmail] = useState('');
@@ -11,7 +13,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/generate-key-and-send-otp', {
+      const response = await fetch(`${back_url}/api/generate-key-and-send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +39,7 @@ export default function SignupPage({ onSignupComplete }) {
   const handleVerifyOtp = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://initial-freight-design-virginia.trycloudflare.com/api/verify-otp', {
+      const response = await fetch(`${back_url}/api/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
