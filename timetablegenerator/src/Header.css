@@ -3,11 +3,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 5px;
     background-color: #f0f0f0;
     border-radius: 15px;
-    margin :20px;
+    margin :30px;
     height: 250px;
+    
   }
   
   .header-left {
@@ -43,3 +44,27 @@
     background-color: #cc0000;
   } */
   
+  .buttons-nav {
+    /* display: flex;
+    justify-content: space-evenly; */
+    margin-bottom: 30px;
+    align-items: left;
+    margin-top: 5px;
+  }
+
+  .buttons-nav button:hover, button:hover{
+    background-color: #F9F9F9;
+    color: #E28C41;
+    border: 1px solid #E28C41;
+  }
+
+  .buttons-nav button , .add-course{
+    font-family: inherit;
+    padding: 10px 20px;
+    border-style: none;
+    border-radius: 20px;
+    background-color: #E28C41;
+    border: 1px solid #E28C41;
+    color: #F9F9F9;
+    cursor: pointer;
+  }

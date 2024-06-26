@@ -21,7 +21,7 @@ function DocVerification() {
   useEffect(() => {
     if (uidRecieved) {
       axios
-        .get(`http://localhost:3001/docverification/${uidRecieved}`)
+        .get(`https://initial-freight-design-virginia.trycloudflare.com/docverification/${uidRecieved}`)
         .then((response) => {
           setDocVerificationData(response.data);
           setLoading(false); // Set loading to false once data is fetched
@@ -208,7 +208,7 @@ function DocVerification() {
   const handlePreview = async (docName) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/docverification/${DocVerificationData[0].id}/${docName}`
+        `https://initial-freight-design-virginia.trycloudflare.com/docverification/${DocVerificationData[0].id}/${docName}`
       );
       console.log("Response Data:", response.data); // Log the entire response data
 
@@ -226,14 +226,20 @@ function DocVerification() {
           return inputString.replace(/\\/g, "/");
         }
 
-        const actualURL = replaceBackslashWithSlash(URLpre);
+        function replacePublic(inputString) {
+          return inputString.replace("public", "");
+        }
+
+        let actualURL = replaceBackslashWithSlash(URLpre);
+        actualURL = replacePublic(actualURL);
+
         console.log("Key Name:", firstKey);
         console.log("URLpre:", URLpre);
         console.log(actualURL);
 
         // Make another request to fetch the actual file
         const fileResponse = await axios.get(
-          `http://localhost:3001/files/${actualURL}`,
+          `https://initial-freight-design-virginia.trycloudflare.com/files/${actualURL}`,
           {
             responseType: "blob", // Important for binary data
           }
@@ -255,10 +261,10 @@ function DocVerification() {
 
   const handleApprove = async (docName) => {
     try {
-      const URL = `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`;
+      const URL = `https://initial-freight-design-virginia.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `http://localhost:3001/approveDoc/${DocVerificationData[0].id}/${docName}`,
+        `https://initial-freight-design-virginia.trycloudflare.com/approveDoc/${DocVerificationData[0].id}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -276,10 +282,10 @@ function DocVerification() {
 
   const handleReject = async (docName) => {
     try {
-      const URL = `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
+      const URL = `https://initial-freight-design-virginia.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`;
       console.log(URL);
       const response = await axios.put(
-        `http://localhost:3001/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
+        `https://initial-freight-design-virginia.trycloudflare.com/rejectDoc/${DocVerificationData[0].id}/${DocVerificationData[0].email}/${docName}`,
         {
           // fieldToUpdate: 'status',  // Replace with your specific field to update
           // updatedValue: 'approved'  // Replace with the value to update
@@ -300,7 +306,7 @@ function DocVerification() {
 
     if (confirmAction) {
       try {
-        const URL = `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`;
+        const URL = `https://initial-freight-design-virginia.trycloudflare.com/DocumentsApproved/${DocVerificationData[0].id}`;
         console.log(URL);
         const response = await axios.put(URL);
         console.log(`All Documents Approved`);
@@ -329,10 +335,10 @@ function DocVerification() {
     }
 
     // try {
-    //   const URL = `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`;
+    //   const URL = `https://initial-freight-design-virginia.trycloudflare.com/DocumentsApproved/${DocVerificationData[0].id}`;
     //   console.log(URL);
     //   const response = await axios.put(
-    //     `http://localhost:3001/DocumentsApproved/${DocVerificationData[0].id}`,
+    //     `https://initial-freight-design-virginia.trycloudflare.com/DocumentsApproved/${DocVerificationData[0].id}`,
 
     //   );
     //   console.log(`All Documents Approved`);
@@ -367,7 +373,7 @@ function DocVerification() {
       console.log("FormData.email = ", JSON.stringify(formData[email]));
 
       axios
-        .post("http://localhost:3001/reupload", formData, {
+        .post("https://initial-freight-design-virginia.trycloudflare.com/reupload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

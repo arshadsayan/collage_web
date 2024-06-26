@@ -77,6 +77,7 @@ export default function DocumentUpload({ formData, setFormData, filePreviews, se
             { label: "10th Marksheet", field: "marksheet10" },
             { label: "12th Leaving Certificate", field: "leavingCertificate12" },
             { label: "12th Marksheet", field: "marksheet12" },
+            { label: "CBSE 12th Admit Card", field: "cbse12admitcard" },
             { label: "CET Marksheet", field: "cetMarksheet" },
             { label: "JEE Marksheet", field: "jeeMarksheet" },
             { label: "Domicile Certificate", field: "domicilecert" },

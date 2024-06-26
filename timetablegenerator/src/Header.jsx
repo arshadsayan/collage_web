@@ -9,7 +9,7 @@ const Header = () => {
   };
 
   return (
-    <div className="header">
+    <div className="header" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
       <div className="header-left">
         <img
           src={logo}
@@ -19,9 +19,11 @@ const Header = () => {
       </div>
       <div className="header-right">
         <h1>SIES Graduate School of Technology</h1>
-        <p>www.siesgst.edu.in</p>
         <p>Accredited with NAAC A+ Grade and NBA Accredited</p>
+        <p>www.siesgst.edu.in</p>
+        <div className='buttons-nav'>
         <button onClick={handleLogout}>Logout</button>
+        </div>
       </div>
     </div>
   );

@@ -2,12 +2,38 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 
 const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [isVocationalSubjectOpted, setIsVocationalSubjectOpted] = useState(false);
+  const [showAdmitCardIdInput, setShowAdmitCardIdInput] = useState(false);
 
   const getCurrentYear = () => new Date().getFullYear();
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     let newValue = type === 'checkbox' ? checked : value;
+
+    if (id === 'hscBoard') {
+      setFormData((prevState) => ({
+        ...prevState,
+        academicDetails: {
+          ...prevState.academicDetails,
+          hscBoard: value,
+          otherBoard12: value === 'Other' ? '' : prevState.academicDetails.otherBoard12
+        }
+      }));
+      if (value === 'CBSE') {
+        setShowAdmitCardIdInput(true);
+      } else {
+        setShowAdmitCardIdInput(false);
+      }
+    } else if (id === 'sscBoard') {
+      setFormData((prevState) => ({
+        ...prevState,
+        academicDetails: {
+          ...prevState.academicDetails,
+          sscBoard: value,
+          otherBoard10: value === 'Other' ? '' : prevState.academicDetails.otherBoard10
+        }
+      }));
+    } else {
 
     // Convert specific fields to uppercase
     if (id === 'hscvocationalSub' || id === 'sscBoard' || id === 'hscBoard') {
@@ -51,6 +77,7 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       ...prevFormData,
       academicDetails: { ...prevFormData.academicDetails, [id]: newValue }
     }));
+    }
   };
 
   useEffect(() => {
@@ -190,6 +217,20 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       return false;
     }
 
+    if (formData.academicDetails.otherBoard10) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        academicDetails: { ...prevFormData.academicDetails, sscBoard: formData.academicDetails.otherBoard10 }
+      }));
+    }
+
+    if (formData.academicDetails.otherBoard12) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        academicDetails: { ...prevFormData.academicDetails, hscBoard: formData.academicDetails.otherBoard12 }
+      }));
+    }
+
     setError('');
     return true;
   };
@@ -198,6 +239,18 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
     validate
   }));
 
+  
+  const handleOtherBoardChange = (event) => {
+    const { value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      academicDetails: {
+        ...prevState.academicDetails,
+        otherBoard: value
+      }
+    }));
+  };
+// 3,4,2,5
   return (
     <div>
       <h1 className="center page-heading">Academic Details</h1>
@@ -253,8 +306,25 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields">
         <div className="input-field">
-          <label htmlFor="sscBoard">SSC board:</label>
-          <input type="text" id="sscBoard" value={formData.academicDetails.sscBoard} onChange={handleChange} placeholder="Enter board name" />
+          <label for="sscBoard">10th Board Name:</label>
+          <select id="sscBoard" className="dropdown-field" value={formData.academicDetails.sscBoard} onChange={handleChange}>
+            <option value="" disabled selected>Select Board</option>
+            <option value="MSBSHSE">Maharashtra State Board of Secondary and Higher Secondary Education(MSBSHSE)</option>
+            <option value="CBSE">Central Board of Secondary Education(CBSE)</option>
+            <option value="ICSE">Indian Certificate of Secondary Education(ICSE)</option>
+            <option value="Other">Other</option>
+          </select>
+          <br></br>
+          {formData.academicDetails.sscBoard === "Other" && (
+          <input
+            type="text"
+            id="otherBoard10"
+            className="dropdown-field"
+            value={formData.academicDetails.otherBoard10}
+            onChange={handleChange}
+            placeholder="Enter board name"
+          />
+        )}
         </div>
       </div>
 
@@ -282,8 +352,33 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields">
         <div className="input-field">
-          <label htmlFor="hscBoard">HSC board:</label>
-          <input type="text" id="hscBoard" value={formData.academicDetails.hscBoard} onChange={handleChange} placeholder="Enter board name" />
+          <label for="hscBoard">12th Board Name:</label>
+          <select id="hscBoard" className="dropdown-field" value={formData.academicDetails.hscBoard} onChange={handleChange} placeholder="Enter board name">
+            <option value="" disabled selected>Select Board</option>
+            <option value="MSBSHSE">Maharashtra State Board of Secondary and Higher Secondary Education(MSBSHSE)</option>
+            <option value="CBSE">Central Board of Secondary Education(CBSE)</option>
+            <option value="ICSE">Indian Certificate of Secondary Education(ICSE)</option>
+            <option value="ISC">Indian School Certificate(ISC)</option>
+            <option value="Other">Other</option>
+          </select>
+          <br></br>
+          {showAdmitCardIdInput && (
+          <div className="input-field">
+            <br></br>
+            <label htmlFor="admitCardId">CBSE 12th Admit Card ID:</label>
+            <input type="text" id="admitCardId" value={formData.academicDetails.admitCardId} onChange={handleChange} placeholder="Enter Admit Card ID" />
+          </div>
+        )}
+          {formData.academicDetails.hscBoard === "Other" && (
+          <input
+            type="text"
+            id="otherBoard12"
+            className="dropdown-field"
+            value={formData.academicDetails.otherBoard12}
+            onChange={handleChange}
+            placeholder="Enter board name"
+          />
+        )}
         </div>
       </div>
 

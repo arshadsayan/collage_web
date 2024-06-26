@@ -243,6 +243,10 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         <label for="fathersName">Father's Name:</label>
         <input type="text" id="fathersName" value={formData.personalDetails.fathersName} onChange={handleChange} placeholder="Enter fathers name" />
       </div>
+      <div className="input-field">
+            <label htmlFor="birthPlace">Birth Place:</label>
+            <input type="text" id="birthPlace" value={formData.personalDetails.birthPlace} placeholder="Enter birth place" onChange={handleChange} />
+      </div>
       <div className="input-fields side-by-side">
         <div className="input-field">
           <label for="fathersOccupation">Father's Occupation:</label>

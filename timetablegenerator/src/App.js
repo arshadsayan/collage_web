@@ -44,6 +44,7 @@ export default function App() {
       domicile: '',
       mothersTongue: '',
       dateofBirth: '',
+      birthPlace: '',
       bloodGroup: '',
       state: 'Maharashtra'
     },
@@ -64,7 +65,10 @@ export default function App() {
       hscyearofPass: '',
       hsctotalMarks: '',
       hscmarksObtained: '',
-      hscPercentage: ''
+      hscPercentage: '',
+      otherBoard10: '',
+      otherBoard12: '',
+      admitCardId: ''
     },
     cetDetails: {
       cetappId: '',
@@ -241,6 +245,7 @@ export default function App() {
       noncreamylayer: null,
       income: null,
       transactionproof: null,
+      cbse12admitcard: null,
       other: null
     },
    
@@ -337,7 +342,7 @@ export default function App() {
     if (!validateCurrentSection()) return;
     if (currentSection === 0) {
       // Display warning alert for section 0
-      alert("Make sure to completely fill and submit the form before closing the website");
+      alert("Make sure to completely fill and submit the form before closing the website (Once submitted, can't be re-submitted)");
   
       // After OK is pressed, proceed to next section
       setCurrentSection(currentSection + 1);

@@ -47,7 +47,7 @@ const AdmissionForm = ({ formData, setFormData, filePreviews, setFilePreviews, f
             {/* <tr>
               <th colSpan="4"> */}
                 <div className="header">
-                  <img src="/1.png" alt="SIES Logo" className="logo" />
+                  <img src="/gstlogo.png" alt="SIES Logo" className="logo" />
                   <div className="header-left">
                     <div className="school-info">
                       <h2>SIES Graduate School of Technology</h2>
