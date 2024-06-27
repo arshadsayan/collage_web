@@ -47,7 +47,7 @@ const AdmissionForm2 = ({ formDataB, setFormDataB, filePreviews, setFilePreviews
             {/* <tr>
               <th colSpan="4"> */}
                 <div className="header">
-                  <img src="/1.png" alt="SIES Logo" className="logo" />
+                  <img src="/gstlogo.png" alt="SIES Logo" className="logo" />
                   <div className="header-left">
                     <div className="school-info">
                       <h2>SIES Graduate School of Technology</h2>
@@ -87,7 +87,7 @@ const AdmissionForm2 = ({ formDataB, setFormDataB, filePreviews, setFilePreviews
               <tr></tr>
               <tr>
               <th colSpan="4" className="title">
-                <h3>SIES Admission Form (2024-25)</h3>
+                <h3>SIES First Year Admission Form (2024-25)</h3>
               </th>
             </tr>
             </thead>
@@ -183,7 +183,7 @@ const AdmissionForm2 = ({ formDataB, setFormDataB, filePreviews, setFilePreviews
             <tbody>
               <tr></tr>
             <tr className="sub-title">
-              <td colSpan="4">jee Details</td>
+              <td colSpan="4">JEE Details</td>
             </tr>
             <tr>
               <td className="label">JEE Application No</td>
@@ -274,13 +274,13 @@ const AdmissionForm2 = ({ formDataB, setFormDataB, filePreviews, setFilePreviews
             <table className="form-table">
             <tbody>
             <tr>
-              <td className="label">Branch Preference</td>
+              <td className="label">Allotment Details</td>
               <td colSpan="3">
                 <table className="inner-table">
                   <tbody>
                     <tr></tr>
                     <tr>
-                      <td>Preference</td>
+                      <td>Branch</td>
                       <td>{formDataB.preference}</td>
                     </tr>
                   </tbody>

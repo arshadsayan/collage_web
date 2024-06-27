@@ -88,6 +88,7 @@ export default function App() {
       marksheet10: null,
       leavingCertificate12: null,
       marksheet12: null,
+      cbse12admitcard:null,
       cetMarksheet: null,
       jeeMarksheet: null,
       domicilecert: null,
@@ -146,7 +147,10 @@ export default function App() {
       hscyearofPass: '',
       hsctotalMarks: '',
       hscmarksObtained: '',
-      hscPercentage: ''
+      hscPercentage: '',
+      otherBoard10: '',
+      otherBoard12: '',
+      admitCardId: ''
     },
     cetDetails: {
       cetappId: '',
@@ -164,6 +168,7 @@ export default function App() {
       marksheet10: null,
       leavingCertificate12: null,
       marksheet12: null,
+      cbse12admitcard:null,
       cetMarksheet: null,
       jeeMarksheet: null,
       domicilecert: null,
@@ -172,6 +177,7 @@ export default function App() {
       noncreamylayer: null,
       income: null,
       transactionproof: null,
+      fcregistrationcopy: null,
       other: null
     },
    

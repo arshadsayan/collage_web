@@ -251,7 +251,9 @@ const KtDetails = forwardRef(({ formDataC, setFormData, setError }, ref) => {
 
   return (
     <div className="inputs">
+      <h1 className="center page-heading">KT Details</h1>
       <h2>Current Semester: {currentSemester}</h2>
+      <div className="input-field">
       <label>Select Current Semester:</label>
       <select className="dropdown-field" value={currentSemester} onChange={handleSemesterChange}>
         <option value="" disabled>Select Semester</option>
@@ -259,6 +261,7 @@ const KtDetails = forwardRef(({ formDataC, setFormData, setError }, ref) => {
         <option value="5">Semester 5</option>
         <option value="7">Semester 7</option>
       </select>
+      </div>
       <br />
       {renderSemesterInputs()}
       {/* {handleupdate()} */}

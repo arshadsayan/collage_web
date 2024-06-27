@@ -183,7 +183,7 @@ app.post('/api/check', (req, res) => {
   } else if (formType === 'Form B') {
     query = 'SELECT * FROM user_details_admission1 WHERE email = ? AND formType = ?';
   } else if (formType === 'Form C') {
-    query = 'SELECT * FROM user_details_admission1_SETEBE WHERE email = ? AND formType = ?';
+    query = 'SELECT * FROM user_details_admission_SETEBE WHERE email = ? AND formType = ?';
   } 
   else {
     return res.status(400).json({ message: 'Invalid form type' });
@@ -370,6 +370,7 @@ app.post('/api/submit2', upload.fields([
   { name: 'marksheet10', maxCount: 1 },
   { name: 'leavingCertificate12', maxCount: 1 },
   { name: 'marksheet12', maxCount: 1 },
+  { name: 'cbse12admitcard', maxCount: 1 },
   { name: 'cetMarksheet', maxCount: 1 },
   { name: 'jeeMarksheet', maxCount: 1 },
   { name: 'domicilecert', maxCount: 1 },
@@ -378,6 +379,7 @@ app.post('/api/submit2', upload.fields([
   { name: 'noncreamylayer', maxCount: 1 },
   { name: 'income', maxCount: 1 },
   { name: 'transactionproof', maxCount: 1 },
+  { name: 'fcregistrationcopy', maxCount: 1 },
   { name: 'other', maxCount: 1 },
   { name: 'signature', maxCount: 1 }
 ]), (req, res) => {
@@ -408,6 +410,7 @@ app.post('/api/submit2', upload.fields([
         email: personalDetails.email,
         mobile_number: personalDetails.mobileNumber,
         date_of_birth: personalDetails.dateofBirth,
+        birth_place: personalDetails.birthPlace,
         father_name: personalDetails.fathersName,
         father_occupation: personalDetails.fathersOccupation,
         father_mobile_number: personalDetails.fathersmobileNumber,
@@ -440,6 +443,7 @@ app.post('/api/submit2', upload.fields([
         '12th_total_marks': academicDetails.hsctotalMarks,
         '12th_marks_obtained': academicDetails.hscmarksObtained,
         '12th_percentage': academicDetails.hscPercentage,
+        cbse_admit_card_id: academicDetails.admitCardId,
         cet_application_id: cetDetails.cetappId,  
         cet_roll_number: cetDetails.cetrollNo,
         cet_percentile: cetDetails.cetPer,
@@ -452,6 +456,7 @@ app.post('/api/submit2', upload.fields([
         marksheet10: req.files['marksheet10'] ? req.files['marksheet10'][0].path : null,
         leavingCertificate12: req.files['leavingCertificate12'] ? req.files['leavingCertificate12'][0].path : null,
         marksheet12: req.files['marksheet12'] ? req.files['marksheet12'][0].path : null,
+        cbse_admit_card_id: req.files['cbse12admitcard'] ? req.files['cbse12admitcard'][0].path : null,
         cetMarksheet: req.files['cetMarksheet'] ? req.files['cetMarksheet'][0].path : null,
         jeeMarksheet: req.files['jeeMarksheet'] ? req.files['jeeMarksheet'][0].path : null,
         domicilecert: req.files['domicilecert'] ? req.files['domicilecert'][0].path : null,
@@ -459,7 +464,8 @@ app.post('/api/submit2', upload.fields([
         castevalidity: req.files['castevalidity'] ? req.files['castevalidity'][0].path : null,
         noncreamylayer: req.files['noncreamylayer'] ? req.files['noncreamylayer'][0].path : null,
         income: req.files['income'] ? req.files['income'][0].path : null,
-        transaction_proof: req.files['transactionproof'] ? req.files['transactionproof'][0].path : null,
+        transactionproof: req.files['transactionproof'] ? req.files['transactionproof'][0].path : null,
+        fcregistrationcpy: req.files['fcregistrationcopy'] ? req.files['fcregistrationcopy'][0].path : null,
         other: req.files['other'] ? req.files['other'][0].path : null,
         signature: req.files['signature'] ? req.files['signature'][0].path : null,
         // preferences: JSON.stringify(preferences).replace(/'/g, '"'),
