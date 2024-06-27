@@ -295,6 +295,42 @@ function DocVerification() {
     window.location.reload();
   };
 
+  //Handling reupload
+  const [selectedFile,setSelectedFile] = useState(null);
+  const handleFileChange = (event)=>{
+    setSelectedFile(event.target.files[0]);
+  }
+  const handleUpload = async (email, docName) => {
+    if (!selectedFile) {
+      alert('Please select a file first');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('email', email);
+    formData.append('docName', docName);
+    
+    for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+    try {
+      const response = await axios.post('http://localhost:3001/reupload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          
+        },
+      });
+      console.log('File uploaded successfully:', response.data);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
+
+
+
   const handleReceiptDocument = async () => {
     const confirmAction = window.confirm("Are you sure?");
 
@@ -346,45 +382,45 @@ function DocVerification() {
   };
 
   ///////////////////////////Handling Reupload Button///////////////////////////////////////
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-  };
-  const handleUpload = (emailId, docName) => {
-    if (file) {
-      const formData = new FormData();
-      const email = emailId;
-      formData.append("file", file);
-      formData.append("docName", JSON.stringify(docName));
-      formData.append("email", JSON.stringify(email));
+  // const handleFileChange = (event) => {
+  //   const selectedFile = event.target.files[0];
+  //   setFile(selectedFile);
+  // };
+  // const handleUpload = (emailId, docName) => {
+  //   if (file) {
+  //     const formData = new FormData();
+  //     const email = emailId;
+  //     formData.append("file", file);
+  //     formData.append("docName", JSON.stringify(docName));
+  //     formData.append("email", JSON.stringify(email));
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
+  //     for (let [key, value] of formData.entries()) {
+  //       console.log(`${key}: ${value}`);
+  //     }
 
-      console.log("FormData.email = ", JSON.stringify(formData[email]));
+  //     console.log("FormData.email = ", JSON.stringify(formData[email]));
 
-      axios
-        .post("http://localhost:3001/reupload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("File uploaded successfully");
-          // Handle success, e.g., show a success message
-        })
-        .catch((error) => {
-          console.error("Error uploading file: ", error);
-          // Handle errors, e.g., show an error message
-        });
-    } else {
-      // Handle case where no file is selected
-      console.warn("No file selected");
-    }
-  };
+  //     axios
+  //       .post("http://localhost:3001/reupload", formData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       })
+  //       .then((response) => {
+  //         console.log("File uploaded successfully");
+  //         // Handle success, e.g., show a success message
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error uploading file: ", error);
+  //         // Handle errors, e.g., show an error message
+  //       });
+  //   } else {
+  //     // Handle case where no file is selected
+  //     console.warn("No file selected");
+  //   }
+  // };
   //////////////////////////////////////////////////////////////////////////////////////////
 
   // const handleReupload = (id, event) => {

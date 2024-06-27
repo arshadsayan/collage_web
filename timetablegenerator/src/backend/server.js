@@ -18,6 +18,8 @@ app.use(cors());
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 ///To bypass security for email
@@ -378,6 +380,117 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
 
 ///Merit list testing
 // Fetch students from the database
+
+// BACKUP CODE
+
+// Configure multer storage for re-uploads
+// const reuploadStorage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const email = req.body.email;
+//     console.log(email);
+//     console.log(file.mimetype);
+//     console.log(file.fieldname);
+
+
+
+
+
+
+
+//     const uploadPath = path.join(__dirname, 'public', email);
+//     if (!fs.existsSync(uploadPath)) {
+//       fs.mkdirSync(uploadPath, { recursive: true });
+//     }
+//     cb(null, uploadPath);
+//   },
+//   filename: function (req, file, cb) {
+//     const docName = req.body.docName;
+//     console.log(docName);
+//     const fileExtension = path.extname(file.originalname);
+//     cb(null, `${docName}${fileExtension}`);
+//   }
+// });
+
+// // const reupload = multer({ storage: reuploadStorage });
+// const reupload = multer({ storage: reuploadStorage }).fields([
+//   { name: 'file', maxCount: 1 },
+//   { name: 'email', maxCount: 1 },
+//   { name: 'docName', maxCount: 1 }
+// ]);
+
+// // Endpoint to handle file re-upload
+// app.post('/reupload', reupload.single('file'), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send('No file uploaded.');
+//   }
+
+//   const email = (req.body.email);
+//   const docName = (req.body.docName);
+//   const filePath = (req.file.path);
+//   console.log(req.body);
+//   console.log(email);
+//   console.log(docName);
+//   console.log(filePath);
+
+//   // Here you can add any database update logic if needed
+//   console.log(`File uploaded for ${email}: ${filePath}`);
+
+//   res.send({ message: 'File uploaded successfully', filePath });
+// });
+
+
+const reuploadStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const email = req.body;
+    const parameters = req.params.email;
+    console.log(parameters);
+    console.log('Email:', email);
+    console.log(file.originalname);
+    
+    // if (!email) {
+    //   return cb(new Error('Email is required'));
+    // }
+
+    const uploadPath = path.join(__dirname, 'public', 'Reuploads');
+    fs.mkdir(uploadPath, { recursive: true }, (err) => {
+      if (err) return cb(err);
+      cb(null, uploadPath);
+    });
+  },
+  filename: function (req, file, cb) {
+    const docName = req.body.docName;
+    console.log('Document name:', docName);
+    
+    // if (!docName) {
+    //   return cb(new Error('Document name is required'));
+    // }
+
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${docName}${fileExtension}`);
+  }
+});
+
+const reupload = multer({ storage: reuploadStorage });
+
+app.post('/reupload', reupload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+
+
+  // const { email , docName, filePath } = req.body
+  const email = req.body.email;
+  const docName = req.body.docName;
+  const filePath = req.file.fieldname;
+
+  console.log('Request body:', req.body);
+  console.log('Email:', email);
+  console.log('Document name:', docName);
+  console.log('File path:', filePath);
+
+  res.json({ message: 'File uploaded successfully', filePath });
+});
+
 async function fetchStudents() {
   const connection = await mysql2.createConnection({
     host: 'localhost',
