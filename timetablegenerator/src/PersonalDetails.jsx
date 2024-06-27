@@ -223,7 +223,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           <label htmlFor="email">Email:</label>
           <input type="text" id="email" value={formData.personalDetails.email} onChange={handleChange} placeholder="Enter email" />
         </div>
-        {/* {formType === 'Form B' || formType === 'Form A' ? (
+        {formType === 'Form B' || formType === 'Form A' ? (
         <>
           <div className="input-field">
             <label htmlFor="class">Class:</label>
@@ -255,7 +255,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           <label htmlFor="juniordseCollege">Enter your Junior College (For DSE only)</label>
           <input type="text" id="juniordseCollege" value={formData.personalDetails.juniordseCollege} onChange={handleChange} />
         </div>
-      )} */}
+      )}
         <div className="input-fields side-by-side">
           <div className="input-field">
             <label htmlFor="mobileNumber">Mobile number:</label>

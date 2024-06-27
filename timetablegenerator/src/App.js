@@ -16,7 +16,7 @@ import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesForm
 import KtDetails from './KtDetails';
 
-const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
+const back_url = "http://localhost:3001";
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -186,7 +186,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: ''
+    formType: 'Form B'
   });
 
   const [formDataC, setFormDataC] = useState({
@@ -264,7 +264,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: ''
+    formType: 'Form C'
   });
 
   
