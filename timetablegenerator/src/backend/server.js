@@ -183,7 +183,7 @@ app.post('/api/check', (req, res) => {
   } else if (formType === 'Form B') {
     query = 'SELECT * FROM user_details_admission1 WHERE email = ? AND formType = ?';
   } else if (formType === 'Form C') {
-    query = 'SELECT * FROM user_details_admission_SETEBE WHERE email = ? AND formType = ?';
+    query = 'SELECT * FROM user_details_admission_setebe WHERE email = ? AND formType = ?';
   } 
   else {
     return res.status(400).json({ message: 'Invalid form type' });
@@ -347,7 +347,9 @@ app.post('/api/submit', upload.fields([
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
         transaction_against: formData1.paymentAgainst,
-        formType:formType
+        formType:formType,
+        class:personalDetails.class,
+        juniorCollege:personalDetails.juniorCollege
       };
 
       const query = 'INSERT INTO user_details SET ?';
@@ -474,7 +476,9 @@ app.post('/api/submit2', upload.fields([
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
         transaction_against: formData1.paymentAgainst,
-        formType:formType
+        formType:formType,
+        class:personalDetails.class,
+        juniorCollege:personalDetails.juniorCollege
       };
 
       const query = 'INSERT INTO user_details_admission1 SET ?';
@@ -595,7 +599,9 @@ app.post('/api/submit3', upload.fields([
         transaction_amount: formData1.amount,
         transaction_id: formData1.transactionId,
         transaction_against: formData1.paymentAgainst,
-        formType:formType
+        formType:formType,
+        class:personalDetails.class,
+        juniordseCollege:personalDetails.juniordseCollege
       };
 
       const query = 'INSERT INTO user_details_admission_setebe SET ?';

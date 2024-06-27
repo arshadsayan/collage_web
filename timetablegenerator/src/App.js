@@ -28,6 +28,8 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      juniorCollege:'',
+      class: 'FE',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',
@@ -109,6 +111,8 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      juniorCollege:'',
+      class: 'FE',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',
@@ -189,6 +193,8 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      juniordseCollege:'',
+      class: '',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',

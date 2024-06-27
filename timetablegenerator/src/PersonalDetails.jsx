@@ -7,6 +7,8 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
   const [selectedDate, setDate] = useState(null);
   const [sameAddress, setSameAddress] = useState(false); //change1
   const [isValidDate, setIsValidDate] = useState(false);
+  const [formType, setFormType] = useState(formData.formType);
+  const [selectedClass, setSelectedClass] = useState(formData.personalDetails.class);
   // const [formData, setFormData] = useState({
   //   fullName: '',
   //   email: '',
@@ -221,6 +223,39 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           <label htmlFor="email">Email:</label>
           <input type="text" id="email" value={formData.personalDetails.email} onChange={handleChange} placeholder="Enter email" />
         </div>
+        {/* {formType === 'Form B' || formType === 'Form A' ? (
+        <>
+          <div className="input-field">
+            <label htmlFor="class">Class:</label>
+            <input type="text" id="class" value={formData.personalDetails.class} disabled />
+          </div>
+          <div className="input-field">
+            <label htmlFor="juniorCollege">Enter your Junior College</label>
+            <input
+              type="text"
+              id="juniorCollege"
+              value={formData.personalDetails.juniorCollege}
+              onChange={handleChange}
+            />
+          </div>
+        </>
+      ) : (
+        <div className="input-field">
+          <label htmlFor="class">Class:</label>
+          <select id="class" className="dropdown-field" value={formData.personalDetails.class} onChange={handleChange}>
+            <option value="null">Choose Class</option>
+            <option value="SE">SE</option>
+            <option value="TE">TE</option>
+            <option value="BE">BE</option>
+          </select>
+        </div>
+      )}
+      {formData.personalDetails.class === 'SE' && (
+        <div className="input-field">
+          <label htmlFor="juniordseCollege">Enter your Junior College (For DSE only)</label>
+          <input type="text" id="juniordseCollege" value={formData.personalDetails.juniordseCollege} onChange={handleChange} />
+        </div>
+      )} */}
         <div className="input-fields side-by-side">
           <div className="input-field">
             <label htmlFor="mobileNumber">Mobile number:</label>
