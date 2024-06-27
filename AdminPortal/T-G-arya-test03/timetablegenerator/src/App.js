@@ -14,7 +14,7 @@ import ReportGenerator from "./components/ReportGenerator";
 import MeritList from "./components/MeritList";
 import FeeStructure from "./components/FeeStructure";
 
-const back_url = "http://localhost:3001";
+
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import Importdept from './importdept';
@@ -30,6 +30,8 @@ import AcademicDetails from "./AcademicDetails";
 import CETDetails from "./CETDetails";
 import DocumentUpload from "./DocumentUpload";
 import FeeReceipt from "./components/FeeReceipt";
+
+const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
 
 export default function App() {
   // const [dept, setDept] = useState(false);

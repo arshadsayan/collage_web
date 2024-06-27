@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 
+const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
+
 function ApplicantsList() {
 
   

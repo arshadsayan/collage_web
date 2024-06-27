@@ -39,14 +39,14 @@ const PreferenceFormAdmin = forwardRef(({ formData, setFormData, setError }) => 
             value={preference}
             onChange={(e) => handlePreferenceChange(e.target.value)}
           >
-            <option value="">Select preference</option>
+            <option value="">Select Department</option>
             {initialOptions.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
             ))}
           </select>
-          {isFirstPreferenceEmpty && <span className="error">Preference is required.</span>}
+          {isFirstPreferenceEmpty && <span className="error">Department is required.</span>}
         </div>
       </div>
     </div>

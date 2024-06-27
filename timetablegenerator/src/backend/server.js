@@ -181,9 +181,9 @@ app.post('/api/check', (req, res) => {
   if (formType === 'Form A') {
     query = 'SELECT * FROM user_details WHERE email = ? AND formType = ?';
   } else if (formType === 'Form B') {
-    query = 'SELECT * FROM user_details_admission WHERE email = ? AND formType = ?';
+    query = 'SELECT * FROM user_details_admission1 WHERE email = ? AND formType = ?';
   } else if (formType === 'Form C') {
-    query = 'SELECT * FROM user_details_admission_SETEBE WHERE email = ? AND formType = ?';
+    query = 'SELECT * FROM user_details_admission1_SETEBE WHERE email = ? AND formType = ?';
   } 
   else {
     return res.status(400).json({ message: 'Invalid form type' });
@@ -471,7 +471,7 @@ app.post('/api/submit2', upload.fields([
         formType:formType
       };
 
-      const query = 'INSERT INTO user_details_admission SET ?';
+      const query = 'INSERT INTO user_details_admission1 SET ?';
       db.query(query, data, (err, result) => {
         if (err) {
           console.error('Error inserting data:', err);

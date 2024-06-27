@@ -3,10 +3,12 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./DocVerification.css";
 
-const back_url = "http://localhost:3001";
+
 
 import axios from "axios";
 import { formControlClasses } from "@mui/material";
+
+const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
 
 function DocVerification() {
   const location = useLocation();
