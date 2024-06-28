@@ -307,21 +307,26 @@ function DocVerification() {
     }
 
     const formData = new FormData();
-    formData.append('file', selectedFile);
     formData.append('email', email);
     formData.append('docName', docName);
+    formData.append('file', selectedFile);
+    
     
     for (let [key, value] of formData.entries()) {
     console.log(`${key}: ${value}`);
   }
 
     try {
-      const response = await axios.post('http://localhost:3001/reupload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      // const response = await axios.post('http://localhost:3001/reupload', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
           
-        },
-      });
+      //   },
+      // });
+      const response = await fetch('http://localhost:3001/reupload',{
+        method: 'POST',
+        body: formData,
+      })
       console.log('File uploaded successfully:', response.data);
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -532,6 +537,7 @@ function DocVerification() {
             </div>
           </>
         )}
+        
         {DocVerificationData[0].documentsApproved === "Not Approved" && (
           <div className="doc-container">
             {documents

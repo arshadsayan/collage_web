@@ -16,16 +16,14 @@ function ApplicantsList() {
 
   
 
-  const [AdmissionType, setAdmissionType] = useState("All");
-  const AdmissionTypeCAP = () => {
-    setAdmissionType("CAP");
+  const [AdmissionType, setAdmissionType] = useState("Brochure Institute Level");
+  const AdmissionTypeBrochureInstituteLevel = () => {
+    setAdmissionType("Brochure Institute Level");
   };
-  const AdmissionTypeInstitute = () => {
-    setAdmissionType("Institute-level");
+  const AdmissionTypeAdmission = () => {
+    setAdmissionType("Admission");
   };
-  const AdmissionTypeAll = () => {
-    setAdmissionType("All");
-  };
+
 
 
   const [Class, setClass] = useState("FE");
@@ -131,22 +129,17 @@ function ApplicantsList() {
                           <ul className="dropdown-menu">
                             <li
                               className="dropdown-item"
-                              onClick={AdmissionTypeCAP}
+                              onClick={AdmissionTypeBrochureInstituteLevel}
                             >
-                              CAP
+                              Brochure Institute Level
                             </li>
                             <li
                               className="dropdown-item"
-                              onClick={AdmissionTypeInstitute}
+                              onClick={AdmissionTypeAdmission}
                             >
-                              Institute Level
+                              Admission
                             </li>
-                            <li
-                              className="dropdown-item"
-                              onClick={AdmissionTypeAll}
-                            >
-                              All
-                            </li>
+                            
                           </ul>
                         </div>
                       </div>
@@ -287,7 +280,7 @@ function ApplicantsList() {
           </div>
         </div>
       </div>
-
+      
       <div className="table-container">
         <table className="table">
           <thead>

@@ -7,10 +7,24 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 const mysql2 = require('mysql2/promise');
+const { useState } = require('react');
+const util = require('util');
+const { error } = require('console');
 
 const app = express();
 const port = 3001; // or any other port you prefer
 
+
+//Delete file function 
+async function deleteFile(directoryPath) {
+  const filePath = path.join(directoryPath);
+  try {
+    await fs.unlink(filePath);
+    console.log('File deleted successfully');
+  } catch (err) {
+    console.error('Error deleting the file:', err);
+  }
+}
 
 
 // Enable CORS for all routes
@@ -194,7 +208,7 @@ app.post('/api/submit', upload.fields([
 //Admin portal data fetching
 // Create an endpoint to fetch data
 app.get('/data', (req, res) => {
-  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus FROM user_details';
+  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus, admissionType FROM user_details';
   
   db.query(query, (err, results) => {
     if (err) {
@@ -441,17 +455,17 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
 
 const reuploadStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const email = req.body;
-    const parameters = req.params.email;
-    console.log(parameters);
-    console.log('Email:', email);
+    const email = req.body.email;
+    // const parameters = req.params.email;
+    // console.log(parameters);
+    console.log('email :', email);
     console.log(file.originalname);
     
     // if (!email) {
     //   return cb(new Error('Email is required'));
     // }
 
-    const uploadPath = path.join(__dirname, 'public', 'Reuploads');
+    const uploadPath = path.join(__dirname, 'public', email);
     fs.mkdir(uploadPath, { recursive: true }, (err) => {
       if (err) return cb(err);
       cb(null, uploadPath);
@@ -460,6 +474,16 @@ const reuploadStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     const docName = req.body.docName;
     console.log('Document name:', docName);
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${docName}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${docName}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${docName}.png`);
+    }
     
     // if (!docName) {
     //   return cb(new Error('Document name is required'));
@@ -472,23 +496,79 @@ const reuploadStorage = multer.diskStorage({
 
 const reupload = multer({ storage: reuploadStorage });
 
-app.post('/reupload', reupload.single('file'), (req, res) => {
+app.post('/reupload', reupload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
 
-
-  // const { email , docName, filePath } = req.body
   const email = req.body.email;
   const docName = req.body.docName;
   const filePath = req.file.fieldname;
+  const filetype = req.file.mimetype;
 
-  console.log('Request body:', req.body);
-  console.log('Email:', email);
-  console.log('Document name:', docName);
-  console.log('File path:', filePath);
+  console.log(req.body);
+  console.log(email);
+  console.log(docName);
+  console.log(filePath);
+  console.log(filetype);
 
-  res.json({ message: 'File uploaded successfully', filePath });
+  // Retrieving the previous location of file to delete it
+  const retrieveQuery = `SELECT ${docName} FROM user_details WHERE email = '${email}';`;
+  console.log(retrieveQuery);
+  const values = [docName, email];
+
+  // Promisify the db.query function
+  const query = util.promisify(db.query).bind(db);
+  var fileExtension = '';
+  var resultQuery = '';
+  try {
+    const result = await query(retrieveQuery, values);
+
+    console.log('DOCUMENT REUPLOADED');
+    console.log(result);
+
+    resultQuery = Object.values(result[0])[0];
+    console.log(resultQuery);
+    const parts = resultQuery.split('\\');
+    console.log(parts);
+    const fileName = parts[parts.length - 1];
+    console.log(fileName);
+
+    // Split the file name by dot and get the last part (file extension)
+    const fileNameParts = fileName.split('.');
+    fileExtension = fileNameParts[fileNameParts.length - 1];
+    console.log(fileExtension);
+
+   
+  } catch (err) {
+    console.error('Error updating entry: ' + err.stack);
+    res.status(500).send('Error updating entry');
+  }
+
+  const filetypemap = { 'png':'image/png', 'pdf':'application/pdf', 'jpeg':'image/jpeg' }
+  const reverseFileType = {'image/png':'png', 'application/pdf': 'pdf', 'image/jpeg':'jpeg'}
+  console.log(filetypemap[fileExtension]);
+  console.log(filetype);
+
+  if(filetype === filetypemap[fileExtension]){
+    console.log("Not path updates in database");
+
+  }
+  else{
+    const reuploadURL = `${email}\\${docName}.${reverseFileType[filetype]}`;
+    console.log(reuploadURL);
+    const query = `UPDATE user_details SET ${docName} = ? WHERE email = ?`;
+    const values = [reuploadURL, email];
+    console.log(query);
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.log("Error found : ",error);
+      } else {
+        console.log(result);
+        res.send('Reupload URL in database updated');
+      }
+    });
+  }
 });
 
 async function fetchStudents() {
@@ -499,7 +579,7 @@ async function fetchStudents() {
     database: 'reg_portal' // Your database name
   });
 
-  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm FROM test_merit_algorithm_database');
+  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm, preferences, Alloted_branch FROM test_merit_algorithm_database');
   await connection.end();
   return rows;
 }
@@ -533,6 +613,7 @@ app.get('/meritList', async (req, res) => {
   try {
     const students = await fetchStudents();
     const meritList = generateMeritList(students);
+    console.log(meritList);
     res.json(meritList);
   } catch (error) {
     console.error('Error fetching or processing students:', error);
@@ -596,6 +677,26 @@ app.get('/feeStructure',(req,res)=>{
     } else {
       res.json(results);
       console.log(results);
+    }
+  });
+})
+
+///Branch alottment updates
+app.put('/branchallotment',(req,res)=>{
+  console.log(req.body);
+  const s_id = req.body.s_id;
+  const Alloted_branch = req.body.Alloted_branch;
+  const values = [Alloted_branch, s_id]
+  console.log(values);
+  const query = `UPDATE test_merit_algorithm_database SET Alloted_branch = ? WHERE s_id = ?`;
+  console.log(query);
+  db.query(query, values, (err, result) => {
+    if (err) {
+     console.log("Error while alloting branch : ",err);
+    } else {
+      console.log('Branch Alloted successfully');
+      console.log(result);
+      res.send('Branch Alloted successfully');
     }
   });
 })
