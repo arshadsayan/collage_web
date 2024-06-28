@@ -31,7 +31,7 @@ import CETDetails from "./CETDetails";
 import DocumentUpload from "./DocumentUpload";
 import FeeReceipt from "./components/FeeReceipt";
 
-const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
+const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
 
 export default function App() {
   // const [dept, setDept] = useState(false);

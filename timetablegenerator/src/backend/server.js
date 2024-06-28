@@ -202,6 +202,39 @@ app.post('/api/check', (req, res) => {
   });
 });
 
+// FEE details display
+
+app.get('/api/years', (req, res) => {
+  db.query('SELECT admission_year FROM fee_structure', (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      res.status(500).send('Database query error');
+    } else {
+      const years = results.map(row => row.admission_year);
+      //console.log('Years from database:', years);
+      res.json(years);
+    }
+  });
+});
+
+// Endpoint to get fee structure for a specific year
+app.get('/api/fee-structure/:year', (req, res) => {
+  const year = parseInt(req.params.year);
+  db.query('SELECT * FROM fee_structure WHERE admission_year = ?', [year], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      res.status(500).send('Database query error');
+    } else if (results.length > 0) {
+      //console.log('Fee structure for year:', year, results[0]);
+      res.json(results[0]);
+    } else {
+      console.log('Fee structure not found for year:', year);
+      res.status(404).send('Fee structure not found');
+    }
+  });
+});
+
+
 // let data = {};
 
 const storage = multer.diskStorage({

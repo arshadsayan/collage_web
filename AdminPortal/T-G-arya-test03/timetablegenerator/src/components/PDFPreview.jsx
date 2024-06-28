@@ -7,7 +7,7 @@ const PdfPreview = ({ fileURL }) => {
   useEffect(() => {
     const fetchPdf = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/files/${fileURL}`, {
+        const response = await axios.get(`https://lunch-frozen-norwegian-radiation.trycloudflare.com/files/${fileURL}`, {
           responseType: 'blob',
         });
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
+const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
 
 
 export default function SignupPage({ onSignupComplete }) {

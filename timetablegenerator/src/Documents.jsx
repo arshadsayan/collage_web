@@ -1,7 +1,49 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './doc.css';
 
+const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+
 function Documents() {
+    const [years, setYears] = useState([]);
+    const [selectedYear, setSelectedYear] = useState('');
+    const [feeStructure, setFeeStructure] = useState(null);
+    const [dse, setDse] = useState('NO');
+
+    useEffect(() => {
+        // Fetch available years from the backend
+        fetch(`${back_url}/api/years`)
+          .then(response => response.json())
+          .then(data => {
+            //console.log('Years received from server:', data);
+            setYears(data);
+          })
+          .catch(error => console.error('Error fetching years:', error));
+    }, []);
+
+    useEffect(() => {
+        if (selectedYear) {
+            const yearToFetch = dse === 'YES' ? selectedYear - 1 : selectedYear;
+            fetch(`${back_url}/api/fee-structure/${yearToFetch}`)
+              .then(response => response.json())
+              .then(data => {
+                //console.log('Fee structure received from server:', data);
+                setFeeStructure(data);
+              })
+              .catch(error => {
+                console.error('Error fetching fee structure:', error);
+                setFeeStructure(null);
+              });
+        }
+    }, [selectedYear, dse]);
+
+    const handleYearChange = (event) => {
+        setSelectedYear(parseInt(event.target.value));
+    };
+
+    const handleDseChange = (event) => {
+        setDse(event.target.value);
+    };
+
   return (
     <div className="container-doc">
         <h1 className="center page-heading">Documents Required</h1>
@@ -71,7 +113,7 @@ function Documents() {
                 <tr>
                     <td>6</td>
                     <td>JEE</td>
-                    <td> JEE –Main Score Card  </td>
+                    <td> JEE Main Score Card  </td>
                     <td>MANDATORY</td>
                 </tr>
                 <tr>
@@ -148,8 +190,41 @@ NT(B) / NT(C) /NT(D) /O.B.C/ SBC
                 </tr>
             </tbody>
         </table>
-        <h2 className="center page-heading" style={{ fontSize: '30px'}}>All the documents should be scanned (PDF) or in photo format (JPEG,PNG) and it should be under 250KB</h2>
-        
+        <h2 className="center page-heading" style={{ fontSize: '20px'}}>All the documents should be scanned (PDF) or in photo format (JPEG,PNG) and it should be under 250KB</h2>
+        <div>
+        <h1 className="center page-heading">FEE Details</h1>
+        <div className="input-field">
+        <label>
+          Select Year:
+          <select className="dropdown-field" value={selectedYear} onChange={handleYearChange}>
+            <option value="" disabled selected>Select Year</option>
+            {years.map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+        </label>
+        </div>
+        <div className="input-field">
+        <label>
+          Direct Second-Year Engineering(DSE):
+          <select value={dse} className="dropdown-field" onChange={handleDseChange}>
+            <option value="NO">NO</option>
+            <option value="YES">YES</option>
+          </select>
+        </label>
+        </div>
+      </div>
+      {feeStructure && (
+        <div>
+          <h2>Fee Structure for {dse === 'YES' ? selectedYear - 1 : selectedYear}</h2>
+          <h5>(Note for DSE : DSE students are supposed to pay one year prior fee hence previous years fee is displayed.)</h5>
+          <p>Tuition Fee: {feeStructure.tuition_fee}/-</p>
+          <p>Development Fee: {feeStructure.development_fee}/-</p>
+          <p>Exam Fee: {feeStructure.exam_fee}/-</p>
+          <p>Miscellaneous Fee: {feeStructure.misc_fee}/-</p>
+          <h3><b>Total Fee: {feeStructure.tuition_fee + feeStructure.development_fee + feeStructure.exam_fee + feeStructure.misc_fee}/-</b></h3>
+        </div>
+      )}
     </div>
     
   )

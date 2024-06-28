@@ -15,8 +15,9 @@ import Documents from './Documents';
 import PreferencesForm from './PreferencesForm'; // Import PreferencesForm
 import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesForm
 import KtDetails from './KtDetails';
+import Feed from './Feed';
 
-const back_url = "https://views-covering-shaft-urw.trycloudflare.com";
+const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -186,7 +187,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: ''
+    formType: 'Form B'
   });
 
   const [formDataC, setFormDataC] = useState({
@@ -264,7 +265,7 @@ export default function App() {
     },
    
     preference: '',
-    formType: ''
+    formType: 'Form C'
   });
 
   
@@ -325,7 +326,8 @@ export default function App() {
     <TransactionDetails ref={transactionDetailsRef} formData1={formData1} setFormData1={setFormData1} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formDataC} setFormData={setFormDataC} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
     <KtDetails ref={ktdetailsRef} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError}/>,
-    <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
+    <Feed/>,
+    // <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
   
 
