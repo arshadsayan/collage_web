@@ -21,6 +21,7 @@ function Navbar() {
           color: '#fff',
           textDecoration: 'none',
         },
+        
       };
   return (
     <>

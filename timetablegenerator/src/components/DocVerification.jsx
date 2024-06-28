@@ -614,7 +614,7 @@ function DocVerification() {
                   handleReceiptDocument();
                 }}
               >
-                Generate Receipt
+                Generate Receipt + Add to Merit list
               </button>
             </div>
           </div>

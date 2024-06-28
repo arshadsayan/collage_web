@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import { useReactToPrint } from 'react-to-print';
 import './FeeReceipt.css'; // Assuming you have a CSS file for additional styling
 import { Form } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 function FeeReceipt() {
 
 const currentDate = new Date();
@@ -15,6 +15,9 @@ const month = currentDate.getMonth() + 1; // Returns the month (0-11, add 1 for 
 const day = currentDate.getDate(); // Returns the day of the month (1-31)
 const navigate = useNavigate();
 
+//For receiving state from previous component
+const location = useLocation();
+const receivedState = location.state;
 
 // Formatting the date
 const formattedDate = `${day}-${month}-${year}`;
@@ -74,10 +77,10 @@ const formattedDate = `${day}-${month}-${year}`;
             </div>
           <div className="row rowpay">
             <div className="col colpay">
-                User ID : {formData.rollNo}
+                User ID : {receivedState.uidtoSend}
             </div>
             <div className="col colpay">
-                Student Name : {formData.studentName}
+                Student Name : {receivedState.fullName}
             </div>
            
             

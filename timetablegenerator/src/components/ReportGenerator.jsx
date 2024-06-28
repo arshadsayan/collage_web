@@ -85,62 +85,65 @@ function ReportGenerator() {
   const isSelectAllChecked = selectedFields.length === fields.length;
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="Container">
-        <Typography className="HeaderText" variant="h4" component="h1">
-          Dynamic Table Filter
-        </Typography>
-        <FormGroup className="FormGroupStyled" row>
-          <FormControlLabel
-            className="CheckboxLabel"
-            control={
-              <Checkbox
-                checked={isSelectAllChecked}
-                onChange={handleFieldChange}
-                name="selectAll"
-              />
-            }
-            label="Select All"
-          />
-          <div className="TableCheckboxGrid">
-            {fields.map((field) => (
-              <FormControlLabel
-                key={field}
-                className="CheckboxLabel"
-                control={
-                  <Checkbox
-                    checked={selectedFields.includes(field)}
-                    onChange={handleFieldChange}
-                    name={field}
-                  />
-                }
-                label={field}
-              />
-            ))}
-          </div>
-        </FormGroup>
-        <TableContainer component={Paper} className="TableContainerStyled">
-          <Table>
-            <TableHead className="TableHeader">
-              <TableRow>
-                {selectedFields.map((field) => (
-                  <TableCell key={field} className="TableHeaderCell">{field}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((row, index) => (
-                <TableRow key={index} className="TableBodyRow">
-                  {selectedFields.map((field) => (
-                    <TableCell key={field} className="TableCellStyled">{row[field]}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    </ThemeProvider>
+    // <ThemeProvider theme={theme}>
+    //   <div className="Container">
+    //     <Typography className="HeaderText" variant="h4" component="h1">
+    //       Dynamic Table Filter
+    //     </Typography>
+    //     <FormGroup className="FormGroupStyled" row>
+    //       <FormControlLabel
+    //         className="CheckboxLabel"
+    //         control={
+    //           <Checkbox
+    //             checked={isSelectAllChecked}
+    //             onChange={handleFieldChange}
+    //             name="selectAll"
+    //           />
+    //         }
+    //         label="Select All"
+    //       />
+    //       <div className="TableCheckboxGrid">
+    //         {fields.map((field) => (
+    //           <FormControlLabel
+    //             key={field}
+    //             className="CheckboxLabel"
+    //             control={
+    //               <Checkbox
+    //                 checked={selectedFields.includes(field)}
+    //                 onChange={handleFieldChange}
+    //                 name={field}
+    //               />
+    //             }
+    //             label={field}
+    //           />
+    //         ))}
+    //       </div>
+    //     </FormGroup>
+    //     <TableContainer component={Paper} className="TableContainerStyled">
+    //       <Table>
+    //         <TableHead className="TableHeader">
+    //           <TableRow>
+    //             {selectedFields.map((field) => (
+    //               <TableCell key={field} className="TableHeaderCell">{field}</TableCell>
+    //             ))}
+    //           </TableRow>
+    //         </TableHead>
+    //         <TableBody>
+    //           {data.map((row, index) => (
+    //             <TableRow key={index} className="TableBodyRow">
+    //               {selectedFields.map((field) => (
+    //                 <TableCell key={field} className="TableCellStyled">{row[field]}</TableCell>
+    //               ))}
+    //             </TableRow>
+    //           ))}
+    //         </TableBody>
+    //       </Table>
+    //     </TableContainer>
+    //   </div>
+    // </ThemeProvider>
+    <>
+    This tab is underconstruction
+    </>
   );
 }
 

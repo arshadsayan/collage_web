@@ -49,3 +49,19 @@
   .assigntd{
     width: 15%;
   }
+
+    .search-container-merit{
+      width: 1000px;
+      margin-left: 17%;
+      margin-top: 2%;
+      
+    }
+
+  .row-title-merit{
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: larger;
+    font-weight: 30px;
+
+  }
