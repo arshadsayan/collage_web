@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 
-const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
 function ApplicantsList() {
 

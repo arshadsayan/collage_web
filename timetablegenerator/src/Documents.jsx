@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './doc.css';
 
-const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
 function Documents() {
     const [years, setYears] = useState([]);

@@ -8,7 +8,7 @@ import "./DocVerification.css";
 import axios from "axios";
 import { formControlClasses } from "@mui/material";
 
-const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
 function DocVerification() {
   const location = useLocation();

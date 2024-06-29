@@ -17,7 +17,7 @@ import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesFo
 import KtDetails from './KtDetails';
 import Feed from './Feed';
 
-const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -31,6 +31,7 @@ export default function App() {
       email: '',
       juniorCollege:'',
       class: 'FE',
+      admissionType: '',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',
@@ -114,6 +115,7 @@ export default function App() {
       email: '',
       juniorCollege:'',
       class: 'FE',
+      admissionType: '',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',
@@ -196,6 +198,8 @@ export default function App() {
       email: '',
       juniordseCollege:'',
       class: '',
+      admissionType: '',
+      prn: '',
       mobileNumber: '',
       fathersName: '',
       fathersmobileNumber: '',

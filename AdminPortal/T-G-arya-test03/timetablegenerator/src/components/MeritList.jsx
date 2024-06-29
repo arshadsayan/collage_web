@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import './MeritList.css'
-const back_url = "https://lack-jp-conference-bomb.trycloudflare.com";
+const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
 function MeritList() {
   const [data, setData] = useState([]);

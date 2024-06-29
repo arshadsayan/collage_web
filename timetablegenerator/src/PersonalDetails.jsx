@@ -54,10 +54,27 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
     }
   }
 
+  const adjustDateForTimezone = (date) => {
+    if (date instanceof Date && !isNaN(date)) {
+      const adjustedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return adjustedDate;
+    }
+    return date;
+  };
+
   const handleDateChange = (date) => {
     setDate(date); // Update selectedDate state with the new date
-    CustomDateInput(date, setIsValidDate); // Validate the date and update isValidDate
+    const adjustedDate = adjustDateForTimezone(date);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      personalDetails: {
+        ...prevFormData.personalDetails,
+        dateofBirth: adjustedDate,
+      },
+    }));
+    CustomDateInput(adjustedDate, setIsValidDate); // Validate the date and update isValidDate
   };
+
 
   const handleChange = (e) => {    //change2
     const { id, value, type, checked } = e.target;
@@ -77,7 +94,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       return;
     }
 
-    if (id !== 'email' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category' && id !== 'state' && id !== 'nationality' && id !== 'religion') {
+    if (id !== 'email' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category' && id !== 'state' && id !== 'nationality' && id !== 'religion' && id !== 'admissionType') {
       newValue = value.toUpperCase();
     }
 
@@ -221,8 +238,38 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         </div>
         <div className="input-field">
           <label htmlFor="email">Email:</label>
-          <input type="text" id="email" value={formData.personalDetails.email} onChange={handleChange} placeholder="Enter email" />
+          <input type="text" id="email" value={formData.personalDetails.email} onChange={handleChange} placeholder="Enter email" disabled/>
         </div>
+
+        { (formType === 'Form A' || formType === 'Form B') ? (
+        <>
+        </>
+      ) : (
+        <div className="input-field">
+            <label htmlFor="prn">PRN Number</label>
+            <input type="text" id="prn" value={formData.personalDetails.prn} placeholder="Enter PRN Number" onChange={handleChange} />
+        </div>
+      )}
+
+        { formType === 'Form A' ? (
+        <>
+        </>
+      ) : (
+        <div className="input-field">
+          <label htmlFor="admissionType">Select Admission Type:</label>
+          <select id="admissionType" name="admissionType" className="dropdown-field" value={formData.personalDetails.admissionType} onChange={handleChange}>
+            <option value="" disabled selected>Choose Admission Type</option>
+            <option value="CAP Level">CAP Level</option>
+            <option value="Institute Level">Institute Level</option>
+            <option value="Minority Level">Minority Level</option>
+            <option value="Admission Against Vacancy">Admission Against Vacancy</option>
+            <option value="Direct Second-Year Engineering">Direct Second-Year Engineering</option>
+          </select>
+        </div>
+      )}
+
+
+
         {formType === 'Form B' || formType === 'Form A' ? (
         <>
           <div className="input-field">

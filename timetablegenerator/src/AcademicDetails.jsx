@@ -257,22 +257,22 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label htmlFor="hscmathsMarks">HSC maths marks:</label>
+          <label htmlFor="hscmathsMarks">12th maths marks:</label>
           <input type="text" id="hscmathsMarks" value={formData.academicDetails.hscmathsMarks} onChange={handleChange} placeholder="Enter marks" />
         </div>
         <div className="input-field">
-          <label htmlFor="hscphysicsMarks">HSC physics marks:</label>
+          <label htmlFor="hscphysicsMarks">12th physics marks:</label>
           <input type="text" id="hscphysicsMarks" value={formData.academicDetails.hscphysicsMarks} onChange={handleChange} placeholder="Enter marks" />
         </div>
         <div className="input-field">
-          <label htmlFor="hscchemistryMarks">HSC chemistry marks:</label>
+          <label htmlFor="hscchemistryMarks">12th chemistry marks:</label>
           <input type="text" id="hscchemistryMarks" value={formData.academicDetails.hscchemistryMarks} onChange={handleChange} placeholder="Enter marks" />
         </div>
       </div>
 
       <div className="input-fields">
         <div className="input-field">
-          <label htmlFor="hscpcmPercentage">HSC PCM percentage:</label>
+          <label htmlFor="hscpcmPercentage">12th PCM percentage:</label>
           <input type="text" id="hscpcmPercentage" value={formData.academicDetails.hscpcmPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
         </div>
       </div>
@@ -286,18 +286,18 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         <>
           <div className="input-fields">
             <div className="input-field">
-              <label htmlFor="hscvocationalSub">HSC vocational subject name:</label>
+              <label htmlFor="hscvocationalSub">12th vocational subject name:</label>
               <input type="text" id="hscvocationalSub" value={formData.academicDetails.hscvocationalSub} onChange={handleChange} placeholder="Enter subject" />
             </div>
           </div>
 
           <div className="input-fields side-by-side">
             <div className="input-field">
-              <label htmlFor="hscvocationalsubjectMarks">HSC vocational subject marks:</label>
+              <label htmlFor="hscvocationalsubjectMarks">12th vocational subject marks:</label>
               <input type="text" id="hscvocationalsubjectMarks" value={formData.academicDetails.hscvocationalsubjectMarks} onChange={handleChange} placeholder="Enter marks" />
             </div>
             <div className="input-field">
-              <label htmlFor="hscvovationalsubjectPer">HSC vocational subject percentage:</label>
+              <label htmlFor="hscvovationalsubjectPer">12th vocational subject percentage:</label>
               <input type="text" id="hscvovationalsubjectPer" value={formData.academicDetails.hscvovationalsubjectPer} onChange={handleChange} placeholder="Calculated percentage" readOnly />
             </div>
           </div>
@@ -330,22 +330,22 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label htmlFor="sscyearofPass">SSC year of passing:</label>
+          <label htmlFor="sscyearofPass">10th year of passing:</label>
           <input type="text" id="sscyearofPass" value={formData.academicDetails.sscyearofPass} onChange={handleChange} placeholder="Enter year" />
         </div>
         <div className="input-field">
-          <label htmlFor="ssctotalMarks">SSC total marks:</label>
+          <label htmlFor="ssctotalMarks">10th total marks:</label>
           <input type="text" id="ssctotalMarks" value={formData.academicDetails.ssctotalMarks} onChange={handleChange} placeholder="Enter total marks" />
         </div>
         <div className="input-field">
-          <label htmlFor="sscmarksObtained">SSC marks obtained:</label>
+          <label htmlFor="sscmarksObtained">10th marks obtained:</label>
           <input type="text" id="sscmarksObtained" value={formData.academicDetails.sscmarksObtained} onChange={handleChange} placeholder="Enter marks obtained" />
         </div>
       </div>
 
       <div className="input-fields">
         <div className="input-field">
-          <label htmlFor="sscPercentage">SSC percentage:</label>
+          <label htmlFor="sscPercentage">10th percentage:</label>
           <input type="text" id="sscPercentage" value={formData.academicDetails.sscPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
         </div>
       </div>
@@ -384,22 +384,22 @@ const AcademicDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
 
       <div className="input-fields side-by-side">
         <div className="input-field">
-          <label htmlFor="hscyearofPass">HSC year of passing:</label>
+          <label htmlFor="hscyearofPass">12th year of passing:</label>
           <input type="text" id="hscyearofPass" value={formData.academicDetails.hscyearofPass} onChange={handleChange} placeholder="Enter year" />
         </div>
         <div className="input-field">
-          <label htmlFor="hsctotalMarks">HSC total marks:</label>
+          <label htmlFor="hsctotalMarks">12th total marks:</label>
           <input type="text" id="hsctotalMarks" value={formData.academicDetails.hsctotalMarks} onChange={handleChange} placeholder="Enter total marks" />
         </div>
         <div className="input-field">
-          <label htmlFor="hscmarksObtained">HSC marks obtained:</label>
+          <label htmlFor="hscmarksObtained">12th marks obtained:</label>
           <input type="text" id="hscmarksObtained" value={formData.academicDetails.hscmarksObtained} onChange={handleChange} placeholder="Enter marks obtained" />
         </div>
       </div>
 
       <div className="input-fields">
         <div className="input-field">
-          <label htmlFor="hscPercentage">HSC percentage:</label>
+          <label htmlFor="hscPercentage">12th percentage:</label>
           <input type="text" id="hscPercentage" value={formData.academicDetails.hscPercentage} onChange={handleChange} placeholder="Calculated percentage" readOnly />
         </div>
       </div>
