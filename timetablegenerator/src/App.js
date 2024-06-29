@@ -340,7 +340,7 @@ export default function App() {
     <TransactionDetails ref={transactionDetailsRef} formData1={formData1} setFormData1={setFormData1} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formDataC} setFormData={setFormDataC} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
     <KtDetails ref={ktdetailsRef} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError}/>,
-    <Feed ref={feedRef} formDataC={formDataC} setFormDataC={setFormDataC} feedFormData={feedFormData} setFeedFormData={setFeedFormData} setError={setError}/>,
+    <Feed ref={feedRef} userId={userId} formDataC={formDataC} setFormDataC={setFormDataC} feedFormData={feedFormData} setFeedFormData={setFeedFormData} setError={setError}/>,
     // <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
   

@@ -2,7 +2,7 @@ import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import axios from 'axios';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const Feed = forwardRef(({ feedFormData, setFeedFormData, formDataC, setFormDataC }, ref) => {
+const Feed = forwardRef(({ feedFormData, setFeedFormData, formDataC, setFormDataC, userId}, ref) => {
   const [eventName, setEventName] = useState(feedFormData.eventName);
   const [eventDate, setEventDate] = useState(feedFormData.eventDate);
   const [eventTime, setEventTime] = useState(feedFormData.eventTime);
@@ -117,7 +117,8 @@ const Feed = forwardRef(({ feedFormData, setFeedFormData, formDataC, setFormData
       eventDate: eventDate,
       eventTime: eventTime,
       eventSummary: eventSummary,
-      images: selectedImages
+      images: selectedImages,
+      userId: userId
     };
 
     setEvents([...events, newEvent]);
@@ -129,9 +130,9 @@ const Feed = forwardRef(({ feedFormData, setFeedFormData, formDataC, setFormData
     formData2.append('time', eventTime);
     formData2.append('summary', eventSummary);
     formData2.append('personalDetails', JSON.stringify(formDataC.personalDetails));
-
+    formData2.append('uid', userId);
     selectedImages.forEach((image, index) => {
-      formData2.append(`image${index + 1}`, image);
+      formData2.append('image', image);
     });
 
     try {

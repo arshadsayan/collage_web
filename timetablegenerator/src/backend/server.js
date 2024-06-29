@@ -275,46 +275,64 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //event
-const eventsStorage = multer.diskStorage({
+const storageEvents = multer.diskStorage({
   destination: function (req, file, cb) {
     const personalDetails = JSON.parse(req.body.personalDetails);
     const dirname = personalDetails.email.toString();
-    console.log(dirname);
-    console.log(typeof(dirname))
+    const uploadPath = `public/${dirname}`;
     
-    const uploadPath =  `public/${dirname}`;
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
+    
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    // const fileString = this.filename;
-    // console.log(file.fieldname.toString());
-    // console.log(fileString); 
+    const personalDetails = JSON.parse(req.body.personalDetails);
     const fileType = file.mimetype;
-    if(fileType === 'application/pdf'){
-      cb(null, `${file.fieldname.toString()}.pdf`);
-    }
-    else if(fileType === 'image/jpeg'){
-      cb(null, `${file.fieldname.toString()}.jpeg`);
-    }
-    else if(fileType === 'image/png'){
-      cb(null, `${file.fieldname.toString()}.png`);
+    let extension = '';
+
+    if (fileType === 'application/pdf') {
+      extension = '.pdf';
+    } else if (fileType === 'image/jpeg') {
+      extension = '.jpeg';
+    } else if (fileType === 'image/png') {
+      extension = '.png';
     }
 
-    
+    let index = 1;
+    const uploadPath = `public/${personalDetails.email.toString()}`;
+
+    // Check for existing files with different extensions
+    const existingFiles = fs.readdirSync(uploadPath);
+    const fileIndexes = existingFiles
+      .filter(filename => filename.startsWith('image'))
+      .map(filename => {
+        const match = filename.match(/image(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+      });
+
+    // Increment index to the next available number
+    while (fileIndexes.includes(index)) {
+      index++;
+    }
+
+    // Generate filename based on the found index and extension
+    const filename = `image${index}${extension}`;
+
+    cb(null, filename);
   }
 });
-// Initialize multer with the eventsStorage configuration
-const uploadEvents = multer({ storage: eventsStorage });
 
+const uploadEvents = multer({ storage: storageEvents });
+
+// Define the /api/events endpoint
 app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
-  const { name, date, time, summary } = req.body;
+  const { name, date, time, summary, uid } = req.body;
   const image = req.file ? req.file.filename : null;
 
-  const query = 'INSERT INTO events (name, date, time, summary, image) VALUES (?, ?, ?, ?, ?)';
-  const values = [name, date, time, summary, image];
+  const query = 'INSERT INTO events (id, name, date, time, summary, image) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [uid, name, date, time, summary, image];
 
   db.query(query, values, (err, results) => {
     if (err) {
@@ -325,6 +343,8 @@ app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
     res.status(200).json({ message: 'Event saved successfully!' });
   });
 });
+
+
 
 app.post('/api/submit', upload.fields([
   { name: 'photo', maxCount: 1 },
