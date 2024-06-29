@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import axios from 'axios';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-function Feed() {
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [eventTime, setEventTime] = useState("");
-  const [selectedImages, setSelectedImages] = useState([]);
+const Feed = forwardRef(({ feedFormData, setFeedFormData, formDataC, setFormDataC }, ref) => {
+  const [eventName, setEventName] = useState(feedFormData.eventName);
+  const [eventDate, setEventDate] = useState(feedFormData.eventDate);
+  const [eventTime, setEventTime] = useState(feedFormData.eventTime);
+  const [selectedImages, setSelectedImages] = useState(feedFormData.selectedImages || []);
   const [generatedTexts, setGeneratedTexts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [eventSummary, setEventSummary] = useState("");
+  const [eventSummary, setEventSummary] = useState(feedFormData.eventSummary);
   const [events, setEvents] = useState([]);
   const [errorEvents, setErrorEvents] = useState([]);
+
+  useImperativeHandle(ref, () => ({
+    // You can add any functions or values you want to expose to the parent component here
+  }));
 
   const handleChange = (event) => {
     setSelectedImages([event.target.files[0]]);
     handleGenerate(event.target.files[0]);
-  }
+  };
 
   const handleGenerate = async (image) => {
     const genAI = new GoogleGenerativeAI('AIzaSyDYecx7ZQUfrUOksHRU1JHLFPxJuHyfy5Y'); // Replace with your actual API key
@@ -118,23 +122,28 @@ function Feed() {
 
     setEvents([...events, newEvent]);
 
-    const formData = new FormData();
+    const formData2 = new FormData();
     
-    formData.append('name', eventName);
-    formData.append('date', eventDate);
-    formData.append('time', eventTime);
-    formData.append('summary', eventSummary);
+    formData2.append('name', eventName);
+    formData2.append('date', eventDate);
+    formData2.append('time', eventTime);
+    formData2.append('summary', eventSummary);
+    formData2.append('personalDetails', JSON.stringify(formDataC.personalDetails));
 
     selectedImages.forEach((image, index) => {
-      formData.append(`image${index + 1}`, image);
+      formData2.append(`image${index + 1}`, image);
     });
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/events/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await fetch('http://localhost:3001/api/events/', {
+        method: 'POST',
+        body: formData2
       });
+    
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    
       alert('Event saved successfully!');
     } catch (error) {
       console.error('Error saving event detail:', error);
@@ -152,7 +161,7 @@ function Feed() {
   };
 
   return (
-    <div >
+    <div>
       <h1 className="center page-heading">Event Participation Details</h1>
       <form onSubmit={handleSubmit}>
         <div className="input-field">
@@ -169,7 +178,6 @@ function Feed() {
             type="text"
             value={eventName}
             onChange={(e) => setEventName(e.target.value)}
-            
           />
         </div>
 
@@ -179,7 +187,6 @@ function Feed() {
             type="text"
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
-            
           />
         </div>
 
@@ -189,7 +196,6 @@ function Feed() {
             type="text"
             value={eventTime}
             onChange={(e) => setEventTime(e.target.value)}
-            
           />
         </div>
 
@@ -198,21 +204,19 @@ function Feed() {
           <textarea
             value={eventSummary}
             onChange={(e) => setEventSummary(e.target.value)}
-            
           />
         </div>
 
         <div className='but'>
-        <div className="buttons">
-          <button type="submit" style={{ marginLeft: "30px", width: '100px' }}>Save</button>
+          <div className="buttons">
+            <button type="submit" style={{ marginLeft: "30px", width: '100px' }}>Save</button>
           </div>
         </div>
       </form>
-      <h3 className="center page-heading" style={{ fontSize: '20px'}}>Documents or Certificates Uploaded this session are shown here</h3>
-      <h3 className="center" style={{ fontSize: '15px'}}>(Multiple certificates can be uploaded, just click save and then upload the next)</h3><br></br>
-      {/* Table to display events */}
+      <h3 className="center page-heading" style={{ fontSize: '20px' }}>Documents or Certificates Uploaded this session are shown here</h3>
+      <h3 className="center" style={{ fontSize: '15px' }}>(Multiple certificates can be uploaded, just click save and then upload the next)</h3><br />
       
-      <table style={{ borderCollapse: 'collapse', marginTop: '20px', textAlign: 'center', marginLeft: 'auto', marginRight: 'auto', border: '1px solid black', marginBottom:'75px'}}>
+      <table style={{ borderCollapse: 'collapse', marginTop: '20px', textAlign: 'center', marginLeft: 'auto', marginRight: 'auto', border: '1px solid black', marginBottom: '75px' }}>
         <thead>
           <tr>
             <th style={{ border: '1px solid black', padding: '8px' }}>Event Name</th>
@@ -245,6 +249,6 @@ function Feed() {
       </table>
     </div>
   );
-}
+});
 
 export default Feed;

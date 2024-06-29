@@ -17,7 +17,7 @@ import PreferenceFormAdmin from './PreferenceFormAdmin'; // Import PreferencesFo
 import KtDetails from './KtDetails';
 import Feed from './Feed';
 
-const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
+const back_url = "http://localhost:3001";
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(-2); // -2 for sign-in, -1 for signup, 0 for first form section
@@ -286,6 +286,15 @@ export default function App() {
     
   });
 
+  const [feedFormData, setFeedFormData] = useState({
+    eventName: '',
+    eventDate: '',
+    eventTime: '',
+    eventSummary: '',
+    selectedImages: null,
+  });
+  
+
   const [userId, setUserId] = useState('');
 
   const personalDetailsRef = useRef();
@@ -298,6 +307,7 @@ export default function App() {
   const preferenceFormAdminRef = useRef();
   const admissionForm2Ref = useRef();
   const ktdetailsRef = useRef();
+  const feedRef = useRef();
 
   const sections = [
     <Documents />,
@@ -330,7 +340,7 @@ export default function App() {
     <TransactionDetails ref={transactionDetailsRef} formData1={formData1} setFormData1={setFormData1} setError={setError} />,
     <DocumentUpload ref={documentUploadRef} formData={formDataC} setFormData={setFormDataC} filePreviews={filePreviews} setFilePreviews={setFilePreviews} setError={setError} />,
     <KtDetails ref={ktdetailsRef} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError}/>,
-    <Feed/>,
+    <Feed ref={feedRef} formDataC={formDataC} setFormDataC={setFormDataC} feedFormData={feedFormData} setFeedFormData={setFeedFormData} setError={setError}/>,
     // <AdmissionForm2 ref={admissionForm2Ref} formDataB={formDataC} setFormDataB={setFormDataC} filePreviews={filePreviews} formData1={formData1} userId={userId} setError={setError}/>
   ];
   

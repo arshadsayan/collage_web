@@ -23,7 +23,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'admin',
+  password: 'MySQL123',
   database: 'reg_portal'
 });
 
@@ -202,6 +202,9 @@ app.post('/api/check', (req, res) => {
   });
 });
 
+
+
+
 // FEE details display
 
 app.get('/api/years', (req, res) => {
@@ -270,6 +273,58 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+//event
+const eventsStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const personalDetails = JSON.parse(req.body.personalDetails);
+    const dirname = personalDetails.email.toString();
+    console.log(dirname);
+    console.log(typeof(dirname))
+    
+    const uploadPath =  `public/${dirname}`;
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    // const fileString = this.filename;
+    // console.log(file.fieldname.toString());
+    // console.log(fileString); 
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${file.fieldname.toString()}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${file.fieldname.toString()}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${file.fieldname.toString()}.png`);
+    }
+
+    
+  }
+});
+// Initialize multer with the eventsStorage configuration
+const uploadEvents = multer({ storage: eventsStorage });
+
+app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
+  const { name, date, time, summary } = req.body;
+  const image = req.file ? req.file.filename : null;
+
+  const query = 'INSERT INTO events (name, date, time, summary, image) VALUES (?, ?, ?, ?, ?)';
+  const values = [name, date, time, summary, image];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error saving event detail:', err);
+      res.status(500).json({ error: 'Error saving event detail' });
+      return;
+    }
+    res.status(200).json({ message: 'Event saved successfully!' });
+  });
+});
 
 app.post('/api/submit', upload.fields([
   { name: 'photo', maxCount: 1 },
