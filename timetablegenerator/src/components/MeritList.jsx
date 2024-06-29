@@ -13,6 +13,7 @@ function MeritList() {
   const [searchInput, setSearchInput] = useState("");
 
   const jsonArrayToString = (str, index) => {
+    console.log(str);
     let elements = str.substring(1, str.length - 1).split(", ");
     let output = elements[index];
     output = output.substring(1, output.length - 1 );
@@ -82,7 +83,7 @@ function MeritList() {
   }
 
   const filteredData = data.filter(row =>
-    row.s_id.toLowerCase().includes(searchInput.toLowerCase())
+    row.fullname.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   return (
@@ -122,8 +123,8 @@ function MeritList() {
             {filteredData.map((row, index) => (
               <tr key={index}>
                 <td>{row.meritNumber}</td>
-                <td>{row.s_id}</td>
-                <td>{row.s_cet_per}</td>
+                <td>{row.fullname}</td>
+                <td>{row.cet_percentile}</td>
 
                 <td>{jsonArrayToString(row.preferences, 0)}</td>
                 <td>{jsonArrayToString(row.preferences, 1)}</td>

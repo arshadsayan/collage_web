@@ -118,11 +118,24 @@ function ApplicantsList() {
   
 
   const navigate = useNavigate();
+
+  //Navigate to docverificationpage of Brochure form
   const navigateToDocVerification = (uid) => {
     const data = { uidRecieved : uid };
     console.log(data);
     navigate('/documentverification', { state: data });
   };
+
+  //Navigate to docverificationpage of FE admission/////////////////////////////////////////////////////////////////////////////updates1
+  const navigateToDocVerificationFEAdmission = (uid) => {
+    const data = { uidRecieved : uid };
+    console.log(data);
+    navigate('/documentverificationFEAdmission', { state: data });
+  };
+
+
+
+
 
   // const docVerificationPage = (name, applicationNumber) =>
   //   navigate("/documentverification ", { state: { name, applicationNumber } });
@@ -343,7 +356,7 @@ function ApplicantsList() {
                           <td>
                             <button
                               type="button"
-                              onClick={()=>{navigateToDocVerification(row.id)}}
+                              onClick={()=>{navigateToDocVerificationFEAdmission(row.id)}}
                               
                               className="btn verify-btn"
                             >

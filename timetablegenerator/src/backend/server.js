@@ -302,6 +302,22 @@ app.get('/docverification/:uid', (req, res) => {
   });
 });
 
+// Docverification page FE get and fetching
+app.get('/docverificationFEAdmission/:uid', (req, res) => {
+  const userId = req.params.uid;
+  console.log(userId);
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, admissiontransactionproofStatus, documentsApproved FROM user_details_admission1 WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
 //Fetching documents URL and send the URL back to React
 app.get('/docverification/:uid/:docname', (req, res) => {
   const userId = req.params.uid;
@@ -645,14 +661,14 @@ async function fetchStudents() {
     database: 'reg_portal' // Your database name
   });
 
-  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm, preferences, Alloted_branch FROM test_merit_algorithm_database');
+  const [rows] = await connection.execute('SELECT fullname, cet_percentile, cet_maths_percentile,cet_physics_percentile, cet_chemistry_percentile, 12th_percentage, preferences, Alloted_branch FROM user_details');
   await connection.end();
   return rows;
 }
 
 // Compare students based on various attributes
 function compareStudents(studentA, studentB) {
-  const attributes = ["s_cet_per", "s_cetmaths", "s_cetphy", "s_cetchem", "s_hscpcm"];
+  const attributes = ["cet_percentile", "cet_maths_percentile", "cet_physics_percentile", "cet_chemistry_percentile", "12th_percentage"];
   for (let attr of attributes) {
     if (studentA[attr] > studentB[attr]) {
       return -1; 
