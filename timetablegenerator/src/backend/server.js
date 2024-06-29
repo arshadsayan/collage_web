@@ -43,7 +43,7 @@ function mailsend(docName, email){
   const documentReject = docName;
   const emailtoSend = email;
   console.log(emailtoSend);
-;  const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'otp.graphicalauthenticator@gmail.com',
@@ -70,6 +70,41 @@ function mailsend(docName, email){
     }
   }); 
 }
+
+//sending fee receipt in mail
+function mailsendFeeReceipt(email){
+  const documentReject = 'FeeReceipt';
+  const emailtoSend = email;
+  console.log(emailtoSend);
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'otp.graphicalauthenticator@gmail.com',
+      pass: 'awdw yvwr unzw hqgj'
+    }
+  });
+  
+  const mailOptions = {
+    from: 'otp.graphicalauthenticator@gmail.com',
+    to: emailtoSend,
+    subject: 'Brochure form fee receipt',
+    text: `Successfull payment for Brochure form `,
+    attachments: [
+      {
+          path: `./public/${email}/FeeReceipt.pdf`,
+      }
+  ]
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  }); 
+}
+
+
 
 //setting up file server
 app.use('/files', express.static(path.join(__dirname, 'public')));
@@ -207,9 +242,40 @@ app.post('/api/submit', upload.fields([
 
 //Admin portal data fetching
 // Create an endpoint to fetch data
-app.get('/data', (req, res) => {
+app.get('/brochuredata', (req, res) => {
   const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus, admissionType FROM user_details';
   
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+
+//Admision FE get request
+app.get('/FEadmissiondata', (req, res) => {
+  const query = 'SELECT id, fullname, documentsApproved, admissiontransactionproofStatus, class FROM user_details_admission1';
+  console.log('Admission brochure');
+  // res.sendStatus(200).send('Admission data fetch');
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+//SE TE BE get request
+app.get('/higheradmissiondata', (req, res) => {
+  const query = 'SELECT id, fullname, documentsApproved, admissiontransactionproofStatus, class FROM user_details_admission_setebe';
+  console.log(' SE TE BE Admission brochure');
+  // res.sendStatus(200).send('Admission data fetch');
   db.query(query, (err, results) => {
     if (err) {
       res.status(500).send(err);
@@ -700,6 +766,65 @@ app.put('/branchallotment',(req,res)=>{
     }
   });
 })
+
+
+
+///Multer config for saving fee receipt
+const feeuploadStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const email = req.body.email;
+    // const parameters = req.params.email;
+    // console.log(parameters);
+    console.log('email :', email);
+    
+    
+    // if (!email) {
+    //   return cb(new Error('Email is required'));
+    // }
+
+    const uploadPath = path.join(__dirname, 'public', email);
+    fs.mkdir(uploadPath, { recursive: true }, (err) => {
+      if (err) return cb(err);
+      cb(null, uploadPath);
+    });
+  },
+  filename: function (req, file, cb) {
+    const docName = 'FeeReceipt';
+    console.log('Document name:', docName);
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${docName}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${docName}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${docName}.png`);
+    }
+    
+    // if (!docName) {
+    //   return cb(new Error('Document name is required'));
+    // }
+
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${docName}${fileExtension}`);
+  }
+});
+
+const feeupload = multer({ storage: feeuploadStorage });
+
+///Saving fee receipt and sending it to the person.
+// app.post('/uploadfeereceipt',feeupload.single("file"))
+app.post('/uploadfeereceipt', feeupload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+  else{
+    console.log(req.body);
+    const email = req.body.email;
+    mailsendFeeReceipt(email);
+  }
+   });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -1,8 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle"; //bootstrap.bundle.min.js / bootstrap.bundle.js
-
-
-
 import "./ApplicantsList.css";
 import React, { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +7,6 @@ import axios from 'axios';
 
 
 function ApplicantsList() {
-
-  
-
-
-  
 
   const [AdmissionType, setAdmissionType] = useState("Brochure Institute Level");
   const AdmissionTypeBrochureInstituteLevel = () => {
@@ -67,15 +59,52 @@ function ApplicantsList() {
 ////Used for displaying content in table
   const [data2, setData] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3001/data')
-      .then((response) => {
+  const fetchData = async () => {
+    if(AdmissionType === 'Admission' && Class === 'FE'){
+      try {
+        const response = await axios.get('http://localhost:3001/FEadmissiondata', {
+          params: {
+            class: Class,
+            admissionType: AdmissionType
+          }
+        });
         setData(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('There was an error fetching the data!', error);
-      });
-  }, []);
+      }
+    }
+    else if(AdmissionType === 'Admission' && Class !== 'FE'){
+      try {
+        const response = await axios.get('http://localhost:3001/higheradmissiondata', {
+          params: {
+            class: Class,
+            admissionType: AdmissionType
+          }
+        });
+        setData(response.data);
+      } catch (error) {
+        console.error('There was an error fetching the data!', error);
+      }
+    }
+    else if(AdmissionType === 'Brochure Institute Level'){
+      try {
+        const response = await axios.get('http://localhost:3001/brochuredata', {
+          params: {
+            class: Class,
+            admissionType: AdmissionType
+          }
+        });
+        setData(response.data);
+      } catch (error) {
+        console.error('There was an error fetching the data!', error);
+      }
+    }
+    
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [Class, AdmissionType]);
 
   useEffect(() => {
     // This useEffect will run whenever `data2` changes.
@@ -280,8 +309,109 @@ function ApplicantsList() {
           </div>
         </div>
       </div>
-      
-      <div className="table-container">
+      {(AdmissionType === 'Admission' && Class === 'FE' )&& 
+        <>
+          <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">UID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Year</th>
+              <th scope="col">Admission Type</th>
+              <th scope="col">Document Status</th>
+              <th scope="col">Transaction status</th>
+              <th scope="col">Verify</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {data2.map((row, index) => {
+              if(row.documentsApproved === DocStatus && row.admissiontransactionproofStatus === TransactionStatus){
+                return(
+                
+                  <tr key={row.id}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{row.id}</td>
+                          <td>{row.fullname}</td>
+                          <td>{row.class}</td>
+                          <td>Admission</td>
+                          <td>{row.documentsApproved}</td>
+                          <td>{row.admissiontransactionproofStatus}</td>
+                          
+                          <td>
+                            <button
+                              type="button"
+                              onClick={()=>{navigateToDocVerification(row.id)}}
+                              
+                              className="btn verify-btn"
+                            >
+                              Verify
+                            </button>
+                          </td>
+                        </tr>
+                )
+              }
+            })}
+          </tbody>
+        </table>
+      </div>
+        </>
+      }
+      {(AdmissionType === 'Admission' && (Class === 'SE' || Class === 'TE' || Class === 'BE' ) )&& 
+        <>
+          <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">UID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Year</th>
+              <th scope="col">Admission Type</th>
+              <th scope="col">Document Status</th>
+              <th scope="col">Transaction status</th>
+              <th scope="col">Verify</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {data2.map((row, index) => {
+              if(row.documentsApproved === DocStatus && row.admissiontransactionproofStatus === TransactionStatus && row.class === Class){
+                return(
+                
+                  <tr key={row.id}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{row.id}</td>
+                          <td>{row.fullname}</td>
+                          <td>{row.class}</td>
+                          <td>Admission</td>
+                          <td>{row.documentsApproved}</td>
+                          <td>{row.admissiontransactionproofStatus}</td>
+                          
+                          <td>
+                            <button
+                              type="button"
+                              onClick={()=>{navigateToDocVerification(row.id)}}
+                              
+                              className="btn verify-btn"
+                            >
+                              Verify
+                            </button>
+                          </td>
+                        </tr>
+                )
+              }
+            })}
+          </tbody>
+        </table>
+      </div>
+        </>
+      }
+      {AdmissionType === 'Brochure Institute Level' && 
+        <>
+          <div className="table-container">
         <table className="table">
           <thead>
             <tr>
@@ -331,6 +461,10 @@ function ApplicantsList() {
           </tbody>
         </table>
       </div>
+        </>
+      }
+
+      
     </>
   );
 }

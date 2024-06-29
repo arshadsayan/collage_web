@@ -360,6 +360,7 @@ function DocVerification() {
           
           uidtoSend: uidRecieved,
           fullName: DocVerificationData[0].fullname,
+          email : DocVerificationData[0].email,
         },
       });
 
