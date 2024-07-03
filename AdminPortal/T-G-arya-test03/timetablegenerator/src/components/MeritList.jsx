@@ -20,7 +20,7 @@ function MeritList() {
   };
 
   const handleAssign = async (id, branch) => {
-    const branchAlloted = { s_id: id, Alloted_branch: branch };
+    const branchAlloted = { id: id, Alloted_branch: branch };
     axios.put(`http://localhost:3001/branchallotment`, branchAlloted)
       .then(response => {
         console.log('Data updated successfully:', response.data);
@@ -82,7 +82,7 @@ function MeritList() {
   }
 
   const filteredData = data.filter(row =>
-    row.s_id.toLowerCase().includes(searchInput.toLowerCase())
+    row.fullname.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   return (
@@ -122,17 +122,17 @@ function MeritList() {
             {filteredData.map((row, index) => (
               <tr key={index}>
                 <td>{row.meritNumber}</td>
-                <td>{row.s_id}</td>
-                <td>{row.s_cet_per}</td>
+                <td>{row.fullname}</td>
+                <td>{row.cet_percentile}</td>
 
-                <td>{jsonArrayToString(row.preferences, 0)}</td>
-                <td>{jsonArrayToString(row.preferences, 1)}</td>
-                <td>{jsonArrayToString(row.preferences, 2)}</td>
-                <td>{jsonArrayToString(row.preferences, 3)}</td>
-                <td>{jsonArrayToString(row.preferences, 4)}</td>
-                <td>{jsonArrayToString(row.preferences, 5)}</td>
-                <td>{jsonArrayToString(row.preferences, 6)}</td>
-                <td>{jsonArrayToString(row.preferences, 7)}</td>
+                <td>{(row.preferences[0])}</td>
+                <td>{(row.preferences[1])}</td>
+                <td>{(row.preferences[2])}</td>
+                <td>{(row.preferences[3])}</td>
+                <td>{(row.preferences[4])}</td>
+                <td>{(row.preferences[5])}</td>
+                <td>{(row.preferences[6])}</td>
+                <td>{(row.preferences[7])}</td>
                 <td className="assigntd">
                   <div className="row">
                     <div className="col">
@@ -177,7 +177,7 @@ function MeritList() {
                       </div>
                     </div>
                     <div className="col">
-                      <button type="button" className="btn assignbtn" onClick={() => { handleAssign(row.s_id, selectedBranches[index]) }}>Assign</button>
+                      <button type="button" className="btn assignbtn" onClick={() => { handleAssign(row.id, selectedBranches[index]) }}>Assign</button>
                     </div>
                   </div>
                 </td>
@@ -211,7 +211,7 @@ function MeritList() {
               {filteredData.map((row, index) => (
                 <tr key={index}>
                   <td>{row.meritNumber}</td>
-                  <td>{row.s_id}</td>
+                  <td>{row.fullname}</td>
                   <td>
                     {row.Alloted_branch === null && <p>None</p>}
                     {row.Alloted_branch !== null && <p>{row.Alloted_branch}</p>}

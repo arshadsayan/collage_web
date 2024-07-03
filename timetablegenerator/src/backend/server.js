@@ -976,8 +976,8 @@ app.put('/rejectDocFEAdmission/:uid/:email/:docName', (req, res) => {
 app.put('/DocumentsApproved/:uid', (req, res) => {
   const  uid  = req.params.uid;
   
-  const sql = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ?`;
-  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ${uid}`;
+  const sql = `UPDATE user_details SET documentsApproved = 'Approved', addedToMerit = true WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved',  addedToMerit = 1 WHERE id = ${uid}`;
   console.log(sqlQuery);
  
   const values = [uid];
@@ -1336,14 +1336,14 @@ async function fetchStudents() {
     database: 'reg_portal' // Your database name
   });
 
-  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm, preferences, Alloted_branch FROM test_merit_algorithm_database');
+  const [rows] = await connection.execute('SELECT fullname, cet_percentile, cet_maths_percentile, cet_physics_percentile, cet_chemistry_percentile, 12th_marks_obtained, preferences, Alloted_branch, id FROM user_details WHERE addedToMerit = true');
   await connection.end();
   return rows;
 }
 
 // Compare students based on various attributes
 function compareStudents(studentA, studentB) {
-  const attributes = ["s_cet_per", "s_cetmaths", "s_cetphy", "s_cetchem", "s_hscpcm"];
+  const attributes = ["cet_percentile", "cet_maths_percentile", "cet_physics_percentile", "cet_chemistry_percentile", "12th_marks_obtained"];
   for (let attr of attributes) {
     if (studentA[attr] > studentB[attr]) {
       return -1; 
@@ -1441,11 +1441,11 @@ app.get('/feeStructure',(req,res)=>{
 ///Branch alottment updates
 app.put('/branchallotment',(req,res)=>{
   console.log(req.body);
-  const s_id = req.body.s_id;
+  const id = req.body.id;
   const Alloted_branch = req.body.Alloted_branch;
-  const values = [Alloted_branch, s_id]
+  const values = [Alloted_branch, id]
   console.log(values);
-  const query = `UPDATE test_merit_algorithm_database SET Alloted_branch = ? WHERE s_id = ?`;
+  const query = `UPDATE user_details SET Alloted_branch = ? WHERE id = ?`;
   console.log(query);
   db.query(query, values, (err, result) => {
     if (err) {

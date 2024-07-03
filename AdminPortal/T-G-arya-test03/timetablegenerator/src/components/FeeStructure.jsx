@@ -5,7 +5,7 @@ import "./FeeStructure.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
+const back_url = "http://localhost:3001";
 
 function FeeStructure() {
   const [feeStructure, setFeeStructure] = useState([]);

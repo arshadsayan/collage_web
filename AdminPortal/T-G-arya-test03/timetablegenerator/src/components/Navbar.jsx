@@ -33,7 +33,7 @@ function Navbar() {
           <Link to="/receitGeneration" style={styles.navLink}>Document Receipt</Link>
         </li>
         <li style={styles.navItem}>
-          <Link to="/transactionrejected" style={styles.navLink}>Transaction rejected list</Link>
+          <Link to="/transactionrejected" style={styles.navLink}>Transaction list</Link>
         </li>
         <li style={styles.navItem}>
           <Link to="/feeStructure" style={styles.navLink}>Fee Structure</Link>
