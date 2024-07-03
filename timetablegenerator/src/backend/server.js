@@ -7,8 +7,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const mysql2 = require('mysql2/promise');
-const util = require('util');
-const { error } = require('console');
 
 const app = express();
 const port = 3001;
@@ -204,6 +202,9 @@ app.post('/api/check', (req, res) => {
   });
 });
 
+
+
+
 // FEE details display
 
 app.get('/api/years', (req, res) => {
@@ -272,6 +273,78 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+//event
+const storageEvents = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const personalDetails = JSON.parse(req.body.personalDetails);
+    const dirname = personalDetails.email.toString();
+    const uploadPath = `public/${dirname}`;
+    
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const personalDetails = JSON.parse(req.body.personalDetails);
+    const fileType = file.mimetype;
+    let extension = '';
+
+    if (fileType === 'application/pdf') {
+      extension = '.pdf';
+    } else if (fileType === 'image/jpeg') {
+      extension = '.jpeg';
+    } else if (fileType === 'image/png') {
+      extension = '.png';
+    }
+
+    let index = 1;
+    const uploadPath = `public/${personalDetails.email.toString()}`;
+
+    // Check for existing files with different extensions
+    const existingFiles = fs.readdirSync(uploadPath);
+    const fileIndexes = existingFiles
+      .filter(filename => filename.startsWith('image'))
+      .map(filename => {
+        const match = filename.match(/image(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+      });
+
+    // Increment index to the next available number
+    while (fileIndexes.includes(index)) {
+      index++;
+    }
+
+    // Generate filename based on the found index and extension
+    const filename = `image${index}${extension}`;
+
+    cb(null, filename);
+  }
+});
+
+const uploadEvents = multer({ storage: storageEvents });
+
+// Define the /api/events endpoint
+app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
+  const { name, date, time, summary, uid } = req.body;
+  const image = req.file ? req.file.filename : null;
+
+  const query = 'INSERT INTO events (id, name, date, time, summary, image) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [uid, name, date, time, summary, image];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error saving event detail:', err);
+      res.status(500).json({ error: 'Error saving event detail' });
+      return;
+    }
+    res.status(200).json({ message: 'Event saved successfully!' });
+  });
+});
+
+
 
 app.post('/api/submit', upload.fields([
   { name: 'photo', maxCount: 1 },
@@ -656,6 +729,7 @@ app.post('/api/submit3', upload.fields([
     }
   });
 });
+
 
 ///Admin Portal changes
 

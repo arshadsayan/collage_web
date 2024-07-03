@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
+const back_url = "http://localhost:3001";
 
 export default function SignInPage({ onSignIn, goToSignup }) {
   const [email, setEmail] = useState('');
