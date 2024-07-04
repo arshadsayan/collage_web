@@ -139,7 +139,7 @@ app.post('/api/request-reset-password', (req, res) => {
     const mailOptions = {
       from: 'asiesgst@gmail.com',
       to: email,
-      subject: 'Your Password Reset OTP',
+      subject: 'Your Password Reset OTP for SIES Admission Portal',
       text: `Your OTP code is ${otp}`,
     };
 
@@ -364,6 +364,10 @@ app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6a75df0d93289f1b1416f94df6b4adf8ed97138c
 app.post('/api/submit', upload.fields([
   { name: 'photo', maxCount: 1 },
   { name: 'marksheet10', maxCount: 1 },
@@ -748,7 +752,31 @@ app.post('/api/submit3', upload.fields([
   });
 });
 
+
 ///Admin Portal changes
+
+async function deleteFile(directoryPath) {
+  const filePath = path.join(directoryPath);
+  try {
+    await fs.unlink(filePath);
+    console.log('File deleted successfully');
+  } catch (err) {
+    console.error('Error deleting the file:', err);
+  }
+}
+
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+///To bypass security for email
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 function mailsend(docName, email){
   const documentReject = docName;
@@ -757,13 +785,13 @@ function mailsend(docName, email){
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'asiesgst@gmail.com',
-      pass: 'ilnb jboi ekcf lyfp'
+      user: 'otp.graphicalauthenticator@gmail.com',
+      pass: 'awdw yvwr unzw hqgj'
     }
   });
   
   const mailOptions = {
-    from: 'asiesgst@gmail.com',
+    from: 'otp.graphicalauthenticator@gmail.com',
     to: emailtoSend,
     subject: 'Rejected Documents',
     text: `${documentReject} Documnet Rejected \n Please visit admin office with correct softcopy of Corresponding document \n[File size < 250kb, File type allowed(pdf/jpeg/png) `,
@@ -782,14 +810,56 @@ function mailsend(docName, email){
   }); 
 }
 
+//sending fee receipt in mail
+function mailsendFeeReceipt(email){
+  const documentReject = 'FeeReceipt';
+  const emailtoSend = email;
+  console.log(emailtoSend);
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'otp.graphicalauthenticator@gmail.com',
+      pass: 'awdw yvwr unzw hqgj'
+    }
+  });
+  
+  const mailOptions = {
+    from: 'otp.graphicalauthenticator@gmail.com',
+    to: emailtoSend,
+    subject: 'Brochure form fee receipt',
+    text: `Successfull payment for Brochure form `,
+    attachments: [
+      {
+          path: `./public/${email}/FeeReceipt.pdf`,
+      }
+  ]
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  }); 
+}
 
-///Setting up file server to show preview of Documents
-app.use('/files', express.static(path.join(__dirname, 'public'))); //Working
+
+
+//setting up file server
+app.use('/files', express.static(path.join(__dirname, 'public')));
+
+// MySQL connection setup
+
+
+let data = {};
+
+
+
 
 //Admin portal data fetching
 // Create an endpoint to fetch data
-app.get('/data', (req, res) => {
-  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus FROM user_details';
+app.get('/brochuredata', (req, res) => {
+  const query = 'SELECT id, fullname, cet_application_id, documentsApproved, transactionproofStatus, admissionType FROM user_details';
   
   db.query(query, (err, results) => {
     if (err) {
@@ -801,6 +871,36 @@ app.get('/data', (req, res) => {
   });
 });
 
+
+//Admision FE get request
+app.get('/FEadmissiondata', (req, res) => {
+  const query = 'SELECT id, fullname, documentsApproved, admissiontransactionproofStatus, class FROM user_details_admission1';
+  console.log('Admission brochure');
+  // res.sendStatus(200).send('Admission data fetch');
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+//SE TE BE get request
+app.get('/higheradmissiondata', (req, res) => {
+  const query = 'SELECT id, fullname, documentsApproved, admissiontransactionproofStatus, class FROM user_details_admission_setebe';
+  console.log(' SE TE BE Admission brochure');
+  // res.sendStatus(200).send('Admission data fetch');
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
 
 //Docverification page get and fetching
 app.get('/docverification/:uid', (req, res) => {
@@ -818,13 +918,52 @@ app.get('/docverification/:uid', (req, res) => {
   });
 });
 
-//Fetching documents URL and send the URL back to React (Preview button)
+//DocverificationFEAdmission page get and fetching
+//Docverification page get and fetching
+app.get('/docverificationFEAdmission/:uid', (req, res) => {
+  const userId = req.params.uid;
+  console.log(userId);
+  const query = `SELECT id, fullname, email, mobile_number, annual_income, category, cet_application_id, jee_application_number, photo, marksheet10, leavingCertificate12, marksheet12, cetMarksheet, jeeMarksheet, signature, domicilecert, castecertificate, castevalidity, noncreamylayer, income, other, photoStatus, leavingCertificate12Status, marksheet10Status, marksheet12Status, cetMarksheetStatus, jeeMarksheetStatus, signatureStatus, domicilecertStatus, castecertificateStatus, castevalidityStatus, noncreamylayerStatus, incomeStatus, otherStatus, admissiontransactionproofStatus, documentsApproved FROM user_details_admission1 WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+
+
+//Fetching documents URL and send the URL back to React
 app.get('/docverification/:uid/:docname', (req, res) => {
   const userId = req.params.uid;
   const docname = req.params.docname;
   console.log(userId);
   console.log(docname)
   const query = `SELECT ${docname} FROM user_details WHERE id = '${userId}';`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+      console.log(results);
+    }
+  });
+});
+
+
+//Fetching documents URL and send the URL back to React
+app.get('/docverificationFEAdmission/:uid/:docname', (req, res) => {
+  const userId = req.params.uid;
+  const docname = req.params.docname;
+  console.log(userId);
+  console.log(docname);
+  console.log('FE ADMISSION PREVIEW');
+  const query = `SELECT ${docname} FROM user_details_admission1 WHERE id = '${userId}';`;
   
   db.query(query, (err, results) => {
     if (err) {
@@ -858,6 +997,27 @@ app.put('/approveDoc/:uid/:docName', (req, res) => {
   });
 });
 
+//FE Admission Document verification page making updation request to make document status to approve
+app.put('/approveDocFEAdmission/:uid/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+
+  const sql = `UPDATE user_details_admission1 SET ${docName}Status = 'Approved' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details_admission1 SET ${docName}Status = 'Approved' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+ 
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
 
 //Document verification page making updation request to make document status to Reject
 app.put('/rejectDoc/:uid/:email/:docName', (req, res) => {
@@ -883,12 +1043,37 @@ app.put('/rejectDoc/:uid/:email/:docName', (req, res) => {
   });
 });
 
+
+//FE Admission Document verification page making updation request to make document status to Reject
+app.put('/rejectDocFEAdmission/:uid/:email/:docName', (req, res) => {
+  const  uid  = req.params.uid;
+  const  docName  = req.params.docName;
+  const  email = req.params.email;
+
+  console.log(email)
+  mailsend(docName, email);
+  const sql = `UPDATE user_details_admission1 SET ${docName}Status = 'Rejected' WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details_admission1 SET ${docName}Status = 'Rejected' WHERE id = ${uid}`;
+  console.log(sqlQuery);
+  const values = [uid];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating entry: ' + err.stack);
+      res.status(500).send('Error updating entry');
+      return;
+    }
+    console.log('Updated entry with ID ' + uid);
+    res.send('Entry updated successfully');
+  });
+});
+
 //Update all Document status to Approved
 app.put('/DocumentsApproved/:uid', (req, res) => {
   const  uid  = req.params.uid;
   
-  const sql = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ?`;
-  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved' WHERE id = ${uid}`;
+  const sql = `UPDATE user_details SET documentsApproved = 'Approved', addedToMerit = true WHERE id = ?`;
+  const sqlQuery = `UPDATE user_details SET documentsApproved = 'Approved',  addedToMerit = 1 WHERE id = ${uid}`;
   console.log(sqlQuery);
  
   const values = [uid];
@@ -902,6 +1087,341 @@ app.put('/DocumentsApproved/:uid', (req, res) => {
     console.log("All documents Approved sucessfully");
     res.send('Entry updated successfully');
   });
+
+  ///Fetching data from user_details to add to merit list table
+  const query = util.promisify(db.query).bind(db);
+  var cet_percentile = '';
+
+  
+});
+
+
+
+// const storage2 = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     //  const dirname =  'dirname'//req.body;///JSON.parse(req.body.email);
+//     // console.log('Dirname : ',dirname);
+//     const email = JSON.stringify(req.body.email);
+//     const body = req.body;
+//     // Use email to dynamically create upload path
+//     const dirname = email || 'default'; 
+//     console.log("Email : ",email);
+//     console.log("dirnam : ",dirname);
+//     console.log("Body : ", typeof(body));
+//     // Use 'default' if email is undefined
+//     // console.log('Dirname : ', dirname);
+
+//     // console.log(JSON.parse(req.body));
+    
+//     const uploadPath = `public/${dirname}`;
+//     if (!fs.existsSync(uploadPath)) {
+//       fs.mkdirSync(uploadPath);
+//     }
+//     cb(null, uploadPath);
+//   },
+//   filename: function (req, file, cb) {
+
+//     // console.log(req.body.email);
+//     const reuploadName = 'reuploads';
+//     const fileString = file.fieldname.toString();
+//     console.log(reuploadName);
+//     console.log(fileString); 
+//     const fileType = file.mimetype;
+//     if(fileType === 'application/pdf'){
+//       cb(null, `${reuploadName}.pdf`);
+//     }
+//     else if(fileType === 'image/jpeg'){
+//       cb(null, `${reuploadName}.jpeg`);
+//     }
+//     else if(fileType === 'image/png'){
+//       cb(null, `${reuploadName}.png`);
+//     }
+//   }
+// });
+// const upload2 = multer({ storage: storage2 });
+
+// // Endpoint to handle file Reupload at Admin side
+// app.post('/reupload', upload2.fields([
+//   {name:'file', maxCount:1}
+// ]), (req, res) => {
+//   // Multer adds a 'file' object to the request object
+//   const file = req.file;
+//   const email = req.body;
+//   const docName = req.body.docName;
+  
+//   // response.append(req.body);
+//   console.log('Email : ',email);
+//   console.log('Document Name : ',docName );
+//   if (!file) {
+//       return res.status(400).send('No file uploaded.');
+//   }
+//   // res.send('File uploaded successfully.');
+
+
+//    response = { message: 'Response body received:', data: req.body };
+
+//   // Sending the response with the appended req.body
+//   res.send(response);
+
+
+// });
+
+///Merit list testing
+// Fetch students from the database
+
+// BACKUP CODE
+
+// Configure multer storage for re-uploads
+// const reuploadStorage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const email = req.body.email;
+//     console.log(email);
+//     console.log(file.mimetype);
+//     console.log(file.fieldname);
+
+
+
+
+
+
+
+//     const uploadPath = path.join(__dirname, 'public', email);
+//     if (!fs.existsSync(uploadPath)) {
+//       fs.mkdirSync(uploadPath, { recursive: true });
+//     }
+//     cb(null, uploadPath);
+//   },
+//   filename: function (req, file, cb) {
+//     const docName = req.body.docName;
+//     console.log(docName);
+//     const fileExtension = path.extname(file.originalname);
+//     cb(null, `${docName}${fileExtension}`);
+//   }
+// });
+
+// // const reupload = multer({ storage: reuploadStorage });
+// const reupload = multer({ storage: reuploadStorage }).fields([
+//   { name: 'file', maxCount: 1 },
+//   { name: 'email', maxCount: 1 },
+//   { name: 'docName', maxCount: 1 }
+// ]);
+
+// // Endpoint to handle file re-upload
+// app.post('/reupload', reupload.single('file'), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send('No file uploaded.');
+//   }
+
+//   const email = (req.body.email);
+//   const docName = (req.body.docName);
+//   const filePath = (req.file.path);
+//   console.log(req.body);
+//   console.log(email);
+//   console.log(docName);
+//   console.log(filePath);
+
+//   // Here you can add any database update logic if needed
+//   console.log(`File uploaded for ${email}: ${filePath}`);
+
+//   res.send({ message: 'File uploaded successfully', filePath });
+// });
+
+
+const reuploadStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const email = req.body.email;
+    // const parameters = req.params.email;
+    // console.log(parameters);
+    console.log('email :', email);
+    console.log(file.originalname);
+    
+    // if (!email) {
+    //   return cb(new Error('Email is required'));
+    // }
+
+    const uploadPath = path.join(__dirname, 'public', email);
+    fs.mkdir(uploadPath, { recursive: true }, (err) => {
+      if (err) return cb(err);
+      cb(null, uploadPath);
+    });
+  },
+  filename: function (req, file, cb) {
+    const docName = req.body.docName;
+    console.log('Document name:', docName);
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${docName}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${docName}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${docName}.png`);
+    }
+    
+    // if (!docName) {
+    //   return cb(new Error('Document name is required'));
+    // }
+
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${docName}${fileExtension}`);
+  }
+});
+
+const reupload = multer({ storage: reuploadStorage });
+//Reupload from brochure form
+app.post('/reupload', reupload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+
+  const email = req.body.email;
+  const docName = req.body.docName;
+  const filePath = req.file.fieldname;
+  const filetype = req.file.mimetype;
+
+  console.log(req.body);
+  console.log(email);
+  console.log(docName);
+  console.log(filePath);
+  console.log(filetype);
+
+  // Retrieving the previous location of file to delete it
+  const retrieveQuery = `SELECT ${docName} FROM user_details WHERE email = '${email}';`;
+  console.log(retrieveQuery);
+  const values = [docName, email];
+
+  // Promisify the db.query function
+  const query = util.promisify(db.query).bind(db);
+  var fileExtension = '';
+  var resultQuery = '';
+  try {
+    const result = await query(retrieveQuery, values);
+
+    console.log('DOCUMENT REUPLOADED');
+    console.log(result);
+
+    resultQuery = Object.values(result[0])[0];
+    console.log(resultQuery);
+    const parts = resultQuery.split('\\');
+    console.log(parts);
+    const fileName = parts[parts.length - 1];
+    console.log(fileName);
+
+    // Split the file name by dot and get the last part (file extension)
+    const fileNameParts = fileName.split('.');
+    fileExtension = fileNameParts[fileNameParts.length - 1];
+    console.log(fileExtension);
+
+   
+  } catch (err) {
+    console.error('Error updating entry: ' + err.stack);
+    res.status(500).send('Error updating entry');
+  }
+
+  const filetypemap = { 'png':'image/png', 'pdf':'application/pdf', 'jpeg':'image/jpeg' }
+  const reverseFileType = {'image/png':'png', 'application/pdf': 'pdf', 'image/jpeg':'jpeg'}
+  console.log(filetypemap[fileExtension]);
+  console.log(filetype);
+
+  if(filetype === filetypemap[fileExtension]){
+    console.log("Not path updates in database");
+
+  }
+  else{
+    const reuploadURL = `${email}\\${docName}.${reverseFileType[filetype]}`;
+    console.log(reuploadURL);
+    const query = `UPDATE user_details SET ${docName} = ? WHERE email = ?`;
+    const values = [reuploadURL, email];
+    console.log(query);
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.log("Error found : ",error);
+      } else {
+        console.log(result);
+        res.send('Reupload URL in database updated');
+      }
+    });
+  }
+});
+
+
+
+
+//////////////////////////////////////////////////////////Reupload from FE Admission form //////////////////////////////////////////////////////////////
+app.post('/reuploadFEAdmission', reupload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+
+  const email = req.body.email;
+  const docName = req.body.docName;
+  const filePath = req.file.fieldname;
+  const filetype = req.file.mimetype;
+
+  console.log(req.body);
+  console.log(email);
+  console.log(docName);
+  console.log(filePath);
+  console.log(filetype);
+
+  // Retrieving the previous location of file to delete it
+  const retrieveQuery = `SELECT ${docName} FROM user_details_admission1 WHERE email = '${email}';`;
+  console.log(retrieveQuery);
+  const values = [docName, email];
+
+  // Promisify the db.query function
+  const query = util.promisify(db.query).bind(db);
+  var fileExtension = '';
+  var resultQuery = '';
+  try {
+    const result = await query(retrieveQuery, values);
+
+    console.log('DOCUMENT REUPLOADED from FE Admission');
+    console.log(result);
+
+    resultQuery = Object.values(result[0])[0];
+    console.log(resultQuery);
+    const parts = resultQuery.split('\\');
+    console.log(parts);
+    const fileName = parts[parts.length - 1];
+    console.log(fileName);
+
+    // Split the file name by dot and get the last part (file extension)
+    const fileNameParts = fileName.split('.');
+    fileExtension = fileNameParts[fileNameParts.length - 1];
+    console.log(fileExtension);
+
+   
+  } catch (err) {
+    console.error('Error updating entry: ' + err.stack);
+    res.status(500).send('Error updating entry');
+  }
+
+  const filetypemap = { 'png':'image/png', 'pdf':'application/pdf', 'jpeg':'image/jpeg' }
+  const reverseFileType = {'image/png':'png', 'application/pdf': 'pdf', 'image/jpeg':'jpeg'}
+  console.log(filetypemap[fileExtension]);
+  console.log(filetype);
+
+  if(filetype === filetypemap[fileExtension]){
+    console.log("Not path updates in database");
+
+  }
+  else{
+    const reuploadURL = `${email}\\${docName}.${reverseFileType[filetype]}`;
+    console.log(reuploadURL);
+    const query = `UPDATE user_details_admission1 SET ${docName} = ? WHERE email = ?`;
+    const values = [reuploadURL, email];
+    console.log(query);
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.log("Error found : ",error);
+      } else {
+        console.log(result);
+        res.send('Reupload URL in database updated');
+      }
+    });
+  }
 });
 
 async function fetchStudents() {
@@ -912,14 +1432,14 @@ async function fetchStudents() {
     database: 'reg_portal' // Your database name
   });
 
-  const [rows] = await connection.execute('SELECT s_id, s_cet_per, s_cetmaths, s_cetphy, s_cetchem, s_hscpcm FROM test_merit_algorithm_database');
+  const [rows] = await connection.execute('SELECT fullname, cet_percentile, cet_maths_percentile, cet_physics_percentile, cet_chemistry_percentile, 12th_marks_obtained, preferences, Alloted_branch, id FROM user_details WHERE addedToMerit = true');
   await connection.end();
   return rows;
 }
 
 // Compare students based on various attributes
 function compareStudents(studentA, studentB) {
-  const attributes = ["s_cet_per", "s_cetmaths", "s_cetphy", "s_cetchem", "s_hscpcm"];
+  const attributes = ["cet_percentile", "cet_maths_percentile", "cet_physics_percentile", "cet_chemistry_percentile", "12th_marks_obtained"];
   for (let attr of attributes) {
     if (studentA[attr] > studentB[attr]) {
       return -1; 
@@ -946,6 +1466,7 @@ app.get('/meritList', async (req, res) => {
   try {
     const students = await fetchStudents();
     const meritList = generateMeritList(students);
+    console.log(meritList);
     res.json(meritList);
   } catch (error) {
     console.error('Error fetching or processing students:', error);
@@ -1013,6 +1534,84 @@ app.get('/feeStructure',(req,res)=>{
   });
 })
 
+///Branch alottment updates
+app.put('/branchallotment',(req,res)=>{
+  console.log(req.body);
+  const id = req.body.id;
+  const Alloted_branch = req.body.Alloted_branch;
+  const values = [Alloted_branch, id]
+  console.log(values);
+  const query = `UPDATE user_details SET Alloted_branch = ? WHERE id = ?`;
+  console.log(query);
+  db.query(query, values, (err, result) => {
+    if (err) {
+     console.log("Error while alloting branch : ",err);
+    } else {
+      console.log('Branch Alloted successfully');
+      console.log(result);
+      res.send('Branch Alloted successfully');
+    }
+  });
+})
+
+
+
+///Multer config for saving fee receipt
+const feeuploadStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const email = req.body.email;
+    // const parameters = req.params.email;
+    // console.log(parameters);
+    console.log('email :', email);
+    
+    
+    // if (!email) {
+    //   return cb(new Error('Email is required'));
+    // }
+
+    const uploadPath = path.join(__dirname, 'public', email);
+    fs.mkdir(uploadPath, { recursive: true }, (err) => {
+      if (err) return cb(err);
+      cb(null, uploadPath);
+    });
+  },
+  filename: function (req, file, cb) {
+    const docName = 'FeeReceipt';
+    console.log('Document name:', docName);
+    const fileType = file.mimetype;
+    if(fileType === 'application/pdf'){
+      cb(null, `${docName}.pdf`);
+    }
+    else if(fileType === 'image/jpeg'){
+      cb(null, `${docName}.jpeg`);
+    }
+    else if(fileType === 'image/png'){
+      cb(null, `${docName}.png`);
+    }
+    
+    // if (!docName) {
+    //   return cb(new Error('Document name is required'));
+    // }
+
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${docName}${fileExtension}`);
+  }
+});
+
+const feeupload = multer({ storage: feeuploadStorage });
+
+///Saving fee receipt and sending it to the person.
+// app.post('/uploadfeereceipt',feeupload.single("file"))
+app.post('/uploadfeereceipt', feeupload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+  else{
+    console.log(req.body);
+    const email = req.body.email;
+    mailsendFeeReceipt(email);
+  }
+   });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

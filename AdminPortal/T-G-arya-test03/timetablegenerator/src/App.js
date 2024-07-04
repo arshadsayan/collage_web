@@ -30,6 +30,7 @@ import AcademicDetails from "./AcademicDetails";
 import CETDetails from "./CETDetails";
 import DocumentUpload from "./DocumentUpload";
 import FeeReceipt from "./components/FeeReceipt";
+import DocVerificationFEAdmission from "./components/DocVerificationFEAdmission";
 
 const back_url = "https://lectures-frederick-cab-inventory.trycloudflare.com";
 
@@ -234,6 +235,7 @@ export default function App() {
             <Route path="/meritList" element={<MeritList/>}/>
             <Route path="/feeStructure" element={<FeeStructure/>}/>
             <Route path="/feeReceipt" element={<FeeReceipt/>}/>
+            <Route path="/documentverificationFEAdmission" element={<DocVerificationFEAdmission/>}/>
           </Routes>
         </div>
       </Router>

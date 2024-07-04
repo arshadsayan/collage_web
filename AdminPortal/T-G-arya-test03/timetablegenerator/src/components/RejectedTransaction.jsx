@@ -27,12 +27,14 @@ function RejectedTransaction() {
               <th scope="col">Current Year</th>
               <th scope="col">Transaction ID </th>
               <th scope="col">Preview</th>
-              <th scope="col">Verify</th>
               <th scope="col">Installment Allowed</th>
               <th scope="col">Installment 1</th>
               <th scope="col">Installment 2</th>
               <th scope="col">Transaction ID-2</th>
               <th scope="col">Upload Transaction-2 Receipt</th>
+              <th scope="col">Verify</th>
+              <th scope="col">Preview</th>
+              <th scope="col">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -70,7 +72,7 @@ function RejectedTransaction() {
               </td>
 
               <td>
-                <td>
+               
                   <div className="row verify-row">
                     <div className="col">
                       <button
@@ -84,34 +86,9 @@ function RejectedTransaction() {
                       </button>
                     </div>
                   </div>
-                </td>
+                
               </td>
-              <td>
-                <div className="row verify-col">
-                  <div className="col">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        console.log("Green tick clicked");
-                      }}
-                      className="btn  green-tick-btn"
-                    >
-                      ✔
-                    </button>
-                  </div>
-                  <div className="col">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        console.log("Red cross clicked");
-                      }}
-                      className="btn  red-cross-btn"
-                    >
-                      ✘
-                    </button>
-                  </div>
-                </div>
-              </td>
+              
 
               <td className="centered-checkbox">
                 <div class="form-check form-switch">
@@ -157,7 +134,50 @@ function RejectedTransaction() {
                     </div>
                   </div>
                 </td>
-                
+                <td>
+                <div className="row verify-col">
+                  <div className="col">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        console.log("Green tick clicked");
+                      }}
+                      className="btn  green-tick-btn"
+                    >
+                      ✔
+                    </button>
+                  </div>
+                  <div className="col">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        console.log("Red cross clicked");
+                      }}
+                      className="btn  red-cross-btn"
+                    >
+                      ✘
+                    </button>
+                  </div>
+                </div>
+              </td>
+              <td>
+              <div className="row verify-row">
+                    <div className="col">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log("Preview clicked");
+                        }}
+                        className="btn verify-btn"
+                      >
+                        Preview
+                      </button>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                Approved
+              </td>                
               </>
               }
               {
@@ -183,6 +203,19 @@ function RejectedTransaction() {
                   <div className="col">-</div>
                 </div>
                 </td>
+                <td>
+                <div className="row verify-row">
+                  <div className="col">-</div>
+                </div>
+                </td>
+                <td>
+                <div className="row verify-row">
+                  <div className="col">-</div>
+                </div>
+                </td>
+                <td>
+                Approved
+              </td> 
                 </>
               }
             </tr>

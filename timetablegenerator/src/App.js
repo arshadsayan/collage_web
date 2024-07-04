@@ -295,6 +295,10 @@ export default function App() {
   });
   
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6a75df0d93289f1b1416f94df6b4adf8ed97138c
   const [userId, setUserId] = useState('');
 
   const personalDetailsRef = useRef();
