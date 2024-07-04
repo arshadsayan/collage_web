@@ -279,7 +279,7 @@ const storageEvents = multer.diskStorage({
   destination: function (req, file, cb) {
     const personalDetails = JSON.parse(req.body.personalDetails);
     const dirname = personalDetails.email.toString();
-    const uploadPath = `public/${dirname}`;
+    const uploadPath = path.join('public', dirname);
     
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
@@ -301,7 +301,7 @@ const storageEvents = multer.diskStorage({
     }
 
     let index = 1;
-    const uploadPath = `public/${personalDetails.email.toString()}`;
+    const uploadPath = path.join('public', personalDetails.email.toString());
 
     // Check for existing files with different extensions
     const existingFiles = fs.readdirSync(uploadPath);
@@ -328,12 +328,30 @@ const uploadEvents = multer({ storage: storageEvents });
 
 // Define the /api/events endpoint
 app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
-  const { name, date, time, summary, uid } = req.body;
+  const { name, date, time, summary, uid} = req.body;
+  
+  let personalDetails;
+
+  try {
+    personalDetails = JSON.parse(req.body.personalDetails);
+  } catch (error) {
+    return res.status(400).json({ error: 'Invalid personal details format' });
+  }
+
+  const email = personalDetails.email;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required in personal details' });
+  }
+
+  const dirname = email.toString();
   const image = req.file ? req.file.filename : null;
+  const fullPath = image ? path.join('public', dirname, image) : null;
+
+  // const image = req.file ? req.file.filename : null;
 
   const query = 'INSERT INTO events (id, name, date, time, summary, image) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [uid, name, date, time, summary, image];
-
+  // const values = [uid, name, date, time, summary, image];
+  const values = [uid, name, date, time, summary, fullPath];
   db.query(query, values, (err, results) => {
     if (err) {
       console.error('Error saving event detail:', err);
@@ -343,6 +361,7 @@ app.post('/api/events/', uploadEvents.single('image'), (req, res) => {
     res.status(200).json({ message: 'Event saved successfully!' });
   });
 });
+
 
 
 
