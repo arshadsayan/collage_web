@@ -3,7 +3,7 @@ import './doc.css';
 
 const back_url = "http://localhost:3001";
 
-function Documents() {
+function Documents({ formData1, setFormData1 }) {
     const [years, setYears] = useState([]);
     const [selectedYear, setSelectedYear] = useState('');
     const [feeStructure, setFeeStructure] = useState(null);
@@ -35,6 +35,13 @@ function Documents() {
               });
         }
     }, [selectedYear, dse]);
+
+    useEffect(() => {
+        if (feeStructure) {
+            const totalFee = feeStructure.tuition_fee + feeStructure.development_fee + feeStructure.exam_fee + feeStructure.misc_fee;
+            setFormData1(prevState => ({ ...prevState, amount: totalFee }));
+        }
+    }, [feeStructure, setFormData1]);
 
     const handleYearChange = (event) => {
         setSelectedYear(parseInt(event.target.value));

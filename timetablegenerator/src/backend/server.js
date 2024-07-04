@@ -750,6 +750,137 @@ app.post('/api/submit3', upload.fields([
 });
 
 
+
+
+app.post('/insertData', (req, res) => {
+
+  const {id,currentSemester,attemptsData} = req.body;
+  // const formdata = req.body;
+  // console.log(formdata);
+  // const id = 1236544987;
+  console.log(id);
+  console.log(attemptsData);
+  console.log(currentSemester);
+  console.log(attemptsData[1]?.kts);
+  console.log(attemptsData[1]?.attemptDate);
+  // const attemptsData = {
+  //   "1": {
+  //     "attempts": 2,
+  //     "kts": [
+  //       {
+  //         "subject": "hgh",
+  //         "clearedDate": "2024-06-10"
+  //       },
+  //       {
+  //         "subject": "fbb",
+  //         "clearedDate": ""
+  //       }
+  //     ]
+  //   },
+  //   "2": {
+  //     "attempts": 1,
+  //     "kts": []
+  //   },
+  //   "3": {
+  //     "attempts": 0,
+  //     "kts": []
+  //   }
+  // };
+  // Array to store all sem_info insert queries
+  const semInfoInsertQueries = [];
+  // Array to store all kt_info insert queries
+  const ktInfoInsertQueries = [];
+
+  // Iterate through attemptsData for each semester
+  Object.keys(attemptsData).forEach(sem => {
+    const semData = attemptsData[sem];
+
+    // Prepare sem_info insert query
+    const semInfoQuery = {
+      sql: `INSERT INTO sem_info (id, sem, num_of_attempt, num_of_kt, kt_date) VALUES (?, ?, ?, ?,?)`,
+      values: [id, sem, semData.attempts, semData.kts.length,semData.attemptDate]
+    };
+
+    semInfoInsertQueries.push(semInfoQuery);
+
+    // Prepare kt_info insert queries for each KT subject
+    semData.kts.forEach(kt => {
+      const ktInfoQuery = {
+        sql: `INSERT INTO kt_info (id, sem, subject, cleardate, update_date) VALUES (?, ?, ?, ?, ?)`,
+        values: [id, sem, kt.subject, kt.clearedDate, new Date().toISOString()]
+      };
+
+      ktInfoInsertQueries.push(ktInfoQuery);
+    });
+  });
+
+  // Execute all sem_info and kt_info insert queries using transaction
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Error beginning transaction:', err);
+      res.status(500).json({ error: 'Failed to begin transaction' });
+      return;
+    }
+
+    // Insert sem_info queries
+    const semQueryPromises = semInfoInsertQueries.map(query => {
+      return new Promise((resolve, reject) => {
+        db.query(query, (error, results, fields) => {
+          if (error) {
+            console.error('Error inserting sem_info:', error);
+            db.rollback(() => {
+              reject(error);
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+    });
+
+    // Insert kt_info queries
+    const ktQueryPromises = ktInfoInsertQueries.map(query => {
+      return new Promise((resolve, reject) => {
+        db.query(query, (error, results, fields) => {
+          if (error) {
+            console.error('Error inserting kt_info:', error);
+            db.rollback(() => {
+              reject(error);
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+    });
+
+    // Execute all queries
+    Promise.all([...semQueryPromises, ...ktQueryPromises])
+      .then(() => {
+        db.commit(err => {
+          if (err) {
+            console.error('Error committing transaction:', err);
+            db.rollback(() => {
+              res.status(500).json({ error: 'Transaction rollback' });
+            });
+          } else {
+            res.status(200).json({ message: 'Data inserted successfully' });
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Transaction failed:', error);
+        db.rollback(() => {
+          res.status(500).json({ error: 'Transaction rollback' });
+        });
+      });
+  });
+});
+
+
+
+
+
 ///Admin Portal changes
 
 async function deleteFile(directoryPath) {

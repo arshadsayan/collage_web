@@ -311,7 +311,7 @@ export default function App() {
   const feedRef = useRef();
 
   const sections = [
-    <Documents />,
+    <Documents formData1={formData1} setFormData1={setFormData1}/>,
     <PersonalDetails ref={personalDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formData} setFormData={setFormData} setError={setError} />,
@@ -322,7 +322,7 @@ export default function App() {
   ];
 
   const sectionsB = [
-    <Documents />,
+    <Documents formData1={formData1} setFormData1={setFormData1}/>,
     <PersonalDetails ref={personalDetailsRef} formData={formDataB} setFormData={setFormDataB} formDataB={formDataB} setFormDataB={setFormDataB} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formDataB} setFormData={setFormDataB} setError={setError} />,
@@ -333,7 +333,7 @@ export default function App() {
   ];
 
   const sectionsC = [
-    <Documents />,
+    <Documents formData1={formData1} setFormData1={setFormData1}/>,
     <PersonalDetails ref={personalDetailsRef} formData={formDataC} setFormData={setFormDataC} formDataC={formDataC} setFormDataC={setFormDataC} setError={setError} />,
     <AcademicDetails ref={academicDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,
     <CETDetails ref={cetDetailsRef} formData={formDataC} setFormData={setFormDataC} setError={setError} />,

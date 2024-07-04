@@ -189,7 +189,7 @@ function TransactionForm({formData1,setFormData1}) {
               
             <div className='input-field'>
               <label htmlFor="amount">Amount:</label>
-              <input type="text" name="amount" value={formData1.amount} readOnly />
+              <input type="text" name="amount" value={formData1.amount + "/-"} readOnly />
             </div>
             <div className='input-field'>
               <label htmlFor="date">Date of Transaction:</label>
