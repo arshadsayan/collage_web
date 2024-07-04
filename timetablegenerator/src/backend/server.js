@@ -139,7 +139,7 @@ app.post('/api/request-reset-password', (req, res) => {
     const mailOptions = {
       from: 'asiesgst@gmail.com',
       to: email,
-      subject: 'Your Password Reset OTP',
+      subject: 'Your Password Reset OTP for SIES Admission Portal',
       text: `Your OTP code is ${otp}`,
     };
 
