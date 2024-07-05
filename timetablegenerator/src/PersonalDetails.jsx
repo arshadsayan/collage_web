@@ -14,6 +14,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
   const [verificationStatus, setVerificationStatus] = useState('Not Verified');
     const [otpInput, setOTPInput] = useState('');
     const [showOTPModal, setShowOTPModal] = useState(false);
+    const [gstVerified, setGstVerified] = useState(false);
   // const [formData, setFormData] = useState({
   //   fullName: '',
   //   email: '',
@@ -164,6 +165,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         if (responseData.success) {
           // OTP verified successfully, update verification status
           setVerificationStatus('Verified');
+          setGstVerified(true);
           setShowOTPModal(false); // Close OTP modal on successful verification
         } else {
           alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
@@ -189,6 +191,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
     const { 
         fullName,
         email,
+        gst,
         mobileNumber,
         fathersName, 
         fathersmobileNumber,
@@ -208,6 +211,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         mothersTongue,
         dateofBirth } = formData.personalDetails;
 
+
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const mobilePattern = /^[0-9]{10}$/;
     
@@ -219,6 +223,16 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           setError('Valid Email is required.');
           return false;
         }
+
+        if (!gst) {
+          setError('GST email is required');
+          return false;
+        }
+        if (!gstVerified) {
+          setError('GST email must be verified');
+          return false;
+        }
+
         if (!mobileNumber || !mobilePattern.test(mobileNumber)) {
           setError('Valid 10-digit Mobile Number is required.');
           return false;
