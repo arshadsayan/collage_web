@@ -158,18 +158,27 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
         body: JSON.stringify({ gst, otp: otpInput }),
       });
   
-      if (response.data && response.data.success) {
-        // OTP verified successfully, update verification status
-        setVerificationStatus('Verified');
-        setShowOTPModal(false); // Close OTP modal on successful verification
+      if (response.ok) {
+        const responseData = await response.json(); // Parse response JSON
+  
+        if (responseData.success) {
+          // OTP verified successfully, update verification status
+          setVerificationStatus('Verified');
+          setShowOTPModal(false); // Close OTP modal on successful verification
+        } else {
+          alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
+        }
       } else {
-        alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
+        // Handle HTTP errors
+        console.error('Failed to verify OTP:', response.status);
+        alert('Failed to verify OTP. Please try again later.');
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
       alert('Error verifying OTP. Please try again later.');
     }
   };
+  
 
 
 

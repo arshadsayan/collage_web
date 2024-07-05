@@ -52,8 +52,8 @@ const transporter2 = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-      user: 'adityakit121@gst.sies.edu.in', // Your Gmail address
-      pass: 'your-gmail-password' // Your Gmail password or app-specific password
+      user: 'adi123_456@outlook.com', // Your Gmail address
+      pass: 'Adi@2003' // Your Gmail password or app-specific password
   },
   tls: {
       ciphers: 'SSLv3'
@@ -74,7 +74,7 @@ app.post('/api/generate-key-and-send-otp2', (req, res) => {
 
   // Send OTP via email
   const mailOptions = {
-      from: 'asiesgst@gmail.com',
+      from: 'adi123_456@outlook.com',
       to: gst,
       subject: 'Your OTP Code for GST Email Verification',
       text: `Your OTP code is ${otp}`,
@@ -95,25 +95,35 @@ app.post('/api/generate-key-and-send-otp2', (req, res) => {
 app.post('/api/verify-otp-and-store2', (req, res) => {
   const { gst, otp } = req.body;
 
-  // Verify OTP
-  if (otps[gst] && otps[gst].otp === otp) {
-      const uniqueKey = otps[gst].uniqueKey;
+  // Log received OTP verification request
+  console.log('Received OTP verification request for GST:', gst);
+  console.log('Received OTP from client:', otp);
 
-      // Insert user into database
-      const query = 'INSERT INTO gst_email (id,gst) VALUES (?, ?)';
-      db.query(query, [id, uniqueKey], (err, result) => {
-          if (err) {
-              console.error('Error inserting data into database:', err);
-              return res.status(500).json({ message: 'Error inserting data' });
-          }
-          // OTP verified and user stored in database, remove OTP from temporary store
-          delete otps[gst];
-          res.status(200).json({ success: true });
-      });
+  // Verify OTP
+  if (otps[gst] && otps[gst].otp.trim() === otp.trim()) {
+    console.log('Correct otp')
+    const { uniqueKey } = otps[gst];
+
+    // Log stored OTP
+    console.log('Stored OTP:', otps[gst].otp);
+
+    // Insert user into database
+    const query = 'INSERT INTO gst_email (gst, id) VALUES (?, ?)';
+    db.query(query, [gst, uniqueKey], (err, result) => {
+      if (err) {
+        console.error('Error inserting data into database:', err);
+        return res.status(500).json({ message: 'Error inserting data' });
+      }
+      // OTP verified and user stored in database, remove OTP from temporary store
+      delete otps[gst];
+      res.status(200).json({ success: true });
+    });
   } else {
-      res.status(400).json({ success: false, message: 'Invalid OTP' });
+    // Invalid OTP
+    res.status(400).json({ success: false, message: 'Invalid OTP' });
   }
 });
+
 
 
 
