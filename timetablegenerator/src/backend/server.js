@@ -47,6 +47,76 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+const transporter2 = nodemailer.createTransport({
+  host: 'smtp.office365.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+      user: 'asiesgst@gmail.com', // Your Gmail address
+      pass: 'your-gmail-password' // Your Gmail password or app-specific password
+  },
+  tls: {
+      ciphers: 'SSLv3'
+  }
+});
+
+app.post('/api/generate-key-and-send-otp2', (req, res) => {
+  const { gst } = req.body;
+
+  // Generate unique key
+  const uniqueKey = Date.now();
+
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Store user details temporarily with the OTP and unique key
+  otps[gst] = { otp, uniqueKey };
+
+  // Send OTP via email
+  const mailOptions = {
+      from: 'asiesgst@gmail.com',
+      to: gst,
+      subject: 'Your OTP Code for GST Email Verification',
+      text: `Your OTP code is ${otp}`,
+  };
+
+  transporter2.sendMail(mailOptions, (error, info) => {
+      if (error) {
+  
+          console.error('Error sending OTP:', error);
+          return res.status(500).json({ message: 'Error sending OTP' });
+      }
+
+      res.status(200).json({ message: 'OTP sent successfully', key: uniqueKey });
+  });
+});
+
+// Endpoint to verify OTP and store in database
+app.post('/api/verify-otp-and-store2', (req, res) => {
+  const { gst, otp } = req.body;
+
+  // Verify OTP
+  if (otps[gst] && otps[gst].otp === otp) {
+      const uniqueKey = otps[gst].uniqueKey;
+
+      // Insert user into database
+      const query = 'INSERT INTO gst_email (id,gst) VALUES (?, ?)';
+      db.query(query, [id, uniqueKey], (err, result) => {
+          if (err) {
+              console.error('Error inserting data into database:', err);
+              return res.status(500).json({ message: 'Error inserting data' });
+          }
+          // OTP verified and user stored in database, remove OTP from temporary store
+          delete otps[gst];
+          res.status(200).json({ success: true });
+      });
+  } else {
+      res.status(400).json({ success: false, message: 'Invalid OTP' });
+  }
+});
+
+
+
 app.post('/api/generate-key-and-send-otp', (req, res) => {
   const { email, password } = req.body;
 
@@ -71,7 +141,6 @@ app.post('/api/generate-key-and-send-otp', (req, res) => {
     if (error) {
       return res.status(500).json({ message: 'Error sending OTP' + info });
     }
-
     res.status(200).json({ message: 'OTP sent successfully', key: uniqueKey });
   });
 });

@@ -1,6 +1,8 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import Datepicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+const back_url = "http://localhost:3001";
+
 // import CustomDateInput from './CustomDateInput';
 
 const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
@@ -9,6 +11,9 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
   const [isValidDate, setIsValidDate] = useState(false);
   const [formType, setFormType] = useState(formData.formType);
   const [selectedClass, setSelectedClass] = useState(formData.personalDetails.class);
+  const [verificationStatus, setVerificationStatus] = useState('Not Verified');
+    const [otpInput, setOTPInput] = useState('');
+    const [showOTPModal, setShowOTPModal] = useState(false);
   // const [formData, setFormData] = useState({
   //   fullName: '',
   //   email: '',
@@ -94,7 +99,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
       return;
     }
 
-    if (id !== 'email' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category' && id !== 'state' && id !== 'nationality' && id !== 'religion' && id !== 'admissionType') {
+    if (id !== 'email' && id !== 'gst' && id !== 'annualIncome' && id !== 'sex' && id !== 'area' && id !== 'category' && id !== 'state' && id !== 'nationality' && id !== 'religion' && id !== 'admissionType') {
       newValue = value.toUpperCase();
     }
 
@@ -111,6 +116,61 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
   //   setDate(date);
   //   setFormData((prevFormData) => ({...prevFormData, personalDetails: {...prevFormData.personalDetails, dateofBirth: date } }));
   // };
+
+  const handleVerify = async () => {
+    const { gst } = formData;
+
+    try {
+        // Send OTP request to backend
+        const response = await fetch(`${back_url}/api/verify-otp-and-store2`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ gst, otp: otpInput }),
+      });
+        if (response.status === 200) {
+            // OTP sent successfully, show OTP verification modal
+            setShowOTPModal(true);
+        } else {
+            console.error('Failed to send OTP');
+            alert('Failed to send OTP. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('Error sending OTP. Please try again later.');
+    }
+};
+
+const handleVerifyOTP = async () => {
+    const { gst } = formData;
+
+    try {
+        // Verify OTP request to backend
+        const response = await fetch(`${back_url}/api/verify-otp-and-store2`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ gst, otp: otpInput }),
+      });
+        if (response.data.success) {
+            // OTP verified successfully, update verification status
+            setVerificationStatus('Verified');
+            setShowOTPModal(false); // Close OTP modal on successful verification
+        } else {
+            alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
+        }
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        alert('Error verifying OTP. Please try again later.');
+    }
+};
+
+
+
+
+
 
   const validate = () => {
     const { 
@@ -240,6 +300,48 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           <label htmlFor="email">Email:</label>
           <input type="text" id="email" value={formData.personalDetails.email} onChange={handleChange} placeholder="Enter email" disabled/>
         </div>
+
+        {formType === 'Form B' ? (
+  <>
+
+  </>
+) : (
+  <div>
+    <div className="input-field">
+      <label htmlFor="gst">GST Email</label>
+      <input
+        type="text"
+        id="gst"
+        value={formData.personalDetails.gst}
+        placeholder="Enter GST Email"
+        onChange={handleChange}
+      />
+      <div className="buttons">
+      <button onClick={handleVerify}>Verify</button>
+      </div>
+      <span style={{ marginLeft: '500px' }}>{verificationStatus}</span>
+    </div>
+
+    {/* OTP Verification Modal */}
+    {showOTPModal && (
+      <div className="modal">
+        <div className="modal-content">
+          <span className="close" onClick={() => setShowOTPModal(false)}>
+            &times;
+          </span>
+          <h2>Enter OTP</h2>
+          <input
+            type="text"
+            placeholder="Enter OTP"
+            value={otpInput}
+            onChange={(e) => setOTPInput(e.target.value)}
+          />
+          <button onClick={handleVerifyOTP}>Verify OTP</button>
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
         { (formType === 'Form A' || formType === 'Form B') ? (
         <>

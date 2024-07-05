@@ -29,6 +29,7 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      gst:'',
       juniorCollege:'',
       class: 'FE',
       admissionType: '',
@@ -113,6 +114,7 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      gst:'',
       juniorCollege:'',
       class: 'FE',
       admissionType: '',
@@ -196,6 +198,7 @@ export default function App() {
     personalDetails: {
       fullName: '',
       email: '',
+      gst:'',
       juniordseCollege:'',
       class: '',
       admissionType: '',
