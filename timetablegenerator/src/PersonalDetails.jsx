@@ -118,54 +118,58 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
   // };
 
   const handleVerify = async () => {
-    const { gst } = formData;
-
+    const { gst } = formData.personalDetails;
+  
     try {
-        // Send OTP request to backend
-        const response = await fetch(`${back_url}/api/verify-otp-and-store2`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ gst, otp: otpInput }),
+      // Send OTP request to backend
+      const response = await fetch(`${back_url}/api/generate-key-and-send-otp2`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ gst }),
       });
-        if (response.status === 200) {
-            // OTP sent successfully, show OTP verification modal
-            setShowOTPModal(true);
-        } else {
-            console.error('Failed to send OTP');
-            alert('Failed to send OTP. Please try again.');
-        }
+  
+      if (response.status === 200) {
+        const { message, key } = await response.json();
+        console.log(message);
+        // You can display a success message or perform any other action with the 'key'
+        setShowOTPModal(true); // Show OTP verification modal after sending OTP
+      } else {
+        console.error('Failed to send OTP');
+        alert('Failed to send OTP. Please try again.');
+      }
     } catch (error) {
-        console.error('Error sending OTP:', error);
-        alert('Error sending OTP. Please try again later.');
+      console.error('Error sending OTP:', error);
+      alert('Error sending OTP. Please try again later.');
     }
-};
+  };
 
-const handleVerifyOTP = async () => {
-    const { gst } = formData;
-
+  const handleVerifyOTP = async () => {
+    const { gst } = formData.personalDetails;
+  
     try {
-        // Verify OTP request to backend
-        const response = await fetch(`${back_url}/api/verify-otp-and-store2`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ gst, otp: otpInput }),
+      // Verify OTP request to backend
+      const response = await fetch(`${back_url}/api/verify-otp-and-store2`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ gst, otp: otpInput }),
       });
-        if (response.data.success) {
-            // OTP verified successfully, update verification status
-            setVerificationStatus('Verified');
-            setShowOTPModal(false); // Close OTP modal on successful verification
-        } else {
-            alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
-        }
+  
+      if (response.data && response.data.success) {
+        // OTP verified successfully, update verification status
+        setVerificationStatus('Verified');
+        setShowOTPModal(false); // Close OTP modal on successful verification
+      } else {
+        alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
+      }
     } catch (error) {
-        console.error('Error verifying OTP:', error);
-        alert('Error verifying OTP. Please try again later.');
+      console.error('Error verifying OTP:', error);
+      alert('Error verifying OTP. Please try again later.');
     }
-};
+  };
 
 
 
