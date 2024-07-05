@@ -5,16 +5,16 @@ const back_url = "http://localhost:3001";
 
 // import CustomDateInput from './CustomDateInput';
 
-const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) => {
+const PersonalDetails = forwardRef(({ formData, setFormData, setError , gstVerified, setGstVerified}, ref) => {
   const [selectedDate, setDate] = useState(null);
   const [sameAddress, setSameAddress] = useState(false); //change1
   const [isValidDate, setIsValidDate] = useState(false);
   const [formType, setFormType] = useState(formData.formType);
   const [selectedClass, setSelectedClass] = useState(formData.personalDetails.class);
-  const [verificationStatus, setVerificationStatus] = useState('Not Verified');
+  const [verificationStatus, setVerificationStatus] = useState(null);
     const [otpInput, setOTPInput] = useState('');
     const [showOTPModal, setShowOTPModal] = useState(false);
-    const [gstVerified, setGstVerified] = useState(false);
+  
   // const [formData, setFormData] = useState({
   //   fullName: '',
   //   email: '',
@@ -168,6 +168,7 @@ const PersonalDetails = forwardRef(({ formData, setFormData, setError }, ref) =>
           setGstVerified(true);
           setShowOTPModal(false); // Close OTP modal on successful verification
         } else {
+          setVerificationStatus('Not Verified');
           alert('Invalid OTP. Please try again.'); // Show alert for invalid OTP
         }
       } else {
