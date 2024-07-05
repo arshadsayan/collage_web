@@ -47,16 +47,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+
 const transporter2 = nodemailer.createTransport({
-  host: 'smtp.office365.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  service: 'gmail',
   auth: {
-      user: 'adi123_456@outlook.com', // Your Gmail address
-      pass: 'Adi@2003' // Your Gmail password or app-specific password
-  },
-  tls: {
-      ciphers: 'SSLv3'
+    user: 'asiesgst@gmail.com',
+    pass: 'ilnb jboi ekcf lyfp'
   }
 });
 
@@ -74,7 +70,7 @@ app.post('/api/generate-key-and-send-otp2', (req, res) => {
 
   // Send OTP via email
   const mailOptions = {
-      from: 'adi123_456@outlook.com',
+      from: 'asiesgst@gmail.com',
       to: gst,
       subject: 'Your OTP Code for GST Email Verification',
       text: `Your OTP code is ${otp}`,
